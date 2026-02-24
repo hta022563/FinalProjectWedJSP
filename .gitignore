@@ -1,0 +1,58 @@
+# Bỏ qua các file biên dịch của Java
+*.class
+
+# Bỏ qua các file log và file tạm
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Bỏ qua các file nén (không nên đẩy file nén bự lên Git)
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# ----------------------------------------------------------------------
+# BỎ QUA FILE CỦA IDE (Rất quan trọng để team không đập cấu hình của nhau)
+# ----------------------------------------------------------------------
+
+# 1. NetBeans (IDE rất phổ biến cho Java Web)
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+build/
+.nb-gradle/
+
+# 2. IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# 3. Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+.settings/
+.classpath
+.project
+
+# ----------------------------------------------------------------------
+# BỎ QUA THƯ MỤC BUILD CỦA MAVEN / GRADLE (Nếu project dùng)
+# ----------------------------------------------------------------------
+target/
+.gradle/
+
+# ----------------------------------------------------------------------
+# BỎ QUA FILE HỆ ĐIỀU HÀNH
+# ----------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
