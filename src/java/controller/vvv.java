@@ -34,6 +34,7 @@ public class vvv extends HttpServlet {
         try ( PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("Gios Chatj");
+            out.println("Gios Chatj");
 
         }
     }
