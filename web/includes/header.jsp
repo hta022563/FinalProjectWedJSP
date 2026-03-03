@@ -38,6 +38,7 @@
                         <li class="nav-item"><a class="nav-link active" href="home.jsp">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="">Sản phẩm</a></li>
                         <li class="nav-item"><a class="nav-link text-warning" href="CategoryController">Quản lý danh mục</a></li>
+                        <li class="nav-item"><a class="nav-link text-warning" href="SupplierController">Quản lý Nhà Cung Cấp</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Tin tức</a></li>
                     </ul>
                     <div class="d-flex">
