@@ -45,6 +45,11 @@
                                 <i class="fa-solid fa-tags"></i> Khuyến Mãi
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-warning fw-bold" href="ShowroomController">
+                                <i class="fa-solid fa-car-side"></i> Showroom
+                            </a>
+                        </li>
                         <li class="nav-item"><a class="nav-link" href="#">Tin tức</a></li>
                     </ul>
                     <div class="d-flex">
