@@ -1,6 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:include page="includes/header.jsp"></jsp:include>
+<jsp:include page="includes/admin-header.jsp"></jsp:include>
 
     <div class="container my-5">
         <h3>Quản lý Chi nhánh Showroom</h3>
@@ -53,7 +53,7 @@
         </tbody>
     </table>
 
-  <div class="mt-5 mb-3 d-flex justify-content-between align-items-center border-top pt-4">
+    <div class="mt-5 mb-3 d-flex justify-content-between align-items-center border-top pt-4">
         <h5 class="text-secondary"><i class="fa-solid fa-trash-can"></i> Thùng Rác (Đã xóa)</h5>
         <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#trashSection">
             <i class="fa-solid fa-eye"></i> Hiện / Ẩn
@@ -78,12 +78,12 @@
                             <a href="ShowroomController?action=restore&id=${delShowroom.showroomID}" 
                                class="btn btn-success btn-sm fw-bold" 
                                onclick="return confirm('Khôi phục chi nhánh này?')">
-                               <i class="fa-solid fa-rotate-left"></i> Khôi phục
+                                <i class="fa-solid fa-rotate-left"></i> Khôi phục
                             </a>
                         </td>
                     </tr>
                 </c:forEach>
-                
+
                 <c:if test="${empty listDeleted}">
                     <tr><td colspan="3" class="text-center py-3 text-muted font-italic">Thùng rác hiện đang trống.</td></tr>
                 </c:if>
@@ -92,4 +92,4 @@
     </div>
 </div>
 
-<jsp:include page="includes/footer.jsp"></jsp:include>
+<jsp:include page="includes/admin-footer.jsp"></jsp:include>
