@@ -39,6 +39,17 @@
                         <li class="nav-item"><a class="nav-link" href="">Sản phẩm</a></li>
                         <li class="nav-item"><a class="nav-link text-warning" href="CategoryController">Quản lý danh mục</a></li>
                         <li class="nav-item"><a class="nav-link text-warning" href="SupplierController">Quản lý Nhà Cung Cấp</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link text-warning fw-bold" href="PromotionController">
+                                <i class="fa-solid fa-tags"></i> Khuyến Mãi
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-warning fw-bold" href="ShowroomController">
+                                <i class="fa-solid fa-car-side"></i> Showroom
+                            </a>
+                        </li>
                         <li class="nav-item"><a class="nav-link" href="#">Tin tức</a></li>
                     </ul>
                     <div class="d-flex">
