@@ -37,22 +37,18 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link active" href="home.jsp">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="">Sản phẩm</a></li>
-                        <li class="nav-item"><a class="nav-link text-warning" href="CategoryController">Quản lý danh mục</a></li>
-                        <li class="nav-item"><a class="nav-link text-warning" href="SupplierController">Quản lý Nhà Cung Cấp</a></li>
-                        <li class="nav-item"><a class="nav-link text-warning" href="PaymentMethodController">Phương thức thanh toán</a></li>
-                        <li class="nav-item">
-                            <a class="nav-link text-warning fw-bold" href="PromotionController">
-                                <i class="fa-solid fa-tags"></i> Khuyến Mãi
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-warning fw-bold" href="ShowroomController">
-                                <i class="fa-solid fa-car-side"></i> Showroom
-                            </a>
-                        </li>
+
                         <li class="nav-item"><a class="nav-link" href="#">Tin tức</a></li>
                     </ul>
+                     <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
+                        <li class="nav-item">
+                            <a class="btn btn-danger fw-bold me-4" href="admin-dashboard.jsp">
+                                <i class="fa-solid fa-user-shield"></i> VÀO TRANG QUẢN TRỊ
+                            </a>
+                        </li>
+                    </c:if>
                     <div class="d-flex">
+                        
                         <a href="login.jsp" class="btn btn-outline-light btn-sm me-2">
                             <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
                         </a>
@@ -60,6 +56,7 @@
                             <i class="fa-solid fa-user-plus"></i> Đăng ký
                         </a>
                     </div>
+                   
                 </div>
             </div>
         </nav>
