@@ -147,7 +147,7 @@
                             <td><span class="id-tag">#SUP-${sup.supplierID}</span></td>
                             <td class="text-start fw-bold">
                                 <div class="d-flex align-items-center">
-                                    <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary me-3"><i class="fa-solid fa-handshake"></i></div>
+                                    <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary me-3"></div>
                                     <span class="fs-5 text-dark">${sup.supplierName}</span>
                                 </div>
                             </td>
