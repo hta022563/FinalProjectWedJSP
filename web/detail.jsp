@@ -41,11 +41,27 @@
             
             <hr>
             <div class="d-grid gap-2">
-                <button class="btn btn-danger btn-lg"><i class="fa-solid fa-cart-shopping"></i> Đặt cọc ngay</button>
+               <a href="CartController?action=addToCart&productId=1&quantity=1&returnUrl=detail.jsp" class="btn btn-danger btn-lg">
+    <i class="fa-solid fa-cart-plus"></i> Đặt cọc ngay (Thêm vào giỏ)
+</a>
                 <button class="btn btn-outline-secondary"><i class="fa-solid fa-phone"></i> Liên hệ tư vấn</button>
             </div>
         </div>
     </div>
 </div>
+<%-- Bắt thông báo từ Controller --%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<c:if test="${not empty msg}">
+    <script>
+        Swal.fire({
+            title: 'Chốt đơn!',
+            text: '${msg}',
+            icon: 'success',
+            confirmButtonText: 'Hoàn Thành',
+            confirmButtonColor: '#dc3545'
+        });
+    </script>
+</c:if>
 <jsp:include page="includes/footer.jsp"></jsp:include>

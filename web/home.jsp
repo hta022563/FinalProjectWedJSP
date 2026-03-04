@@ -82,5 +82,17 @@
         </div>
     </div>
 </div>
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<c:if test="${not empty msg}">
+    <script>
+        Swal.fire({
+            title: 'Thành công!',
+            text: '${msg}',
+            icon: 'success',
+            confirmButtonText: 'Đóng',
+            confirmButtonColor: '#dc3545'
+        });
+    </script>
+</c:if>
 <jsp:include page="includes/footer.jsp"></jsp:include>
