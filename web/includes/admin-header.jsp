@@ -7,6 +7,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Dashboard - Car Store</title>
+        <link rel="icon" href="IMG/logo.jpg" type="image/webp">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
@@ -45,7 +46,7 @@
         <div class="sidebar">
             <a href="${pageContext.request.contextPath}/admin-dashboard.jsp" class="text-decoration-none">
                 <h4 class="text-center text-warning fw-bold mb-4">
-                    <i class="fa-solid fa-car"></i> F-AUTO ADMIN
+                    F-AUTO ADMIN
                 </h4>
             </a>
             <a href="${pageContext.request.contextPath}/CategoryController"><i class="fa-solid fa-list me-2"></i> Quản lý Danh mục</a>
