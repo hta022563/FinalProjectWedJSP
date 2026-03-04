@@ -1,135 +1,235 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
 
-<div class="container my-5">
-    <h3 class="text-uppercase border-bottom pb-2">
-        <i class="fa-solid fa-credit-card"></i> Quản lý Phương thức thanh toán
-    </h3>
+<style>
+    /* Nền tổng thể: Trắng sứ pha ánh bạc Mint */
+    body { 
+        background: linear-gradient(135deg, #f0fdf4 0%, #e2eeff 100%);
+        color: #2d3436;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
 
-    <c:if test="${not empty errorMessage}">
-        <div class="alert alert-danger text-center shadow-sm">
-            <i class="fa-solid fa-triangle-exclamation"></i> ${errorMessage}
+    /* BANNER CINEMATIC - Ảnh Audi R8 sang trọng trong đêm */
+    .banner-container {
+        height: 250px; border-radius: 24px; overflow: hidden; position: relative;
+        box-shadow: 0 20px 40px rgba(17, 153, 142, 0.15);
+    }
+    .banner-img {
+        width: 100%; height: 100%; object-fit: cover;
+        background-image: url('https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1920&q=80');
+        background-size: cover; background-position: center; filter: brightness(0.5);
+    }
+    .banner-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(11, 44, 30, 0.7) 100%);
+        display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+    }
+    
+    /* Chữ tiêu đề: Gradient Xanh lục bảo (Màu tiền tệ) */
+    .money-title {
+        background: linear-gradient(45deg, #11998e, #38ef7d);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        font-weight: 900; text-transform: uppercase; letter-spacing: 2px;
+        font-size: 3rem; margin-bottom: 5px;
+        text-shadow: 0 5px 15px rgba(56, 239, 125, 0.2);
+    }
+
+    /* Thẻ Aero Card Glassmorphism */
+    .aero-card {
+        background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px);
+        border: 1px solid rgba(17, 153, 142, 0.1); border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Input & Button phong cách Fintech */
+    .aero-input {
+        background: #ffffff !important; border: 1px solid #c8e6c9 !important;
+        border-radius: 14px !important; padding: 14px 18px; transition: all 0.3s ease;
+    }
+    .aero-input:focus { border-color: #11998e !important; box-shadow: 0 0 0 4px rgba(17, 153, 142, 0.1) !important; }
+
+    .btn-money-gradient {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border: none; color: #fff; font-weight: 700; border-radius: 14px; padding: 14px 30px;
+        box-shadow: 0 8px 20px rgba(17, 153, 142, 0.2); transition: all 0.3s ease;
+        text-transform: uppercase; letter-spacing: 1px;
+    }
+    .btn-money-gradient:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(17, 153, 142, 0.3); }
+
+    /* Bảng dữ liệu Premium (Xanh Mint nhạt) */
+    .aero-table thead th {
+        background: #f1fcf4; color: #11998e; font-size: 0.75rem;
+        text-transform: uppercase; letter-spacing: 1px; padding: 20px; border: none;
+    }
+    .aero-table td { padding: 25px 20px; border-bottom: 1px solid #e8f5e9; }
+    .aero-table tr:hover { background-color: rgba(56, 239, 125, 0.03); }
+
+    .id-tag {
+        background: #eafaf1; color: #11998e; padding: 6px 14px; border-radius: 10px;
+        font-weight: 800; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+        border: 1px solid rgba(17, 153, 142, 0.1);
+    }
+</style>
+
+<div class="container-fluid py-5 px-5">
+    
+    <div class="banner-container mb-5">
+        <div class="banner-img"></div>
+        <div class="banner-overlay">
+            <h1 class="money-title">Hệ Thống Thanh Toán</h1>
+            <p class="text-white-50 fs-5 fw-light m-0">F-AUTO | Tối ưu hóa dòng tiền và quản trị lợi nhuận</p>
+            <div class="mt-3 badge rounded-pill bg-white bg-opacity-20 px-4 py-2" style="backdrop-filter: blur(5px);">
+               <i class="fa-solid fa-clock me-2" style="color: #38ef7d;"></i> 
+<span id="digital-clock" class="fw-bold" 
+      style="color: #38ef7d; text-shadow: 0 0 15px rgba(56, 239, 125, 0.5); letter-spacing: 1px;">
+    00:00:00
+</span>
+            </div>
         </div>
-    </c:if>
+    </div>
 
-    <div class="my-4 p-4 bg-light border rounded shadow-sm">
+    <div class="aero-card p-4 mb-5 border-start border-success border-5">
+        <h5 class="fw-bold mb-4 d-flex align-items-center" style="color: #11998e;">
+            <span class="bg-success bg-opacity-10 p-2 rounded-3 me-3"><i class="fa-solid fa-sack-dollar text-success"></i></span>
+            Phát hành phương thức giao dịch mới
+        </h5>
         <form action="PaymentMethodController" method="POST">
             <input type="hidden" name="action" value="add"> 
-            <label class="form-label fw-bold">Thêm phương thức thanh toán mới:</label>
-            <div class="input-group" style="max-width: 600px;">
-                <input type="text" name="methodName" class="form-control" placeholder="Tiền mặt, VNPay, Thẻ tín dụng..." required>
-                <button class="btn btn-primary fw-bold" type="submit">
-                    <i class="fa-solid fa-plus"></i> Thêm mới
-                </button>
+            <div class="row g-4 align-items-end">
+                <div class="col-md-9">
+                    <label class="small fw-bold text-muted mb-2 text-uppercase">Danh xưng phương thức (VD: Chuyển khoản, VNPay...)</label>
+                    <input type="text" name="methodName" class="form-control aero-input" placeholder="Nhập tên phương thức..." required>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-money-gradient w-100 py-3 shadow-sm" type="submit">
+                        <i class="fa-solid fa-plus me-2"></i> THIẾT LẬP
+                    </button>
+                </div>
             </div>
         </form>
     </div>
 
-    <div class="card shadow-sm border-0">
-        <table class="table table-hover mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th style="width: 100px;">Mã ID</th>
-                    <th>Tên phương thức</th>
-                    <th style="width: 200px;" class="text-center">Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach items="${listPaymentMethod}" var="pm">
+    <div class="aero-card overflow-hidden shadow-lg border-0 mb-5">
+        <div class="table-responsive">
+            <table class="table aero-table align-middle text-center mb-0">
+                <thead>
                     <tr>
-                        <td class="align-middle text-secondary fw-bold">${pm.methodID}</td>
-                        <td class="align-middle fw-bold">${pm.methodName}</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-warning btn-sm text-dark fw-bold" 
-                                    data-bs-toggle="modal" data-bs-target="#editModal${pm.methodID}">
-                                <i class="fa-solid fa-pen"></i> Sửa
-                            </button>
-                            
-                            <a href="PaymentMethodController?action=delete&id=${pm.methodID}" 
-                               class="btn btn-danger btn-sm fw-bold" 
-                               onclick="return confirm('Bạn có chắc muốn ẩn phương thức này?')">
-                               <i class="fa-solid fa-trash"></i> Xóa
-                            </a>
-
-                            <div class="modal fade" id="editModal${pm.methodID}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-warning text-dark">
-                                            <h5 class="modal-title fw-bold">Sửa Phương Thức: ${pm.methodName}</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <form action="PaymentMethodController" method="POST">
-                                            <div class="modal-body text-start">
-                                                <input type="hidden" name="action" value="update">
-                                                <input type="hidden" name="id" value="${pm.methodID}">
-                                                
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Tên phương thức mới:</label>
-                                                    <input type="text" name="methodName" class="form-control" value="${pm.methodName}" required>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                <button type="submit" class="btn btn-success fw-bold">Lưu thay đổi</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </c:forEach>
-                <c:if test="${empty listPaymentMethod}">
-                    <tr>
-                        <td colspan="3" class="text-center py-4 text-muted font-italic">Không có phương thức nào đang hoạt động.</td>
-                    </tr>
-                </c:if>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="mt-5 mb-3 d-flex justify-content-between align-items-center border-top pt-4">
-        <h5 class="text-secondary"><i class="fa-solid fa-trash-arrow-up"></i> Thùng Rác (Đã ẩn)</h5>
-        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#trashSection">
-            <i class="fa-solid fa-eye"></i> Hiện / Ẩn Thùng Rác
-        </button>
-    </div>
-
-    <div class="collapse" id="trashSection">
-        <div class="card card-body bg-light border-0">
-            <table class="table table-sm table-bordered">
-                <thead class="table-secondary">
-                    <tr>
-                        <th style="width: 80px;">ID</th>
-                        <th>Tên (Đã ẩn)</th>
-                        <th style="width: 150px;" class="text-center">Hành động</th>
+                        <th style="width: 15%;">Mã Định Danh</th>
+                        <th class="text-start">Cổng Thanh Toán</th>
+                        <th style="width: 25%;">Trạng Thái</th>
+                        <th style="width: 20%;">Điều Khiển</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <c:forEach items="${listDeletedPaymentMethod}" var="delPM">
+                <tbody class="bg-white">
+                    <c:forEach items="${listPaymentMethod}" var="pm">
                         <tr>
-                            <td class="text-muted">${delPM.methodID}</td>
-                            <td><del class="text-muted">${delPM.methodName}</del></td>
-                            <td class="text-center">
-                                <a href="PaymentMethodController?action=restore&id=${delPM.methodID}" 
-                                   class="btn btn-success btn-sm fw-bold" 
-                                   onclick="return confirm('Khôi phục phương thức này?')">
-                                   <i class="fa-solid fa-rotate-left"></i> Khôi phục
-                                </a>
+                            <td><span class="id-tag">#PM-${pm.methodID}</span></td>
+                            <td class="text-start fw-bold">
+                                <div class="d-flex align-items-center">
+                                    <div class="p-2 rounded-3 bg-success bg-opacity-10 text-success me-3">
+                                        <c:choose>
+                                            <c:when test="${pm.methodName.toLowerCase().contains('mặt')}"><i class="fa-solid fa-hand-holding-dollar"></i></c:when>
+                                            <c:when test="${pm.methodName.toLowerCase().contains('thẻ')}"><i class="fa-solid fa-credit-card"></i></c:when>
+                                            <c:when test="${pm.methodName.toLowerCase().contains('pay')}"><i class="fa-solid fa-mobile-screen-button"></i></c:when>
+                                            <c:otherwise><i class="fa-solid fa-vault"></i></c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <span class="fs-5 text-dark">${pm.methodName}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-bold">
+                                    <i class="fa-solid fa-circle-check me-1"></i> ĐANG MỞ
+                                </span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3 me-2 border-0 fw-bold" 
+                                        data-bs-toggle="modal" data-bs-target="#editModalPM${pm.methodID}">SỬA</button>
+                                <a href="PaymentMethodController?action=delete&id=${pm.methodID}" 
+                                   class="btn btn-outline-danger btn-sm rounded-pill px-3 border-0 fw-bold" 
+                                   onclick="return confirm('Tạm ngưng cổng thanh toán này?')">DỪNG</a>
                             </td>
                         </tr>
                     </c:forEach>
-                    <c:if test="${empty listDeletedPaymentMethod}">
-                        <tr>
-                            <td colspan="3" class="text-center py-2 text-muted font-italic small">Thùng rác trống.</td>
-                        </tr>
-                    </c:if>
                 </tbody>
             </table>
         </div>
     </div>
 
+    <div class="mt-5 mb-4 d-flex justify-content-between align-items-center border-top border-success border-opacity-10 pt-4">
+        <h5 class="fw-bold text-muted text-uppercase" style="letter-spacing: 2px;"><i class="fa-solid fa-box-archive me-2"></i> Hồ sơ giao dịch đã đóng</h5>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill px-4 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#trashSection">Mở Archive</button>
+    </div>
+
+    <div class="collapse" id="trashSection">
+        <div class="aero-card p-0 overflow-hidden border-success border-opacity-10 mt-3">
+            <table class="table aero-table align-middle text-center mb-0">
+                <thead class="bg-success bg-opacity-10">
+                    <tr>
+                        <th style="width: 15%;">Mã ID</th>
+                        <th class="text-start">Cổng đã dừng</th>
+                        <th style="width: 20%;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    <c:forEach items="${listDeletedPaymentMethod}" var="delPM">
+                        <tr>
+                            <td><span class="id-tag bg-secondary bg-opacity-5 text-muted">#${delPM.methodID}</span></td>
+                            <td class="text-start text-muted"><del class="fw-bold">${delPM.methodName}</del></td>
+                            <td>
+                                <a href="PaymentMethodController?action=restore&id=${delPM.methodID}" 
+                                   class="btn btn-outline-success btn-sm rounded-pill px-4 border-0 fw-bold shadow-sm">
+                                   <i class="fa-solid fa-rotate-left"></i> KHÔI PHỤC
+                                </a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<c:forEach items="${listPaymentMethod}" var="pm">
+    <div class="modal fade" id="editModalPM${pm.methodID}" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content aero-card border-0 p-4" style="background: rgba(255,255,255,0.98);">
+                <form action="PaymentMethodController" method="POST">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="fw-bold fs-4 text-success">Hiệu chỉnh phương thức</h5>
+                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-start">
+                        <input type="hidden" name="action" value="update">
+                        <input type="hidden" name="id" value="${pm.methodID}">
+                        <div class="mb-4">
+                            <label class="fw-bold text-muted small mb-2 text-uppercase">Tên phương thức mới</label>
+                            <input type="text" name="methodName" class="form-control aero-input fw-bold" value="${pm.methodName}" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">ĐÓNG</button>
+                        <button type="submit" class="btn btn-money-gradient px-5 shadow-sm">LƯU THAY ĐỔI</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</c:forEach>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const clockEl = document.getElementById('digital-clock');
+        if (clockEl) {
+            clockEl.innerText = now.getHours().toString().padStart(2, '0') + ":" + 
+                               now.getMinutes().toString().padStart(2, '0') + ":" + 
+                               now.getSeconds().toString().padStart(2, '0');
+        }
+    }
+    setInterval(updateClock, 1000); updateClock();
+</script>
 
 <jsp:include page="includes/admin-footer.jsp"></jsp:include>
