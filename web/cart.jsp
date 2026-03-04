@@ -112,6 +112,9 @@
                         <button type="submit" class="btn btn-danger w-100 btn-lg fw-bold shadow-sm" ${empty cartItems ? 'disabled' : ''}>
                             XÁC NHẬN ĐẶT HÀNG
                         </button>
+                            <a href="OrderController?action=history" class="btn btn-info text-white fw-bold mb-3">
+    <i class="fa-solid fa-clipboard-list"></i> Xem Lịch sử mua hàng
+</a>
                     </form>
                 </div>
             </div>

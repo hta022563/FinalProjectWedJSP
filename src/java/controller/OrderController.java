@@ -5,17 +5,21 @@
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.OrderDAO;
+import model.OrderDTO;
 
 /**
  *
  * @author AngDeng
  */
+
+
 @WebServlet(name = "OrderController", urlPatterns = {"/OrderController"})
 public class OrderController extends HttpServlet {
 
@@ -28,20 +32,66 @@ public class OrderController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet OrderController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet OrderController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        request.setCharacterEncoding("UTF-8");
+
+        String action = request.getParameter("action");
+        model.OrderDAO orderDAO = new model.OrderDAO();
+
+        try {
+            int userId = 1; // User test
+            
+            if ("checkout".equals(action)) {
+                int methodId = 1; 
+                Integer promotionId = null; 
+                String shippingAddress = "Giao xe tại Showroom F-Auto";
+                boolean isSuccess = orderDAO.checkout(userId, methodId, promotionId, shippingAddress);
+                
+                if (isSuccess) {
+                    request.setAttribute("msg", "Ting ting! Chốt đơn siêu xe thành công!");
+                } else {
+                    request.setAttribute("error", "Lỗi: Giỏ hàng trống hoặc hệ thống đang bận!");
+                }
+                
+                List<model.OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
+                request.setAttribute("listOrders", listOrders);
+                request.getRequestDispatcher("order-history.jsp").forward(request, response);
+                
+            } else if ("history".equals(action)) {
+                List<model.OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
+                request.setAttribute("listOrders", listOrders);
+                request.getRequestDispatcher("order-history.jsp").forward(request, response);
+                
+            } else if ("detail".equals(action)) {
+                String orderIdStr = request.getParameter("id");
+                if (orderIdStr != null && !orderIdStr.isEmpty()) {
+                    int orderId = Integer.parseInt(orderIdStr);
+                    
+                    model.OrderDetailDAO detailDAO = new model.OrderDetailDAO();
+                    List<model.OrderDetailDTO> listDetails = detailDAO.getDetailsByOrderId(orderId);
+                    
+                    // Lấy Map chứa ID xe và Tên xe thật
+                    java.util.Map<Integer, String> productNames = new java.util.HashMap<>();
+                    for(model.OrderDetailDTO item : listDetails) {
+                        productNames.put(item.getProductID(), detailDAO.getProductName(item.getProductID()));
+                    }
+                    
+                    request.setAttribute("listDetails", listDetails);
+                    request.setAttribute("productNames", productNames); // Đẩy Map tên qua JSP
+                    request.setAttribute("orderId", orderId);
+                    request.getRequestDispatcher("order-detail.jsp").forward(request, response);
+                } else {
+                    response.sendRedirect("OrderController?action=history");
+                }
+            } else {
+                response.sendRedirect("home.jsp");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Hệ thống đang bảo trì!");
+            request.getRequestDispatcher("home.jsp").forward(request, response);
         }
     }
 

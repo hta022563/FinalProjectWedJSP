@@ -8,6 +8,8 @@ package model;
  *
  * @author AngDeng
  */
+
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -17,23 +19,25 @@ import javax.persistence.TypedQuery;
 import utils.JPAUtil;
 
 public class OrderDAO {
+    
     public boolean checkout(int userId, int methodId, Integer promotionId, String shippingAddress) {
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
 
         try {
             tx.begin();
+
             String cartJpql = "SELECT c FROM CartDTO c WHERE c.userID = :uid";
-            TypedQuery<CartDTO> cartQuery = em.createQuery(cartJpql, CartDTO.class);
-            cartQuery.setParameter("uid", userId);
-            CartDTO cart = cartQuery.getSingleResult();
+            CartDTO cart = em.createQuery(cartJpql, CartDTO.class)
+                             .setParameter("uid", userId)
+                             .getSingleResult();
+ 
             String itemJpql = "SELECT ci FROM CartItemDTO ci WHERE ci.cartID = :cid";
-            TypedQuery<CartItemDTO> itemQuery = em.createQuery(itemJpql, CartItemDTO.class);
-            itemQuery.setParameter("cid", cart.getCartID());
-            List<CartItemDTO> cartItems = itemQuery.getResultList();
-            if (cartItems.isEmpty()) {
-                return false; 
-            }
+            List<CartItemDTO> cartItems = em.createQuery(itemJpql, CartItemDTO.class)
+                                            .setParameter("cid", cart.getCartID())
+                                            .getResultList();
+            if (cartItems.isEmpty()) return false; 
+
             OrderDTO newOrder = new OrderDTO();
             newOrder.setUserID(userId);
             newOrder.setMethodID(methodId);
@@ -44,29 +48,49 @@ public class OrderDAO {
             newOrder.setTotalAmount(BigDecimal.ZERO);
             em.persist(newOrder); 
             em.flush(); 
+
             BigDecimal total = BigDecimal.ZERO;
             for (CartItemDTO item : cartItems) {
+                BigDecimal currentPrice = BigDecimal.ZERO;
+                try {
+                    Object priceObj = em.createNativeQuery("SELECT Price FROM Product WHERE ProductID = ?")
+                                        .setParameter(1, item.getProductID())
+                                        .getSingleResult();
+                    currentPrice = new BigDecimal(priceObj.toString());
+                } catch (Exception e) {
+                    System.out.println("Lỗi lấy giá!");
+                }
                 OrderDetailDTO orderDetail = new OrderDetailDTO();
                 orderDetail.setOrderID(newOrder.getOrderID()); 
                 orderDetail.setProductID(item.getProductID());
                 orderDetail.setQuantity(item.getQuantity());
-                BigDecimal currentPrice = new BigDecimal("1000000"); 
                 orderDetail.setUnitPrice(currentPrice);           
                 em.persist(orderDetail); 
+
+              
                 BigDecimal itemTotal = currentPrice.multiply(new BigDecimal(item.getQuantity()));
                 total = total.add(itemTotal);
-                em.remove(item); 
+                em.remove(item);
             }
+            
             newOrder.setTotalAmount(total);
             em.merge(newOrder);
             tx.commit(); 
             return true;
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
+            if (tx.isActive()) tx.rollback();
             e.printStackTrace();
             return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<OrderDTO> getOrdersByUserId(int userId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String jpql = "SELECT o FROM OrderDTO o WHERE o.userID = :uid ORDER BY o.orderDate DESC";
+            return em.createQuery(jpql, OrderDTO.class).setParameter("uid", userId).getResultList();
         } finally {
             em.close();
         }

@@ -20,17 +20,13 @@ public class CartItemDAO {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            // 1. Gọi CartDAO để tìm xem ông khách này đang xài cái giỏ số mấy
             CartDAO cartDAO = new CartDAO();
             CartDTO cart = cartDAO.getCartByUserId(userId);
-
-            // 2. Nhét chiếc xe vào đúng cái giỏ đó
             CartItemDTO item = new CartItemDTO();
             item.setCartID(cart.getCartID());
             item.setProductID(productId);
             item.setQuantity(quantity);
             em.persist(item);
-
             tx.commit();
             return true;
         } catch (Exception e) {

@@ -72,7 +72,9 @@
                         <a href="register.jsp" class="btn btn-warning btn-sm fw-bold me-3">
                             <i class="fa-solid fa-user-plus"></i> Đăng ký
                         </a>
-                        
+                        <a href="OrderController?action=history" class="btn btn-outline-info btn-sm me-2 border-2 text-white">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn
+                        </a>
                         <a href="CartController?action=viewCart" class="btn btn-outline-light btn-sm border-2">
                             <i class="fa-solid fa-cart-shopping"></i> Giỏ hàng
                         </a>
