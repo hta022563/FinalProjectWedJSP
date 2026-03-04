@@ -35,7 +35,7 @@
             }
             .content {
                 flex-grow: 1; /* Phần nội dung chiếm phần còn lại */
-                padding: 20px;
+                padding: 0px;
                 background-color: #f8f9fa;
             }
         </style>

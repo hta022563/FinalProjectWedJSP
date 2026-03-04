@@ -59,20 +59,20 @@
             border: 1px solid rgba(212, 175, 55, 0.15);
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-           
+
         }
 
         /* Ô nhập liệu Bespoke */
         .wood-input {
-       
-        border: 1px solid #5d4037 !important;
-        border-radius: 12px !important; 
-        padding: 14px 18px; 
-        color:black !important; /* Ép chữ nhập vào phải là màu trắng */
-        transition: all 0.3s ease;
-    }
+
+            border: 1px solid #5d4037 !important;
+            border-radius: 12px !important;
+            padding: 14px 18px;
+            color:black !important; /* Ép chữ nhập vào phải là màu trắng */
+            transition: all 0.3s ease;
+        }
         .wood-input:focus {
-            
+
             border-color: #d4af37 !important;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.1) !important;
         }
@@ -130,8 +130,21 @@
             <div class="banner-overlay">
                 <h1 class="showroom-title">Hệ Thống Showroom</h1>
                 <p class="text-white-50 fs-5 fw-light m-0">F-AUTO | Không gian nghệ thuật trưng bày đẳng cấp</p>
-                <div class="mt-3 badge rounded-pill bg-white bg-opacity-10 px-4 py-2" style="backdrop-filter: blur(5px);">
-                    <i class="fa-solid fa-clock me-2 text-warning"></i> <span id="digital-clock" class="fw-bold text-white">00:00:00</span>
+                <div class="mt-3 badge rounded-pill px-4 py-2 border border-warning border-opacity-25 shadow-lg" 
+                     style="background: rgba(255, 193, 7, 0.12) !important;
+                     backdrop-filter: blur(15px);
+                     border: 1px solid rgba(255, 193, 7, 0.3) !important;
+                     box-shadow: 0 8px 32px 0 rgba(255, 193, 7, 0.2);">
+
+                    <i class="fa-solid fa-store me-2" style="color: #ffc107;"></i> 
+
+                    <span id="digital-clock" class="fw-bold" 
+                          style="color: #ffffff;
+                          text-shadow: 0 0 12px rgba(255, 193, 7, 0.8);
+                          letter-spacing: 2px;
+                          font-family: 'JetBrains Mono', monospace;">
+                        00:00:00
+                    </span>
                 </div>
             </div>
         </div>

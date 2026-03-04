@@ -77,11 +77,22 @@
             <h1 class="supplier-main-title">Hệ Thống Nhà Cung Cấp</h1>
             <p class="text-white-50 fs-5 fw-light m-0">F-AUTO | Quản trị mạng lưới đối tác chiến lược toàn cầu</p>
             
-            <div class="mt-3 badge rounded-pill px-4 py-2 border border-info border-opacity-25" 
-                 style="background: rgba(0, 210, 255, 0.15); backdrop-filter: blur(10px);">
-                <i class="fa-solid fa-clock me-2" style="color: #00d2ff;"></i> 
-                <span id="digital-clock" class="fw-bold text-white">00:00:00</span>
-            </div>
+         <div class="mt-3 badge rounded-pill px-4 py-2 border border-info border-opacity-25 shadow-lg" 
+     style="background: rgba(0, 184, 212, 0.15) !important; 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(0, 229, 255, 0.3) !important;
+            box-shadow: 0 8px 32px 0 rgba(0, 184, 212, 0.3);">
+    
+    <i class="fa-solid fa-truck-fast me-2" style="color: #00e5ff;"></i> 
+    
+    <span id="digital-clock" class="fw-bold" 
+          style="color: #ffffff; 
+                 text-shadow: 0 0 12px rgba(0, 229, 255, 0.8); 
+                 letter-spacing: 2px; 
+                 font-family: 'JetBrains Mono', monospace;">
+        00:00:00
+    </span>
+</div>
         </div>
     </div>
 
