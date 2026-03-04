@@ -82,9 +82,22 @@
         <div class="banner-overlay">
             <h1 class="promo-main-title">Chương Trình Khuyến Mãi</h1>
             <p class="text-white-50 fs-5 fw-light m-0">F-AUTO | Kích cầu mua sắm - Tri ân khách hàng đặc quyền</p>
-            <div class="mt-3 badge rounded-pill bg-white bg-opacity-20 px-4 py-2" style="backdrop-filter: blur(5px);">
-                 <i class="fa-solid fa-clock me-2 text-dark"></i> <span id="digital-clock" class="fw-bold text-muted">00:00:00</span>
-            </div>
+            <div class="mt-3 badge rounded-pill px-4 py-2 border border-danger border-opacity-25 shadow-lg" 
+     style="background: rgba(255, 65, 108, 0.12) !important; 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255, 75, 43, 0.25) !important;
+            box-shadow: 0 8px 25px 0 rgba(214, 48, 49, 0.3);">
+    
+    <i class="fa-solid fa-fire-flame-curved me-2" style="color: #ff4b2b;"></i> 
+    
+    <span id="digital-clock" class="fw-bold" 
+          style="color: #ffffff; 
+                 text-shadow: 0 0 12px rgba(255, 65, 108, 0.8); 
+                 letter-spacing: 2px; 
+                 font-family: 'JetBrains Mono', monospace;">
+        00:00:00
+    </span>
+</div>
         </div>
     </div>
 
