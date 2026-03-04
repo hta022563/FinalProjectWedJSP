@@ -50,7 +50,7 @@
                     <h5 class="text-danger fw-bold">$200,000</h5>
                 </div>
                 <div class="card-footer bg-white border-0 text-center pb-3">
-                    <a href="detail.jsp" class="btn btn-outline-dark w-100">Xem chi tiết</a>
+                   <a href="detail.jsp?id=1" class="btn btn-outline-dark w-100">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
                     <h5 class="text-danger fw-bold">$180,000</h5>
                 </div>
                 <div class="card-footer bg-white border-0 text-center pb-3">
-                    <a href="detail.jsp" class="btn btn-outline-dark w-100">Xem chi tiết</a>
+                    <a href="detail.jsp?id=2" class="btn btn-outline-dark w-100">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@
                     <h5 class="text-danger fw-bold">$65,000</h5>
                 </div>
                 <div class="card-footer bg-white border-0 text-center pb-3">
-                    <a href="detail.jsp" class="btn btn-outline-dark w-100">Xem chi tiết</a>
+                   <a href="detail.jsp?id=3" class="btn btn-outline-dark w-100">Xem chi tiết</a>
                 </div>
             </div>
         </div>
