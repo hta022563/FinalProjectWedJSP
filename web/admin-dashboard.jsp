@@ -386,7 +386,7 @@ window.onload = function() {
             plugins: {legend: {position: 'bottom', labels: {color: '#94a3b8', font: {family: 'Inter', size: 12}}}}
         }
     });
-}
+};
 </script>
 
 <jsp:include page="includes/admin-footer.jsp"></jsp:include>
