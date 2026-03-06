@@ -23,21 +23,16 @@ public class OrderDAO {
     public boolean checkout(int userId, int methodId, Integer promotionId, String shippingAddress) {
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
-
         try {
             tx.begin();
-
             String cartJpql = "SELECT c FROM CartDTO c WHERE c.userID = :uid";
-            CartDTO cart = em.createQuery(cartJpql, CartDTO.class)
-                             .setParameter("uid", userId)
-                             .getSingleResult();
- 
+            CartDTO cart = em.createQuery(cartJpql, CartDTO.class).setParameter("uid", userId).getSingleResult();
+            
             String itemJpql = "SELECT ci FROM CartItemDTO ci WHERE ci.cartID = :cid";
-            List<CartItemDTO> cartItems = em.createQuery(itemJpql, CartItemDTO.class)
-                                            .setParameter("cid", cart.getCartID())
-                                            .getResultList();
-            if (cartItems.isEmpty()) return false; 
-
+            List<CartItemDTO> cartItems = em.createQuery(itemJpql, CartItemDTO.class).setParameter("cid", cart.getCartID()).getResultList();
+            
+            if (cartItems.isEmpty()) { return false; }
+            
             OrderDTO newOrder = new OrderDTO();
             newOrder.setUserID(userId);
             newOrder.setMethodID(methodId);
@@ -48,26 +43,22 @@ public class OrderDAO {
             newOrder.setTotalAmount(BigDecimal.ZERO);
             em.persist(newOrder); 
             em.flush(); 
-
+            
             BigDecimal total = BigDecimal.ZERO;
             for (CartItemDTO item : cartItems) {
                 BigDecimal currentPrice = BigDecimal.ZERO;
                 try {
-                    Object priceObj = em.createNativeQuery("SELECT Price FROM Product WHERE ProductID = ?")
-                                        .setParameter(1, item.getProductID())
-                                        .getSingleResult();
+                    Object priceObj = em.createNativeQuery("SELECT Price FROM Product WHERE ProductID = ?").setParameter(1, item.getProductID()).getSingleResult();
                     currentPrice = new BigDecimal(priceObj.toString());
-                } catch (Exception e) {
-                    System.out.println("Lỗi lấy giá!");
-                }
+                } catch (Exception ex) {}
+
                 OrderDetailDTO orderDetail = new OrderDetailDTO();
                 orderDetail.setOrderID(newOrder.getOrderID()); 
                 orderDetail.setProductID(item.getProductID());
                 orderDetail.setQuantity(item.getQuantity());
                 orderDetail.setUnitPrice(currentPrice);           
                 em.persist(orderDetail); 
-
-              
+                
                 BigDecimal itemTotal = currentPrice.multiply(new BigDecimal(item.getQuantity()));
                 total = total.add(itemTotal);
                 em.remove(item);
@@ -79,7 +70,6 @@ public class OrderDAO {
             return true;
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
-            e.printStackTrace();
             return false;
         } finally {
             em.close();
@@ -91,6 +81,24 @@ public class OrderDAO {
         try {
             String jpql = "SELECT o FROM OrderDTO o WHERE o.userID = :uid ORDER BY o.orderDate DESC";
             return em.createQuery(jpql, OrderDTO.class).setParameter("uid", userId).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public boolean deleteOrder(int orderId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.createNativeQuery("DELETE FROM OrderDetail WHERE OrderID = ?").setParameter(1, orderId).executeUpdate();
+            OrderDTO order = em.find(OrderDTO.class, orderId);
+            if (order != null) { em.remove(order); }
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            return false;
         } finally {
             em.close();
         }
