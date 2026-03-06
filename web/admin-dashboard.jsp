@@ -269,7 +269,7 @@
                                             <c:otherwise>      
                                                 <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-circle me-3"><i class="fa-solid fa-terminal"></i></div>
                                                     <c:set var="titleColor" value="text-muted" />
-                                                    <c:set var="rightTag"><span class="text-danger small">#${act.referenceCode}</span></c:set>
+                                                    <c:set var="rightTag"><span class="text-muted small">#${act.referenceCode}</span></c:set>
                                             </c:otherwise>
                                         </c:choose> 
 

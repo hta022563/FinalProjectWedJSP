@@ -74,7 +74,7 @@ public class OrderController extends HttpServlet {
 
                             String title = "Thanh toán thành công đơn hàng #" + newOrder.getOrderID(); // Hoặc getOrderId() tùy Hảo đặt tên
                             String refCode = "ORD-" + newOrder.getOrderID();
-                            // Sửa getTotalPrice() thành hàm lấy tổng tiền thực tế trong OrderDTO của Hảo
+                           
                           Double amount = newOrder.getTotalAmount().doubleValue();
                             // Ghi log xuống Database
                             actDAO.logActivity("ORDER", title, "User ID: " + userId, refCode, amount);
