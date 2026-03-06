@@ -1,9 +1,3 @@
-<%-- 
-    Document   : header
-    Created on : Jan 16, 2026, 10:19:19 AM
-    Author     : AngDeng
---%>
-
 <%-- File: web/includes/header.jsp --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -13,6 +7,7 @@
     try {
         CartDAO hCartDAO = new CartDAO();
         CartItemDAO hItemDAO = new CartItemDAO();
+        // Giả sử đang fix cứng UserId = 1 để test
         CartDTO hCart = hCartDAO.getCartByUserId(1); 
         if(hCart != null) {
             List<CartItemDTO> hItems = hItemDAO.getCartItems(hCart.getCartID());
@@ -50,10 +45,14 @@
                 <a class="navbar-brand d-flex align-items-center text-decoration-none" href="home.jsp">
                     <span class="luxury-logo">F-AUTO</span>
                 </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 <div class="collapse navbar-collapse" id="navContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link active" href="home.jsp">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
+                        <%-- Kiểm tra Admin --%>
                         <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
                             <li class="nav-item ms-3">
                                 <a class="btn btn-danger fw-bold" href="admin-dashboard.jsp">
@@ -62,16 +61,19 @@
                             </li>
                         </c:if>
                     </ul>
+                    
                     <div class="d-flex align-items-center">
                         <a href="login.jsp" class="btn btn-outline-light btn-sm me-2"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</a>
                         <a href="register.jsp" class="btn btn-warning btn-sm fw-bold me-3"><i class="fa-solid fa-user-plus"></i> Đăng ký</a>
                         
+                        <%-- Giỏ hàng với Badge số lượng --%>
                         <a href="CartController?action=viewCart" class="btn btn-light btn-sm me-2 fw-bold">
                             <i class="fa-solid fa-cart-shopping text-dark"></i> <span class="text-dark">Giỏ hàng</span> 
                             <c:if test="${cartBadge > 0}">
                                 <span class="badge bg-danger rounded-pill ms-1 border border-light">${cartBadge}</span>
                             </c:if>
                         </a>
+                        
                         <a href="OrderController?action=history" class="btn btn-outline-info btn-sm border-2 text-white">
                             <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn
                         </a>

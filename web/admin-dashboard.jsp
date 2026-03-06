@@ -369,7 +369,7 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
-
+window.onload = function() {
     const ctx = document.getElementById('inventoryChart').getContext('2d');
     new Chart(ctx, {
         type: 'doughnut',
@@ -382,10 +382,11 @@
                 }]
         },
         options: {
-            responsive: true, maintainAspectRatio: false, cutout: '80%',
+            responsive: true, maintainAspectRatio: false, cutout: '75%',
             plugins: {legend: {position: 'bottom', labels: {color: '#94a3b8', font: {family: 'Inter', size: 12}}}}
         }
     });
+};
 </script>
 
 <jsp:include page="includes/admin-footer.jsp"></jsp:include>
