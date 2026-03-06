@@ -14,29 +14,28 @@ import utils.JPAUtil;
 
 public class OrderDetailDAO {
 
-    public List<OrderDetailDTO> getDetailsByOrderId(int orderId) {
+   public List<OrderDetailDTO> getDetailsByOrderId(int orderId) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             String jpql = "SELECT od FROM OrderDetailDTO od WHERE od.orderID = :oid";
-            return em.createQuery(jpql, OrderDetailDTO.class)
-                     .setParameter("oid", orderId)
-                     .getResultList();
+            return em.createQuery(jpql, OrderDetailDTO.class).setParameter("oid", orderId).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         } finally {
-            em.close();
+            if (em != null && em.isOpen()) { em.close(); }
         }
     }
 
     public String getProductName(int productId) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            Object nameObj = em.createNativeQuery("SELECT ProductName FROM Product WHERE ProductID = ?")
-                               .setParameter(1, productId)
-                               .getSingleResult();
+            Object nameObj = em.createNativeQuery("SELECT ProductName FROM Product WHERE ProductID = ?").setParameter(1, productId).getSingleResult();
             return nameObj.toString();
         } catch (Exception e) {
-            return "Xe sang mã số " + productId;
+            return "Siêu xe mã số #" + productId;
         } finally {
-            em.close();
+            if (em != null && em.isOpen()) { em.close(); }
         }
     }
 }

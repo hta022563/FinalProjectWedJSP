@@ -37,6 +37,7 @@ public class CartItemDAO {
             em.close();
         }
     }
+
     public List<CartItemDTO> getCartItems(int cartId) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -55,6 +56,29 @@ public class CartItemDAO {
             tx.begin();
             CartItemDTO item = em.find(CartItemDTO.class, cartItemId);
             if (item != null) em.remove(item);
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+    public boolean updateQuantity(int cartItemId, int newQuantity) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            CartItemDTO item = em.find(CartItemDTO.class, cartItemId);
+            if (item != null) {
+                if (newQuantity > 0) {
+                    item.setQuantity(newQuantity);
+                    em.merge(item);
+                } else {
+                    em.remove(item);
+                }
+            }
             tx.commit();
             return true;
         } catch (Exception e) {
