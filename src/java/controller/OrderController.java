@@ -4,7 +4,9 @@
  */
 package controller;
 
+import model.ActivityDAO; // Hoặc thư mục chứa ActivityDAO của Hảo
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +26,6 @@ import model.OrderDetailDTO;
  *
  * @author AngDeng
  */
-
-
 @WebServlet(name = "OrderController", urlPatterns = {"/OrderController"})
 public class OrderController extends HttpServlet {
 
@@ -38,7 +38,7 @@ public class OrderController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
@@ -47,27 +47,57 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
 
         try {
             int userId = 1; // User test
-            
+
             if ("checkout".equals(action)) {
-                int methodId = 1; 
+                int methodId = 1;
                 Integer promotionId = null;
                 String shippingAddress = "Giao xe tại Showroom F-Auto";
+
+                // BƯỚC 1: Xử lý nghiệp vụ chính
                 boolean isSuccess = orderDAO.checkout(userId, methodId, promotionId, shippingAddress);
-                
+
                 if (isSuccess) {
                     request.setAttribute("msg", "Ting ting! Chốt đơn siêu xe thành công!");
+
+                    // ========================================================
+                    // 🚀 BƯỚC 2: KỸ THUẬT GHI VẾT (LOGGING) TỰ ĐỘNG
+                    // ========================================================
+                    try {
+                        ActivityDAO actDAO = new ActivityDAO();
+
+                        // Vì hàm checkout không trả về ID đơn hàng, ta sẽ kéo list đơn hàng mới nhất của User này lên
+                        List<OrderDTO> recentOrders = orderDAO.getOrdersByUserId(userId);
+
+                        if (recentOrders != null && !recentOrders.isEmpty()) {
+                            // Lấy đơn hàng trên cùng (mới nhất vừa được tạo)
+                            OrderDTO newOrder = recentOrders.get(0);
+
+                            String title = "Thanh toán thành công đơn hàng #" + newOrder.getOrderID(); // Hoặc getOrderId() tùy Hảo đặt tên
+                            String refCode = "ORD-" + newOrder.getOrderID();
+                            // Sửa getTotalPrice() thành hàm lấy tổng tiền thực tế trong OrderDTO của Hảo
+                          Double amount = newOrder.getTotalAmount().doubleValue();
+                            // Ghi log xuống Database
+                            actDAO.logActivity("ORDER", title, "User ID: " + userId, refCode, amount);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Lỗi ghi log hệ thống: " + e.getMessage());
+                    }
+                    // ========================================================
+
                 } else {
                     request.setAttribute("error", "Lỗi: Giỏ hàng trống hoặc hệ thống đang bận!");
                 }
+
+                // BƯỚC 3: Đẩy ra giao diện Lịch sử đặt hàng
                 List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
                 request.setAttribute("listOrders", listOrders);
                 request.getRequestDispatcher("order-history.jsp").forward(request, response);
-                
+
             } else if ("history".equals(action)) {
                 List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
                 request.setAttribute("listOrders", listOrders);
                 request.getRequestDispatcher("order-history.jsp").forward(request, response);
-                
+
             } else if ("detail".equals(action)) {
                 String orderIdStr = request.getParameter("id");
                 if (orderIdStr != null && !orderIdStr.isEmpty()) {
@@ -75,9 +105,9 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
                     OrderDetailDAO detailDAO = new OrderDetailDAO();
                     List<OrderDetailDTO> listDetails = detailDAO.getDetailsByOrderId(orderId);
                     Map<Integer, String> productNames = new HashMap<>();
-                    for(OrderDetailDTO item : listDetails) {
+                    for (OrderDetailDTO item : listDetails) {
                         productNames.put(item.getProductID(), detailDAO.getProductName(item.getProductID()));
-                    }                   
+                    }
                     request.setAttribute("listDetails", listDetails);
                     request.setAttribute("productNames", productNames);
                     request.setAttribute("orderId", orderId);
@@ -85,7 +115,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
                 } else {
                     response.sendRedirect("OrderController?action=history");
                 }
-                
+
             } else if ("delete".equals(action)) {
                 String orderIdStr = request.getParameter("id");
                 if (orderIdStr != null && !orderIdStr.isEmpty()) {
@@ -98,10 +128,10 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
                 List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
                 request.setAttribute("listOrders", listOrders);
                 request.getRequestDispatcher("order-history.jsp").forward(request, response);
-                
+
             } else {
                 response.sendRedirect("home.jsp");
-            }           
+            }
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Hệ thống đang bảo trì!");
