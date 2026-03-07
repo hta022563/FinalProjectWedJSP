@@ -2,7 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
-
+ <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
     /* Nền tổng thể: Trắng sứ pha ánh hồng ngoại nhẹ */
     body { 
@@ -31,6 +31,7 @@
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         font-weight: 900; text-transform: uppercase; letter-spacing: 3px;
         font-size: 3.5rem; margin-bottom: 5px;
+        font-family: 'Be Vietnam Pro', sans-serif !important;
         text-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
     }
 
