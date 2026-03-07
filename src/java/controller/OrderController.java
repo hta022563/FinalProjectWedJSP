@@ -60,30 +60,43 @@ public class OrderController extends HttpServlet {
                     request.setAttribute("msg", "Ting ting! Chốt đơn siêu xe thành công!");
 
                     // ========================================================
-                    // 🚀 BƯỚC 2: KỸ THUẬT GHI VẾT (LOGGING) TỰ ĐỘNG
+                    // 🚀 BƯỚC 2: KỸ THUẬT GHI VẾT (LOGGING) TỰ ĐỘNG - VERSION PRO
                     // ========================================================
                     try {
                         ActivityDAO actDAO = new ActivityDAO();
+                        OrderDetailDAO detailDAO = new OrderDetailDAO(); // Gọi thêm DAO chi tiết để lấy tên xe
 
-                        // Vì hàm checkout không trả về ID đơn hàng, ta sẽ kéo list đơn hàng mới nhất của User này lên
+                        // Lấy danh sách đơn hàng mới nhất để truy xuất ID vừa tạo
                         List<OrderDTO> recentOrders = orderDAO.getOrdersByUserId(userId);
 
                         if (recentOrders != null && !recentOrders.isEmpty()) {
-                            // Lấy đơn hàng trên cùng (mới nhất vừa được tạo)
                             OrderDTO newOrder = recentOrders.get(0);
 
-                            String title = "Thanh toán thành công đơn hàng #" + newOrder.getOrderID(); // Hoặc getOrderId() tùy Hảo đặt tên
+                            // 1. Lấy danh sách chi tiết của đơn hàng này
+                            List<OrderDetailDTO> details = detailDAO.getDetailsByOrderId(newOrder.getOrderID());
+
+                            // 2. Dùng StringBuilder để gom tên tất cả xe khách vừa mua
+                            StringBuilder carNames = new StringBuilder();
+                            for (int i = 0; i < details.size(); i++) {
+                                String name = detailDAO.getProductName(details.get(i).getProductID());
+                                carNames.append(name);
+                                if (i < details.size() - 1) {
+                                    carNames.append(", "); // Thêm dấu phẩy nếu mua nhiều xe
+                                }
+                            }
+
+                            // 3. Tiêu đề giờ đây sẽ hiển thị tên xe thực tế thay vì chỉ hiện mã số!
+                            String title = "Đặt hàng thành công: " + carNames.toString();
                             String refCode = "ORD-" + newOrder.getOrderID();
-                           
-                          Double amount = newOrder.getTotalAmount().doubleValue();
+                            Double amount = newOrder.getTotalAmount().doubleValue();
+
                             // Ghi log xuống Database
                             actDAO.logActivity("ORDER", title, "User ID: " + userId, refCode, amount);
                         }
                     } catch (Exception e) {
-                        System.out.println("Lỗi ghi log hệ thống: " + e.getMessage());
+                        System.out.println("Lỗi ghi log chi tiết: " + e.getMessage());
                     }
                     // ========================================================
-
                 } else {
                     request.setAttribute("error", "Lỗi: Giỏ hàng trống hoặc hệ thống đang bận!");
                 }

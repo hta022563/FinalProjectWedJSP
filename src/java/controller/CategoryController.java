@@ -20,6 +20,7 @@ public class CategoryController extends HttpServlet {
 
         ProductCategoryDAO dao = new ProductCategoryDAO();
         String action = request.getParameter("action");
+        
 
         try {
             if ("add".equals(action)) {

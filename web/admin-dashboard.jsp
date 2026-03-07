@@ -496,5 +496,24 @@
         });
     };
 </script>
+<script>
+    function refreshLogs() {
+        // Gọi Servlet với tham số type=ajax
+        fetch('DashboardController?type=ajax')
+            .then(response => response.text())
+            .then(html => {
+                // Tìm đến cái div chứa danh sách và thay ruột của nó
+                const feedList = document.querySelector('.feed-list');
+                // Nếu không bị lỗi "Mất kết nối", thì mới cập nhật
+                if (html.trim() !== "") {
+                    feedList.innerHTML = html;
+                }
+            })
+            .catch(err => console.warn('Lỗi auto-reload:', err));
+    }
+
+    // Tự động chạy mỗi 5 giây (5000ms)
+    setInterval(refreshLogs, 5000);
+</script>
 
 <jsp:include page="includes/admin-footer.jsp"></jsp:include>
