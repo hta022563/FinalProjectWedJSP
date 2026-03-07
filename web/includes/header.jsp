@@ -7,7 +7,7 @@
     try {
         CartDAO hCartDAO = new CartDAO();
         CartItemDAO hItemDAO = new CartItemDAO();
-        // Giả sử đang fix cứng UserId = 1 để test
+        // Giả sử đang fix cứng UserId = 1 để test (Sau này bạn có thể thay bằng ID của sessionScope.user)
         CartDTO hCart = hCartDAO.getCartByUserId(1); 
         if(hCart != null) {
             List<CartItemDTO> hItems = hItemDAO.getCartItems(hCart.getCartID());
@@ -37,6 +37,15 @@
                 animation: shine 4s linear infinite;
             }
             @keyframes shine { to { background-position: 200% center; } }
+            
+            /* Căn chỉnh text tên người dùng cho đẹp */
+            .user-greeting {
+                color: #f8f9fa;
+                font-size: 0.95rem;
+                padding-right: 15px;
+                border-right: 1px solid #6c757d;
+                margin-right: 15px;
+            }
         </style>
     </head>
     <body class="d-flex flex-column min-vh-100">
@@ -52,10 +61,11 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link active" href="home.jsp">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
+                        
                         <%-- Kiểm tra Admin --%>
                         <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
                             <li class="nav-item ms-3">
-                                <a class="btn btn-danger fw-bold" href="admin-dashboard.jsp">
+                                <a class="btn btn-danger fw-bold" href="DashboardController">
                                     <i class="fa-solid fa-user-shield"></i> VÀO TRANG QUẢN TRỊ
                                 </a>
                             </li>
@@ -63,8 +73,26 @@
                     </ul>
                     
                     <div class="d-flex align-items-center">
-                        <a href="login.jsp" class="btn btn-outline-light btn-sm me-2"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</a>
-                        <a href="register.jsp" class="btn btn-warning btn-sm fw-bold me-3"><i class="fa-solid fa-user-plus"></i> Đăng ký</a>
+                        
+                        <%-- KIỂM TRA ĐĂNG NHẬP Ở ĐÂY --%>
+                        <c:choose>
+                            <%-- NẾU ĐÃ ĐĂNG NHẬP --%>
+                            <c:when test="${not empty sessionScope.user}">
+                                <div class="user-greeting">
+                                    <i class="fa-solid fa-user-circle text-warning"></i> 
+                                    Xin chào, <span class="fw-bold">${sessionScope.user.fullName}</span>
+                                </div>
+                                <a href="UserController?action=logout" class="btn btn-outline-danger btn-sm me-3 fw-bold">
+                                    <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                                </a>
+                            </c:when>
+                            
+                            <%-- NẾU CHƯA ĐĂNG NHẬP --%>
+                            <c:otherwise>
+                                <a href="login.jsp" class="btn btn-outline-light btn-sm me-2"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</a>
+                                <a href="register.jsp" class="btn btn-warning btn-sm fw-bold me-3"><i class="fa-solid fa-user-plus"></i> Đăng ký</a>
+                            </c:otherwise>
+                        </c:choose>
                         
                         <%-- Giỏ hàng với Badge số lượng --%>
                         <a href="CartController?action=viewCart" class="btn btn-light btn-sm me-2 fw-bold">
