@@ -74,10 +74,7 @@
 
            <a href="${pageContext.request.contextPath}/UserController?action=logout" class="text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất</a>
 
-            <a href="UserController?action=logout" class="text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất</a>
-
-
-            <a href="UserController?action=logout" class="text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất</a>
+         
 
         </div>
 
