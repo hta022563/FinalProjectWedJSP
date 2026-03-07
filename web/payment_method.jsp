@@ -205,7 +205,7 @@
                                 </span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3 me-2 border-0 fw-bold" 
+                               <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3 me-2 border-0 fw-bold" 
                                         data-bs-toggle="modal" data-bs-target="#editModalPM${pm.methodID}">SỬA</button>
                                 <a href="PaymentMethodController?action=delete&id=${pm.methodID}" 
                                    class="btn btn-outline-danger btn-sm rounded-pill px-3 border-0 fw-bold" 
