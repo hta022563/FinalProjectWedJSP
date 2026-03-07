@@ -1,13 +1,6 @@
-<%-- 
-    Document   : home
-    Created on : Jan 16, 2026, 10:17:41 AM
-    Author     : AngDeng
---%>
-
 <%-- File: web/home.jsp --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <jsp:include page="includes/header.jsp"></jsp:include>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
