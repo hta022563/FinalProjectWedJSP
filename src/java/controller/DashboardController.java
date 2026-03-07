@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.ActivityDAO;
 
 /**
  *
@@ -30,19 +31,13 @@ public class DashboardController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet DashboardController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet DashboardController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+       // 1. Kéo dữ liệu 5 hoạt động mới nhất từ Database
+    ActivityDAO actDAO = new ActivityDAO();
+    request.setAttribute("listActivities", actDAO.getRecentActivities(5));
+    
+    // 2. LỆNH CHUYỂN TIẾP (Giao hàng sang file giao diện)
+    // Lưu ý: Đổi tên "admin-dashboard.jsp" cho khớp với tên file của Hảo nhé
+    request.getRequestDispatcher("admin-dashboard.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
