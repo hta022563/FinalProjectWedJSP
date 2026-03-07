@@ -8,7 +8,7 @@
 *.swp
 
 # Bỏ qua các file nén (không nên đẩy file nén bự lên Git)
-*.jar
+
 *.war
 *.ear
 *.zip
