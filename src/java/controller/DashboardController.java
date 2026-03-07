@@ -32,12 +32,26 @@ public class DashboardController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
        // 1. Kéo dữ liệu 5 hoạt động mới nhất từ Database
-    ActivityDAO actDAO = new ActivityDAO();
-    request.setAttribute("listActivities", actDAO.getRecentActivities(5));
-    
-    // 2. LỆNH CHUYỂN TIẾP (Giao hàng sang file giao diện)
-    // Lưu ý: Đổi tên "admin-dashboard.jsp" cho khớp với tên file của Hảo nhé
-    request.getRequestDispatcher("admin-dashboard.jsp").forward(request, response);
+   String action = request.getParameter("action");
+
+// NẾU CÓ LỆNH XÓA LOG
+if ("deleteLog".equals(action)) {
+    String logIdStr = request.getParameter("id");
+    if (logIdStr != null && !logIdStr.isEmpty()) {
+        int logId = Integer.parseInt(logIdStr);
+        ActivityDAO actDAO = new ActivityDAO();
+        boolean isDeleted = actDAO.deleteActivity(logId); // Gọi hàm [D] Delete trong DAO
+        
+        if (isDeleted) {
+            request.setAttribute("msg", "Đã xóa thành công dòng nhật ký!");
+        }
+    }
+}
+
+// ... Code cũ: Lấy 5 hoạt động mới nhất đẩy ra giao diện ...
+ActivityDAO actDAO = new ActivityDAO();
+request.setAttribute("listActivities", actDAO.getRecentActivities(5));
+request.getRequestDispatcher("admin-dashboard.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
