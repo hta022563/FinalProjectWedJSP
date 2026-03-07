@@ -89,7 +89,7 @@
                                 <a href="UserController?action=logout" class="btn btn-outline-danger btn-sm me-3 fw-bold">
                                     <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
                                 </a>
-                            </c:when>
+                  D          </c:when>
                             
                             <%-- NẾU CHƯA ĐĂNG NHẬP --%>
                             <c:otherwise>
