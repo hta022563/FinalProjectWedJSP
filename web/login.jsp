@@ -5,6 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <jsp:include page="includes/header.jsp"></jsp:include>
 
 <div class="container my-5">
@@ -14,14 +16,23 @@
                 <div class="card-body p-5">
                     <h3 class="text-center fw-bold mb-4">Đăng Nhập</h3>
                     
-                    <form action="#" method="POST">
+                    <c:if test="${not empty message}">
+                        <div class="alert alert-danger text-center" role="alert">
+                            ${message}
+                        </div>
+                    </c:if>
+                    
+                    <form action="UserController" method="POST">
+                        
+                        <input type="hidden" name="action" value="login">
+                        
                         <div class="mb-3">
-                            <label class="form-label">Tên đăng nhập (UserID)</label>
-                            <input type="text" class="form-control form-control-lg" placeholder="Nhập ID...">
+                            <label class="form-label">Tên đăng nhập (Username)</label>
+                            <input type="text" name="txtUsername" class="form-control form-control-lg" placeholder="Nhập tên tài khoản..." required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Mật khẩu</label>
-                            <input type="password" class="form-control form-control-lg" placeholder="********">
+                            <input type="password" name="txtPassword" class="form-control form-control-lg" placeholder="********" required>
                         </div>
                         <div class="d-flex justify-content-between mb-4">
                             <div class="form-check">
