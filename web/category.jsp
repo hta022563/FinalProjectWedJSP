@@ -23,7 +23,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            background-image: url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-image: url('IMG/Cha.jpg');
             background-size: cover;
             background-position: center;
             filter: brightness(0.6);

@@ -60,7 +60,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-image: url('IMG/Por.jpg');
             background-size: cover;
             background-position: center;
             z-index: 0;
