@@ -24,7 +24,7 @@
             height: 100%;
             object-fit: cover;
             /* Dán link ảnh mới bạn chọn vào đây */
-            background-image: url('https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1920&q=80');
+            background-image: url('IMG/audi.jpg');
             background-size: cover;
             background-position: center;
             filter: brightness(0.4) sepia(0.3); /* Giữ filter này để màu ảnh tệp với màu gỗ */

@@ -57,6 +57,7 @@
                                     <i class="fa-solid fa-user-shield"></i> VÀO TRANG QUẢN TRỊ
                                 </a>
                             </li>
+
                         <%-- Kiểm tra Admin --%>
                         <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
                             <li class="nav-item ms-3">
