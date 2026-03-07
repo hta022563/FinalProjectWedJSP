@@ -59,7 +59,7 @@
     <body>
 
         <div class="sidebar">
-            <a href="${pageContext.request.contextPath}/admin-dashboard.jsp" class="text-decoration-none">
+            <a href="${pageContext.request.contextPath}/DashboardController" class="text-decoration-none">
                 <h4 class="text-center text-warning fw-bold mb-4 luxury-logo ">
                     F-AUTO ADMIN
                 </h4>
