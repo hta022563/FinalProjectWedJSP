@@ -60,7 +60,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-image: url('IMG/Por.jpg');
             background-size: cover;
             background-position: center;
             z-index: 0;
@@ -78,7 +78,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-           background: linear-gradient(90deg, #2e3241 30%, transparent);
+            background: linear-gradient(90deg, #2e3241 30%, transparent);
             z-index: 1;
         }
 
@@ -199,28 +199,28 @@
                     <div class="cyber-metric">
                         <div class="p-3 bg-info bg-opacity-10 text-info rounded-4 d-inline-block mb-3"><i class="fa-solid fa-car-side fs-4"></i></div>
                         <h2 class="fw-bold m-0 text-white">45</h2>
-                        <small class="text-muted fw-bold d-block mt-1">KHO XE SẴN SÀNG</small>
+                        <small class="text-white fw-bold d-block mt-1">KHO XE SẴN SÀNG</small>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="cyber-metric">
                         <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-4 d-inline-block mb-3"><i class="fa-solid fa-toolbox fs-4"></i></div>
                         <h2 class="fw-bold m-0 text-white">1,450</h2>
-                        <small class="text-muted fw-bold d-block mt-1">VẬT PHẨM KHO</small>
+                        <small class="text-white fw-bold d-block mt-1">VẬT PHẨM KHO</small>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="cyber-metric">
                         <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-4 d-inline-block mb-3"><i class="fa-solid fa-users fs-4"></i></div>
                         <h2 class="fw-bold m-0 text-white">1.05k</h2>
-                        <small class="text-muted fw-bold d-block mt-1">KHÁCH HÀNG VIP</small>
+                        <small class="text-white fw-bold d-block mt-1">KHÁCH HÀNG VIP</small>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="cyber-metric" style="border-bottom: 3px solid var(--m-cyan);">
                         <div class="p-3 bg-success bg-opacity-10 text-success rounded-4 d-inline-block mb-3"><i class="fa-solid fa-vault fs-4"></i></div>
                         <h2 class="fw-bold m-0 text-white">3.24B</h2>
-                        <small class="text-muted fw-bold d-block mt-1">DOANH THU MỤC TIÊU</small>
+                        <small class="text-white fw-bold d-block mt-1">DOANH THU MỤC TIÊU</small>
                     </div>
                 </div>
             </div>
@@ -234,46 +234,96 @@
                 </div>
                 <div class="col-lg-7">
                     <div class="module-panel h-100">
-                        <h5 class="fw-bold mb-4 text-white"><i class="fa-solid fa-bolt text-warning me-3"></i>Giao Dịch Gần Đây</h5>
-                        <div class="feed-list" style="max-height: 280px; overflow-y: auto;">
-                            <div class="d-flex align-items-center p-3 rounded-4 bg-white bg-opacity-5 mb-3">
-                                <div class="p-3 bg-success bg-opacity-10 text-success rounded-circle me-3"><i class="fa-solid fa-check"></i></div>
-                                <div class="flex-grow-1">
-                                    <h6 class="m-0 text-info">Nhập kho thành công 05 Mercedes S450</h6>
-                                    <small class="text-muted">Bởi Admin | 10 phút trước</small>
-                                </div>
-                                <span class="text-info fw-bold">#AUTO-091</span>
-                            </div>
-                            <div class="d-flex align-items-center p-3 rounded-4 bg-white bg-opacity-5">
-                                <div class="p-3 bg-info bg-opacity-10 text-info rounded-circle me-3"><i class="fa-solid fa-shield-halved"></i></div>
-                                <div class="flex-grow-1">
-                                    <h6 class="m-0 text-danger">Đã chặn 12 truy cập IP bất thường</h6>
-                                    <small class="text-muted">Nginx Firewall | 2 giờ trước</small>
-                                </div>
-                                <span class="badge bg-danger text-white">BLOCKED</span>
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold m-0 text-white"><i class="fa-solid fa-bolt text-warning me-3"></i>Giao Dịch Gần Đây</h5>
+                            <a href="DashboardController" class="btn btn-sm btn-outline-info rounded-pill px-3 shadow-sm" title="Làm mới dữ liệu">
+                                <i class="fa-solid fa-rotate"></i>
+                            </a>
                         </div>
+
+                        <div class="feed-list" style="max-height: 280px; overflow-y: auto;">
+
+                        <c:choose>
+                            <%-- TRƯỜNG HỢP 1: CÓ DỮ LIỆU --%>
+                            <c:when test="${not empty listActivities}">
+                                <c:forEach items="${listActivities}" var="act">
+                                    <div class="d-flex align-items-center p-3 rounded-4 bg-white bg-opacity-5 mb-3 transition-all table-row-hover border border-white border-opacity-10">
+
+                                        <%-- Rẽ nhánh Icon & Màu sắc --%>
+                                        <c:choose>
+                                            <c:when test="${act.type == 'IMPORT'}">
+                                                <div class="p-3 bg-success bg-opacity-10 text-success rounded-circle me-3"><i class="fa-solid fa-check"></i></div>
+                                                    <c:set var="titleColor" value="text-info" />
+                                                    <c:set var="rightTag"><span class="text-info fw-bold">#${act.referenceCode}</span></c:set>
+                                            </c:when>
+                                            <c:when test="${act.type == 'SECURITY'}">
+                                                <div class="p-3 bg-danger bg-opacity-10 text-danger rounded-circle me-3"><i class="fa-solid fa-shield-halved"></i></div>
+                                                    <c:set var="titleColor" value="text-danger" />
+                                                    <c:set var="rightTag"><span class="badge bg-danger text-white px-3 py-2 rounded-pill">BLOCKED</span></c:set>
+                                            </c:when>
+                                            <c:when test="${act.type == 'ORDER'}">
+                                                <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-circle me-3"><i class="fa-solid fa-cart-shopping"></i></div>
+                                                    <c:set var="titleColor" value="text-warning" />
+                                                    <c:set var="rightTag"><span class="text-success fw-bold">+ <fmt:formatNumber value="${act.amount}" type="currency" currencySymbol="đ"/></span></c:set>
+                                            </c:when>
+                                            <c:otherwise>      
+                                                <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-circle me-3"><i class="fa-solid fa-terminal"></i></div>
+                                                    <c:set var="titleColor" value="text-muted" />
+                                                    <c:set var="rightTag"><span class="text-muted small">#${act.referenceCode}</span></c:set>
+                                            </c:otherwise>
+                                        </c:choose> 
+
+
+                                        <%-- Nội dung chính --%>
+                                        <div class="flex-grow-1">
+                                            <h6 class="m-0 ${titleColor} fw-bold">${act.title}</h6>
+                                            <small class="text-muted">Node: ${act.createdBy} | <i class="fa-regular fa-clock me-1"></i>${act.timeAgo}</small>
+                                        </div>
+
+                                        <%-- Tag bên phải --%>
+                                        ${rightTag}
+                                    </div>
+                                </c:forEach>
+                            </c:when>
+
+                            <%-- TRƯỜNG HỢP 2: RỖNG (LỖI HOẶC CHƯA GỌI CONTROLLER) --%>
+                            <c:otherwise>
+                                <div class="text-center p-4 mt-3 border border-danger border-opacity-25 rounded-4" style="background: rgba(220, 53, 69, 0.05);">
+                                    <div class="p-4 bg-danger bg-opacity-10 rounded-circle d-inline-flex mb-3 shadow-sm">
+                                        <i class="fa-solid fa-satellite-dish text-danger fs-1"></i>
+                                    </div>
+                                    <h5 class="text-danger fw-bold">Mất kết nối luồng dữ liệu</h5>
+                                    <p class="text-muted mb-4 px-3">Hệ thống đang truy cập trực tiếp vào giao diện (View) mà chưa thông qua bộ điều khiển (Controller). Vui lòng đồng bộ lại.</p>
+
+                                    <a href="DashboardController" class="btn btn-danger rounded-pill px-5 py-2 fw-bold shadow-lg" style="letter-spacing: 1px;">
+                                        <i class="fa-solid fa-power-off me-2"></i> KÍCH HOẠT DỮ LIỆU
+                                    </a>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="module-panel mb-5 border-info border-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="fw-bold m-0 text-white"><i class="fa-solid fa-crown text-gold me-3"></i>CHIẾN ĐỘI XE SANG ĐẶC QUYỀN</h4>
-                    <span class="badge bg-dark border border-info text-info px-3 py-2 rounded-pill">PHÂN KHÚC LUXURY</span>
-                </div>
-                <div class="table-responsive">
-                    <table class="table matrix-table">
-                        <thead>
-                            <tr>
-                                <th class="text-start">PHƯƠNG TIỆN</th>
-                                <th class="text-center">PHÂN KHÚC</th>
-                                <th class="text-end">NIÊM YẾT (VND)</th>
-                                <th class="text-center">KHO VẬN</th>
-                                <th class="text-center">HÀNH ĐỘNG</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+        <div class="module-panel mb-5 border-info border-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold m-0 text-white"><i class="fa-solid fa-crown text-gold me-3"></i>CHIẾN ĐỘI XE SANG ĐẶC QUYỀN</h4>
+                <span class="badge bg-dark border border-info text-info px-3 py-2 rounded-pill">PHÂN KHÚC LUXURY</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table matrix-table">
+                    <thead>
+                        <tr>
+                            <th class="text-start">PHƯƠNG TIỆN</th>
+                            <th class="text-center">PHÂN KHÚC</th>
+                            <th class="text-end">NIÊM YẾT (VND)</th>
+                            <th class="text-center">KHO VẬN</th>
+                            <th class="text-center">HÀNH ĐỘNG</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <c:forEach items="${productList}" var="p">
                             <c:if test="${p.categoryID == 1 || p.categoryID == 2}">
                                 <tr>
@@ -369,24 +419,24 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
-window.onload = function() {
-    const ctx = document.getElementById('inventoryChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Xe', 'Linh kiện', 'Khác'],
-            datasets: [{
-                    data: [45, 1450, 120],
-                    backgroundColor: ['#06b6d4', '#6366f1', '#1e293b'],
-                    borderWidth: 0, hoverOffset: 15
-                }]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false, cutout: '75%',
-            plugins: {legend: {position: 'bottom', labels: {color: '#94a3b8', font: {family: 'Inter', size: 12}}}}
-        }
-    });
-};
+    window.onload = function () {
+        const ctx = document.getElementById('inventoryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Xe', 'Linh kiện', 'Khác'],
+                datasets: [{
+                        data: [45, 1450, 120],
+                        backgroundColor: ['#06b6d4', '#6366f1', '#1e293b'],
+                        borderWidth: 0, hoverOffset: 15
+                    }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, cutout: '75%',
+                plugins: {legend: {position: 'bottom', labels: {color: '#94a3b8', font: {family: 'Inter', size: 12}}}}
+            }
+        });
+    };
 </script>
 
 <jsp:include page="includes/admin-footer.jsp"></jsp:include>

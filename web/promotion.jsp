@@ -18,7 +18,7 @@
     }
     .banner-img {
         width: 100%; height: 100%; object-fit: cover;
-        background-image: url('https://images.unsplash.com/photo-1592198084033-aade902d1aae?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+        background-image: url('IMG/ferari.jpg');
         background-size: cover; background-position: center; filter: brightness(0.65) contrast(1.1);
     }
     .banner-overlay {

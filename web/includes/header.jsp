@@ -61,7 +61,11 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link active" href="home.jsp">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
-                        
+                               <li class="nav-item ms-3">
+                                <a class="btn btn-danger fw-bold" href="admin-dashboard.jsp">
+                                    <i class="fa-solid fa-user-shield"></i> VÀO TRANG QUẢN TRỊ
+                                </a>
+                            </li>
                         <%-- Kiểm tra Admin --%>
                         <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
                             <li class="nav-item ms-3">
