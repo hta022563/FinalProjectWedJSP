@@ -128,6 +128,7 @@ public class UserController extends HttpServlet {
         } else if (action.equals("logout")) {
             doLogout(request, response);
         } else if (action.equals("register")) {  
+            doRegister(request, response);
         }
     }
 
