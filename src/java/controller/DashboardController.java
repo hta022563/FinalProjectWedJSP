@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ActivityDAO;
+import model.OrderDAO;
+import model.UserDAO;
 
 /**
  *
@@ -31,65 +33,86 @@ public class DashboardController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       // 1. Kéo dữ liệu 5 hoạt động mới nhất từ Database
-  request.setCharacterEncoding("UTF-8");
-    response.setCharacterEncoding("UTF-8");
-    
-    String action = request.getParameter("action");
-    ActivityDAO actDAO = new ActivityDAO();
+        // 1. Kéo dữ liệu 5 hoạt động mới nhất từ Database
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
-    try {
-        // 1. [D] DELETE - XỬ LÝ XÓA LOG
-        if ("deleteLog".equals(action)) {
-            String logIdStr = request.getParameter("id");
-            if (logIdStr != null && !logIdStr.isEmpty()) {
-                int logId = Integer.parseInt(logIdStr);
-                if (actDAO.deleteActivity(logId)) {
-                    request.setAttribute("msg", "Hệ thống: Đã tiêu hủy dòng nhật ký #" + logId);
+        String action = request.getParameter("action");
+        ActivityDAO actDAO = new ActivityDAO();
+
+        try {
+            // 1. [D] DELETE - XỬ LÝ XÓA LOG
+            if ("deleteLog".equals(action)) {
+                String logIdStr = request.getParameter("id");
+                if (logIdStr != null && !logIdStr.isEmpty()) {
+                    int logId = Integer.parseInt(logIdStr);
+                    if (actDAO.deleteActivity(logId)) {
+                        request.setAttribute("msg", "Hệ thống: Đã tiêu hủy dòng nhật ký #" + logId);
+                    }
+                }
+            } // 2. [U] UPDATE - XỬ LÝ CẬP NHẬT LOG (MỚI)
+            else if ("updateLog".equals(action)) {
+                try {
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    String title = request.getParameter("title");
+                    String logType = request.getParameter("type");
+                    String refCode = request.getParameter("refCode");
+
+                    // Xử lý amount (có thể null nếu là log Security)
+                    String amountStr = request.getParameter("amount");
+                    Double amount = (amountStr != null && !amountStr.isEmpty()) ? Double.parseDouble(amountStr) : null;
+
+                    // Gọi hàm Update trong DAO
+                    boolean isUpdated = actDAO.updateActivity(id, logType, title, refCode, amount);
+
+                    if (isUpdated) {
+                        request.setAttribute("msg", "Hệ thống: Cập nhật thành công bản ghi #" + id);
+                    }
+                } catch (Exception e) {
+                    request.setAttribute("error", "Lỗi dữ liệu: Không thể cập nhật nhật ký!");
                 }
             }
-        }
-        
-        // 2. [U] UPDATE - XỬ LÝ CẬP NHẬT LOG (MỚI)
-        else if ("updateLog".equals(action)) {
-            try {
-                int id = Integer.parseInt(request.getParameter("id"));
-                String title = request.getParameter("title");
-                String logType = request.getParameter("type");
-                String refCode = request.getParameter("refCode");
-                
-                // Xử lý amount (có thể null nếu là log Security)
-                String amountStr = request.getParameter("amount");
-                Double amount = (amountStr != null && !amountStr.isEmpty()) ? Double.parseDouble(amountStr) : null;
+            UserDAO userDAO = new UserDAO();
+            int totalCus = userDAO.countVIPCustomers();
+            request.setAttribute("totalCustomers", totalCus);
 
-                // Gọi hàm Update trong DAO
-                boolean isUpdated = actDAO.updateActivity(id, logType, title, refCode, amount);
+            // ... Code đếm totalCustomers ở bước trước ...
+// [THÊM MỚI] Lấy tổng doanh thu và Rút gọn số
+            OrderDAO orderDAO = new OrderDAO();
+            Double rawRevenue = orderDAO.getTotalRevenue();
 
-                if (isUpdated) {
-                    request.setAttribute("msg", "Hệ thống: Cập nhật thành công bản ghi #" + id);
-                }
-            } catch (Exception e) {
-                request.setAttribute("error", "Lỗi dữ liệu: Không thể cập nhật nhật ký!");
+// Thuật toán rút gọn số tiền thành định dạng "B" (Billion - Tỷ)
+            String formattedRevenue = "0.00B";
+            if (rawRevenue > 0) {
+                // Chia cho 1 tỷ để lấy số rút gọn
+                double inBillions = rawRevenue / 1_000_000_000.0;
+
+                // Dùng String.format để làm tròn lấy 2 chữ số thập phân (VD: 3.24B)
+                // Dấu '.' thay vì ',' để chuẩn format quốc tế
+                formattedRevenue = String.format(java.util.Locale.US, "%.2fB", inBillions);
             }
+
+// Gói hàng gửi sang JSP
+            request.setAttribute("totalRevenue", formattedRevenue);
+
+            // 3. [R] READ - LẤY DỮ LIỆU HIỂN THỊ
+            request.setAttribute("listActivities", actDAO.getRecentActivities(5));
+
+            String type = request.getParameter("type");
+            if ("ajax".equals(type)) {
+                // Trả về phần ruột cho AJAX tự động reload 5s/lần
+                request.getRequestDispatcher("recentActivitiesTable.jsp").forward(request, response);
+            } else {
+                // Trả về toàn bộ Dashboard Command Matrix
+                request.getRequestDispatcher("admin-dashboard.jsp").forward(request, response);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("home.jsp");
         }
 
-        // 3. [R] READ - LẤY DỮ LIỆU HIỂN THỊ
-        request.setAttribute("listActivities", actDAO.getRecentActivities(5));
-
-        String type = request.getParameter("type");
-        if ("ajax".equals(type)) {
-            // Trả về phần ruột cho AJAX tự động reload 5s/lần
-            request.getRequestDispatcher("recentActivitiesTable.jsp").forward(request, response);
-        } else {
-            // Trả về toàn bộ Dashboard Command Matrix
-            request.getRequestDispatcher("admin-dashboard.jsp").forward(request, response);
-        }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        response.sendRedirect("home.jsp");
     }
-}
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
