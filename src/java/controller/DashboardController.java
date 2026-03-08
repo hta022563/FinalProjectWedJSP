@@ -6,6 +6,7 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ActivityDAO;
 import model.OrderDAO;
+import model.ProductDAO;
+import model.ProductDTO;
 import model.UserDAO;
 
 /**
@@ -92,9 +95,26 @@ public class DashboardController extends HttpServlet {
                 formattedRevenue = String.format(java.util.Locale.US, "%.2fB", inBillions);
             }
 
-// Gói hàng gửi sang JSP
+// ... Code đếm totalCustomers và totalRevenue ở các bước trước ...
+// [THÊM MỚI] Lấy tổng số lượng xe trong kho
+            ProductDAO productDAO = new ProductDAO();
+            int totalStock = productDAO.getTotalStockQuantity();
+            request.setAttribute("totalStock", totalStock);
+
+// ... Code phân luồng forward sang JSP ...
+// ... Code đếm totalCustomers, totalRevenue, totalStock ở các bước trước ...
+// [THÊM MỚI] Lấy tổng số lượng phụ kiện
+            int totalAccessories = productDAO.getTotalAccessoryStock();
+            request.setAttribute("totalAccessories", totalAccessories);
+
+// ... Code phân luồng forward sang JSP (admin-dashboard.jsp) ...
             request.setAttribute("totalRevenue", formattedRevenue);
 
+           
+            List<ProductDTO> listProduct = productDAO.getAllProducts(); // Hàm gốc của Hảo
+
+// 2. NHÉT VÀO REQUEST (Tên biến phải khớp 100% với tên trong c:forEach)
+            request.setAttribute("productList", listProduct);
             // 3. [R] READ - LẤY DỮ LIỆU HIỂN THỊ
             request.setAttribute("listActivities", actDAO.getRecentActivities(5));
 
