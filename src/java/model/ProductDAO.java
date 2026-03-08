@@ -1,5 +1,8 @@
 package model;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 import javax.persistence.EntityManager;
 import utils.JPAUtil;
@@ -99,4 +102,43 @@ public class ProductDAO {
             em.close();
         }
     }
+// Hàm đếm tổng số lượng xe đang tồn trong kho
+
+    public int getTotalStockQuantity() {
+        int total = 0;
+        // Cộng dồn tất cả các giá trị trong cột StockQuantity
+        String sql = "SELECT SUM(StockQuantity) FROM Product";
+
+        try ( Connection conn = utils.DbUtils.getConnection();  
+                PreparedStatement ps = conn.prepareStatement(sql); 
+                ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+    
+    public int getTotalAccessoryStock() {
+    int total = 0;
+    
+    // Logic: Cộng dồn StockQuantity nhưng BỎ QUA các CategoryID là 1, 2, 3 (Xe hơi)
+    // Nếu sau này Hảo thêm Category số 4 (Nước hoa), 5 (Đệm ghế) thì nó sẽ tự động được cộng vào đây!
+    String sql = "SELECT SUM(StockQuantity) FROM Product WHERE CategoryID NOT IN (1, 2, 3)";
+    
+    try (Connection conn = utils.DbUtils.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        
+        if (rs.next()) {
+            total = rs.getInt(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return total;
+}
 }
