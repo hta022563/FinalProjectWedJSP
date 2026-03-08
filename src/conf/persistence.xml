@@ -7,6 +7,7 @@
     <class>model.OrderDTO</class>
     <class>model.OrderDetailDTO</class>
     <class>model.UserDTO</class>
+    <class>model.ProductDTO</class>
     <properties>
       <property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
       <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=CarStore_FinalWeb;encrypt=false"/>

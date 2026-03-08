@@ -60,7 +60,7 @@
                 <div class="collapse navbar-collapse" id="navContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link active" href="home.jsp">Trang chủ</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Sản phẩm</a></li>
+                        <li class="nav-item"><a class="nav-link" href="ProductController">Sản phẩm</a></li>
                         <%-- Kiểm tra Admin --%>
                         <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
                             <li class="nav-item ms-3">
@@ -77,36 +77,39 @@
                         <c:choose>
                             <%-- NẾU ĐÃ ĐĂNG NHẬP --%>
                             <c:when test="${not empty sessionScope.user}">
+                                
+                                <%-- Giỏ hàng với Badge số lượng --%>
+                                <a href="CartController?action=viewCart" class="btn btn-light btn-sm me-2 fw-bold">
+                                    <i class="fa-solid fa-cart-shopping text-dark"></i> <span class="text-dark">Giỏ hàng</span> 
+                                    <c:if test="${cartBadge > 0}">
+                                        <span class="badge bg-danger rounded-pill ms-1 border border-light">${cartBadge}</span>
+                                    </c:if>
+                                </a>
+                                
+                                <%-- Lịch sử đơn --%>
+                                <a href="OrderController?action=history" class="btn btn-outline-info btn-sm border-2 text-white me-3">
+                                    <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn
+                                </a>
+
                                 <div class="user-greeting">
                                     <i class="fa-solid fa-user-circle text-warning"></i> 
                                     Xin chào, <span class="fw-bold">${sessionScope.user.fullName}</span>
                                 </div>
-                                <a href="UserController?action=logout" class="btn btn-outline-danger btn-sm me-3 fw-bold">
+                                <a href="UserController?action=logout" class="btn btn-outline-danger btn-sm fw-bold">
                                     <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
                                 </a>
-                          </c:when>
-
+                            </c:when>
+                            
                         
 
                             
                             <%-- NẾU CHƯA ĐĂNG NHẬP --%>
                             <c:otherwise>
                                 <a href="login.jsp" class="btn btn-outline-light btn-sm me-2"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</a>
-                                <a href="register.jsp" class="btn btn-warning btn-sm fw-bold me-3"><i class="fa-solid fa-user-plus"></i> Đăng ký</a>
+                                <a href="register.jsp" class="btn btn-warning btn-sm fw-bold"><i class="fa-solid fa-user-plus"></i> Đăng ký</a>
                             </c:otherwise>
                         </c:choose>
                         
-                        <%-- Giỏ hàng với Badge số lượng --%>
-                        <a href="CartController?action=viewCart" class="btn btn-light btn-sm me-2 fw-bold">
-                            <i class="fa-solid fa-cart-shopping text-dark"></i> <span class="text-dark">Giỏ hàng</span> 
-                            <c:if test="${cartBadge > 0}">
-                                <span class="badge bg-danger rounded-pill ms-1 border border-light">${cartBadge}</span>
-                            </c:if>
-                        </a>
-                        
-                        <a href="OrderController?action=history" class="btn btn-outline-info btn-sm border-2 text-white">
-                            <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn
-                        </a>
                     </div>
                 </div>
             </div>

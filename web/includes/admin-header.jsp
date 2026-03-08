@@ -71,8 +71,8 @@
             <a href="${pageContext.request.contextPath}/ShowroomController"><i class="fa-solid fa-building me-2"></i> Showroom</a>
 
             <a href="${pageContext.request.contextPath}/home.jsp" class="text-info"><i class="fa-solid fa-globe me-2"></i> Về trang public</a>
-
-           <a href="${pageContext.request.contextPath}/UserController?action=logout" class="text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất</a>
+            
+            <a href="${pageContext.request.contextPath}/UserController?action=logout" class="text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất</a>
 
          
 
