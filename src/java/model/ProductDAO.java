@@ -104,23 +104,25 @@ public class ProductDAO {
     }
 // Hàm đếm tổng số lượng xe đang tồn trong kho
 
-    public int getTotalStockQuantity() {
-        int total = 0;
-        // Cộng dồn tất cả các giá trị trong cột StockQuantity
-        String sql = "SELECT SUM(StockQuantity) FROM Product";
+// Hàm đếm tổng số lượng xe đang tồn trong kho (Chỉ tính xe, không tính phụ kiện)
+public int getTotalStockQuantity() {
+    int total = 0;
+    
+    // CODE MỀM: Thêm điều kiện WHERE CategoryID IN (1, 2, 3) để chỉ cộng dồn xe hơi
+    String sql = "SELECT SUM(StockQuantity) FROM Product WHERE CategoryID IN (1, 2, 3)";
 
-        try ( Connection conn = utils.DbUtils.getConnection();  
-                PreparedStatement ps = conn.prepareStatement(sql); 
-                ResultSet rs = ps.executeQuery()) {
+    try ( Connection conn = utils.DbUtils.getConnection();  
+            PreparedStatement ps = conn.prepareStatement(sql); 
+            ResultSet rs = ps.executeQuery()) {
 
-            if (rs.next()) {
-                total = rs.getInt(1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (rs.next()) {
+            total = rs.getInt(1);
         }
-        return total;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return total;
+}
     
     public int getTotalAccessoryStock() {
     int total = 0;
