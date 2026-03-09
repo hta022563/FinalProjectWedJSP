@@ -438,12 +438,12 @@
             </script>
         </div>
 
-       <div class="module-panel mb-5 border-info border-5">
+        <div class="module-panel mb-5 border-info border-5">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="fw-bold m-0 text-white"><i class="fa-solid fa-crown text-gold me-3"></i>CHIẾN ĐỘI XE SANG ĐẶC QUYỀN</h4>
                 <span class="badge bg-dark border border-info text-info px-3 py-2 rounded-pill">PHÂN KHÚC LUXURY</span>
             </div>
-            
+
             <%-- THÊM CLASS cyber-feed VÀ GIỚI HẠN CHIỀU CAO (max-height) --%>
             <div class="table-responsive cyber-feed pe-2" style="max-height: 450px; overflow-y: auto;">
                 <table class="table matrix-table mb-0">
@@ -496,7 +496,7 @@
             </div>
         </div>
 
-    
+
 
     </div>
 </div>
