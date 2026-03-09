@@ -67,6 +67,7 @@
                         <%-- ĐÃ SỬA: Bỏ chữ IMG/ để nhận link ảnh online --%>
                         <img src="${p.imageURL}" class="product-img" alt="${p.productName}" 
                              onerror="this.src='https://via.placeholder.com/300x200?text=F-AUTO+Coming+Soon'">
+
                         
                         <%-- Hiển thị nhãn "Đã Ẩn" góc phải trên cùng cho Admin dễ nhìn --%>
                         <c:if test="${!p.status && sessionScope.user != null && sessionScope.user.role == 1}">

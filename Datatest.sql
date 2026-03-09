@@ -2,10 +2,12 @@
 GO
 
 -- 1. BƠM DỮ LIỆU DANH MỤC (Category)
+-- Thêm dòng số 4 để Bảng Phụ Kiện trên Dashboard có dữ liệu hiển thị
 INSERT INTO Category (CategoryName, IsActive) VALUES 
 (N'SUV Luxury', 1),
 (N'Sport Car', 1),
-(N'Sedan Premium', 1);
+(N'Sedan Premium', 1),
+(N'Phụ kiện kỹ thuật', 1); 
 
 -- 2. BƠM DỮ LIỆU NHÀ CUNG CẤP (Supplier)
 INSERT INTO Supplier (SupplierName, Phone, Address, IsActive) VALUES 
@@ -34,12 +36,14 @@ INSERT INTO [User] (Username, Password, FullName, Email, Phone, Role) VALUES
 ('admin_hao', '123456', N'Tạ Vũ Hảo', 'haotv@fpt.edu.vn', '0987654321', 1),
 ('customer_duy', '123456', N'Nguyễn Hồng Duy', 'duynh@gmail.com', '0123456789', 0);
 
--- 7. BƠM DỮ LIỆU SIÊU XE (Product)
-INSERT INTO Product (CategoryID, SupplierID, ProductName, Price, StockQuantity, Description, ImageURL) VALUES 
-(1, 1, N'Mercedes-Benz AMG G63', 10950000000, 5, N'Biểu tượng quyền lực và sức mạnh. Động cơ V8 Biturbo 4.0L mạnh mẽ.', 'IMG/OIP (2).webp'),
-(2, 2, N'Audi R8 V10 Performance', 12500000000, 2, N'Siêu xe thể thao đường phố với động cơ hút khí tự nhiên V10 5.2L.', 'IMG/OIP.webp'),
-(3, 1, N'Mercedes-Benz C300 AMG', 2150000000, 10, N'Mẫu Sedan thể thao cỡ nhỏ bán chạy nhất phân khúc sang trọng.', 'IMG/Mec300.webp'),
-(2, 3, N'Porsche 911 Carrera S', 9500000000, 3, N'Huyền thoại xe thể thao đến từ Đức với thiết kế vượt thời gian.', 'IMG/Por.jpg');
+-- 7. BƠM DỮ LIỆU SIÊU XE & PHỤ KIỆN (Product)
+-- [Đã thêm cột Status = 1 để kích hoạt bán]
+INSERT INTO Product (CategoryID, SupplierID, ProductName, Price, StockQuantity, Description, ImageURL, [Status]) VALUES 
+(1, 1, N'Mercedes-Benz AMG G63', 10950000000, 5, N'Biểu tượng quyền lực và sức mạnh. Động cơ V8 Biturbo 4.0L mạnh mẽ.', 'IMG/OIP (2).webp', 1),
+(2, 2, N'Audi R8 V10 Performance', 12500000000, 2, N'Siêu xe thể thao đường phố với động cơ hút khí tự nhiên V10 5.2L.', 'IMG/OIP.webp', 1),
+(3, 1, N'Mercedes-Benz C300 AMG', 2150000000, 10, N'Mẫu Sedan thể thao cỡ nhỏ bán chạy nhất phân khúc sang trọng.', 'IMG/Mec300.webp', 1),
+(2, 3, N'Porsche 911 Carrera S', 9500000000, 3, N'Huyền thoại xe thể thao đến từ Đức với thiết kế vượt thời gian.', 'IMG/Por.jpg', 1),
+(4, 1, N'Bộ dụng cụ cơ khí cao cấp', 15000000, 40, N'Hộp đồ nghề sửa chữa siêu xe đa năng 150 chi tiết thép Cr-V chống gỉ.', 'IMG/logo.jpg', 1);
 
 -- 8. BƠM DỮ LIỆU NHẬT KÝ HỆ THỐNG (Activity_Logs)
 INSERT INTO Activity_Logs (log_type, title, created_by, reference_code, amount) VALUES 

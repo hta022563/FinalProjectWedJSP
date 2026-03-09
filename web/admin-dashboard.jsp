@@ -4,7 +4,6 @@
 
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -159,6 +158,43 @@
             border-radius: 50%;
             animation: blink 2s infinite;
         }
+        /* Custom Scrollbar cho phong cách Cyberpunk */
+        .cyber-feed::-webkit-scrollbar {
+            width: 6px;
+        }
+        .cyber-feed::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+        .cyber-feed::-webkit-scrollbar-thumb {
+            background: rgba(251, 191, 36, 0.3);
+            border-radius: 10px;
+        }
+        .cyber-feed::-webkit-scrollbar-thumb:hover {
+            background: rgba(251, 191, 36, 0.8);
+        }
+
+        /* Hiệu ứng Hover cho từng dòng Log */
+        .log-row {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .log-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+        }
+
+        /* Nút thao tác ẩn/hiện thông minh */
+        .log-actions {
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .log-row:hover .log-actions {
+            opacity: 1;
+        }
         @keyframes blink {
             0%, 100% {
                 opacity: 1;
@@ -197,117 +233,154 @@
             <div class="row g-4 mb-5 text-center">
                 <div class="col-md-3">
                     <div class="cyber-metric">
-                        <div class="p-3 bg-info bg-opacity-10 text-info rounded-4 d-inline-block mb-3"><i class="fa-solid fa-car-side fs-4"></i></div>
-                        <h2 class="fw-bold m-0 text-white">45</h2>
-                        <small class="text-white fw-bold d-block mt-1">KHO XE SẴN SÀNG</small>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="cyber-metric">
-                        <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-4 d-inline-block mb-3"><i class="fa-solid fa-toolbox fs-4"></i></div>
-                        <h2 class="fw-bold m-0 text-white">1,450</h2>
-                        <small class="text-white fw-bold d-block mt-1">VẬT PHẨM KHO</small>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="cyber-metric">
-                        <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-4 d-inline-block mb-3"><i class="fa-solid fa-users fs-4"></i></div>
-                        <h2 class="fw-bold m-0 text-white">1.05k</h2>
-                        <small class="text-white fw-bold d-block mt-1">KHÁCH HÀNG VIP</small>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="cyber-metric" style="border-bottom: 3px solid var(--m-cyan);">
-                        <div class="p-3 bg-success bg-opacity-10 text-success rounded-4 d-inline-block mb-3"><i class="fa-solid fa-vault fs-4"></i></div>
-                        <h2 class="fw-bold m-0 text-white">3.24B</h2>
-                        <small class="text-white fw-bold d-block mt-1">DOANH THU MỤC TIÊU</small>
-                    </div>
+                        <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-4 d-inline-block mb-3"> 
+                            <i class="fa-solid fa-toolbox fs-4"></i>
+                        </div>
+                        <h2 class="fw-bold m-0 text-white">
+                        <%-- Gọi biến totalAccessories từ Controller sang --%>
+                        <c:choose>
+                            <c:when test="${totalAccessories > 0}">
+                                <fmt:formatNumber value="${totalAccessories}" type="number" pattern="#,###"/>
+                            </c:when>
+                            <c:otherwise>0</c:otherwise>
+                        </c:choose>
+                    </h2>
+                    <small class="text-white fw-bold d-block mt-1">PHỤ KIỆN KÈM THEO</small>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="cyber-metric">
+                    <div class="p-3 bg-info bg-opacity-10 text-info rounded-4 d-inline-block mb-3">
 
-            <div class="row g-5 mb-5">
-                <div class="col-lg-5">
-                    <div class="module-panel h-100 text-center">
-                        <h5 class="fw-bold text-start mb-5 text-white"><i class="fa-solid fa-chart-pie text-info me-3"></i>Phân Bổ Tài Sản</h5>
-                        <div style="height: 250px;"><canvas id="inventoryChart"></canvas></div>
+                        <i class="fa-solid fa-car-side fs-4"></i>
                     </div>
+                    <h2 class="fw-bold m-0 text-white">
+                        <%-- Gọi biến totalStock từ Controller và format dấu phẩy --%>
+                        <fmt:formatNumber value="${totalStock}" type="number" pattern="#,###"/>
+                    </h2>
+                    <small class="text-white fw-bold d-block mt-1">KHO XE SẴN SÀNG</small>
                 </div>
-                <div class="col-lg-7">
-                    <div class="module-panel h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="fw-bold m-0 text-white"><i class="fa-solid fa-bolt text-warning me-3"></i>Giao Dịch Gần Đây</h5>
-                            <a href="DashboardController" class="btn btn-sm btn-outline-info rounded-pill px-3 shadow-sm" title="Làm mới dữ liệu">
-                                <i class="fa-solid fa-rotate"></i>
-                            </a>
-                        </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cyber-metric">
+                    <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-4 d-inline-block mb-3">
+                        <i class="fa-solid fa-users fs-4"></i>
+                    </div>
+                    <h2 class="fw-bold m-0 text-white">
+                        <%-- Gọi biến totalCustomers từ Controller truyền sang --%>
+                        <fmt:formatNumber value="${totalCustomers}" type="number" pattern="#,###"/>
+                    </h2>
+                    <small class="text-white fw-bold d-block mt-1">KHÁCH HÀNG VIP</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cyber-metric">
+                    <div class="p-3 bg-success bg-opacity-10 text-success rounded-4 d-inline-block mb-3">
+                        <i class="fa-solid fa-vault fs-4"></i> 
+                    </div>
 
-                        <div class="feed-list" style="max-height: 280px; overflow-y: auto;">
+                    <%-- Gọi biến đã được format gọn gàng từ Controller sang --%>
+                    <h2 class="fw-bold m-0 text-white">${totalRevenue}</h2>
+
+                    <small class="text-white fw-bold d-block mt-1">DOANH THU MỤC TIÊU</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-5 mb-5">
+            <%-- Đã mở rộng Luồng Giao Dịch ra chiếm trọn chiều ngang (col-12) --%>
+            <div class="col-12">
+                <div class="module-panel h-100 p-4 rounded-4 shadow-lg" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05);">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-25 pb-3">
+                        <h5 class="fw-bold m-0 text-white" style="letter-spacing: 1px;">
+                            <i class="fa-solid fa-bolt text-warning me-2" style="text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);"></i>
+                            LUỒNG GIAO DỊCH
+                        </h5>
+                        <a href="DashboardController" class="btn btn-sm btn-outline-warning rounded-pill px-3 transition-all" title="Làm mới dữ liệu">
+                            <i class="fa-solid fa-rotate-right"></i> Đồng bộ
+                        </a>
+                    </div>
+
+                    <div class="cyber-feed pe-2" style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
                         <c:choose>
                             <%-- TRƯỜNG HỢP 1: CÓ DỮ LIỆU --%>
                             <c:when test="${not empty listActivities}">
                                 <c:forEach items="${listActivities}" var="act">
-                                    <div class="d-flex align-items-center p-3 rounded-4 bg-white bg-opacity-5 mb-3 transition-all table-row-hover border border-white border-opacity-10">
+                                    <div class="log-row d-flex align-items-center p-3 rounded-4 mb-3 position-relative">
 
-                                        <%-- Cấu hình màu sắc & icon dựa trên Type --%>
+                                        <%-- Phân loại cấu hình (Đã lược bỏ hoàn toàn icon ở đầu) --%>
                                         <c:choose>
                                             <c:when test="${act.type == 'IMPORT'}">
-                                                <div class="p-3 bg-success bg-opacity-10 text-success rounded-circle me-3"><i class="fa-solid fa-check"></i></div>
-                                                    <c:set var="titleColor" value="text-info" />
-                                                    <c:set var="rightTag"><span class="text-info fw-bold small">#${act.referenceCode}</span></c:set>
+                                                <c:set var="titleColor" value="text-white" />
+                                                <c:set var="rightTag"><span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2 py-1">#${act.referenceCode}</span></c:set>
                                             </c:when>
+
                                             <c:when test="${act.type == 'SECURITY'}">
-                                                <div class="p-3 bg-danger bg-opacity-10 text-danger rounded-circle me-3"><i class="fa-solid fa-shield-halved"></i></div>
-                                                    <c:set var="titleColor" value="text-danger" />
-                                                    <c:set var="rightTag"><span class="badge bg-danger text-white px-2 py-1 rounded-pill small">BLOCKED</span></c:set>
+                                                <c:set var="titleColor" value="text-danger" />
+                                                <c:set var="rightTag"><span class="badge bg-danger text-white px-2 py-1 rounded-1 shadow-sm"><i class="fa-solid fa-ban me-1"></i>BLOCKED</span></c:set>
                                             </c:when>
+
                                             <c:when test="${act.type == 'ORDER'}">
-                                                <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-circle me-3"><i class="fa-solid fa-cart-shopping"></i></div>
-                                                    <c:set var="titleColor" value="text-warning" />
-                                                    <c:set var="rightTag"><span class="text-success fw-bold small">+ <fmt:formatNumber value="${act.amount}" type="currency" currencySymbol="đ"/></span></c:set>
+                                                <c:set var="titleColor" value="text-warning" />
+                                                <c:set var="rightTag"><span class="text-success fw-bold fs-6">+ <fmt:formatNumber value="${act.amount}" type="number" pattern="#,###"/> ₫</span></c:set>
                                             </c:when>
+
                                             <c:otherwise>
-                                                <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-circle me-3"><i class="fa-solid fa-terminal"></i></div>
-                                                    <c:set var="titleColor" value="text-muted" />
-                                                    <c:set var="rightTag"><span class="text-muted small">#${act.referenceCode}</span></c:set>
+                                                <c:set var="titleColor" value="text-info" />
+                                                <c:set var="rightTag"><span class="text-muted small font-monospace">#${act.referenceCode}</span></c:set>
                                             </c:otherwise>
                                         </c:choose>
 
-                                        <%-- Nội dung chính --%>
+                                        <%-- Nội dung chính (Sẽ tự động canh lề trái thẳng tắp) --%>
                                         <div class="flex-grow-1">
-                                            <h6 class="m-0 ${titleColor} fw-bold small">${act.title}</h6>
-                                            <small class="text-muted" style="font-size: 0.7rem;">Node: ${act.createdBy} | ${act.timeAgo}</small>
+                                            <h6 class="m-0 ${titleColor} fw-bold mb-1" style="font-size: 0.9rem;">${act.title}</h6>
+                                            <small class="text-white d-flex align-items-center" style="font-size: 0.75rem;">
+                                                <i class="fa-solid fa-network-wired me-1 opacity-50"></i> Node: ${act.createdBy} 
+                                                <span class="mx-2 opacity-25">|</span> 
+                                                <i class="fa-regular fa-clock me-1 opacity-50"></i> ${act.timeAgo}
+                                            </small>
                                         </div>
 
-                                        <%-- [U] UPDATE & [D] DELETE --%>
-                                        <div class="d-flex align-items-center ms-2">
+                                        <%-- Tag trạng thái & Cột Nút Thao Tác (Hiện khi Hover) --%>
+                                        <div class="d-flex flex-column align-items-end justify-content-center ms-3">
                                             ${rightTag}
 
-                                            <%-- Nút Chỉnh sửa (Update) --%>
-                                            <button class="btn btn-link text-info ms-2 p-0 opacity-50 hover-opacity-100" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#editLogModal"
-                                                    onclick="prepareEditModal('${act.logId}', '${act.title}', '${act.type}', '${act.referenceCode}', '${act.amount}')">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                            </button>
+                                            <div class="log-actions mt-2 d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-info rounded-circle d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#editLogModal"
+                                                        onclick="prepareEditModal('${act.logId}', '${act.title}', '${act.type}', '${act.referenceCode}', '${act.amount}')">
+                                                    <i class="fa-solid fa-pen" style="font-size: 0.7rem;"></i>
+                                                </button>
 
-                                            <%-- Nút Xóa (Delete) --%>
-                                            <a href="DashboardController?action=deleteLog&id=${act.logId}" 
-                                               class="text-danger ms-2 opacity-50 hover-opacity-100" 
-                                               onclick="return confirm('Xác nhận xóa log?');">
-                                                <i class="fa-solid fa-trash-can"></i>
-                                            </a>
+                                                <a href="DashboardController?action=deleteLog&id=${act.logId}" 
+                                                   class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" 
+                                                   onclick="return confirm('Cảnh báo: Xác nhận tiêu hủy dòng nhật ký hệ thống này?');">
+                                                    <i class="fa-solid fa-trash" style="font-size: 0.7rem;"></i>
+                                                </a>
+                                            </div>
                                         </div>
+
                                     </div>
                                 </c:forEach>
                             </c:when>
+
+                            <%-- TRƯỜNG HỢP 2: TRỐNG DỮ LIỆU --%>
                             <c:otherwise>
-                                <%-- Giao diện khi trống (giữ nguyên như cũ) --%>
-                                <div class="text-center p-4 mt-3 border border-danger border-opacity-25 rounded-4" style="background: rgba(220, 53, 69, 0.05);">
-                                    <div class="p-4 bg-danger bg-opacity-10 rounded-circle d-inline-flex mb-3 shadow-sm">
-                                        <i class="fa-solid fa-satellite-dish text-danger fs-1"></i>
+                                <div class="text-center p-5 mt-2 border border-danger border-opacity-50 rounded-4 position-relative overflow-hidden" style="background: rgba(220, 53, 69, 0.05);">
+                                    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10" style="background: repeating-linear-gradient(45deg, transparent, transparent 10px, #dc3545 10px, #dc3545 20px);"></div>
+
+                                    <div class="position-relative z-index-2">
+                                        <div class="p-4 bg-danger bg-opacity-10 rounded-circle d-inline-flex mb-3 shadow-lg" style="border: 1px solid rgba(220, 53, 69, 0.3);">
+                                            <i class="fa-solid fa-satellite-dish text-danger fs-1 heartbeat-animation"></i>
+                                        </div>
+                                        <h5 class="text-danger fw-bold text-uppercase" style="letter-spacing: 2px;">Mất tín hiệu radar</h5>
+                                        <p class="text-muted small mb-4">Hệ thống chưa ghi nhận giao dịch nào hoặc đường truyền bị gián đoạn.</p>
+                                        <a href="DashboardController" class="btn btn-outline-danger rounded-pill px-5 py-2 fw-bold small">
+                                            <i class="fa-solid fa-plug me-2"></i> KÍCH HOẠT LẠI
+                                        </a>
                                     </div>
-                                    <h5 class="text-danger fw-bold">Mất kết nối luồng dữ liệu</h5>
-                                    <a href="DashboardController" class="btn btn-danger rounded-pill px-5 py-2 fw-bold shadow-lg small">KÍCH HOẠT</a>
                                 </div>
                             </c:otherwise>
                         </c:choose>
@@ -370,42 +443,51 @@
                 <h4 class="fw-bold m-0 text-white"><i class="fa-solid fa-crown text-gold me-3"></i>CHIẾN ĐỘI XE SANG ĐẶC QUYỀN</h4>
                 <span class="badge bg-dark border border-info text-info px-3 py-2 rounded-pill">PHÂN KHÚC LUXURY</span>
             </div>
-            <div class="table-responsive">
-                <table class="table matrix-table">
-                    <thead>
+
+            <%-- THÊM CLASS cyber-feed VÀ GIỚI HẠN CHIỀU CAO (max-height) --%>
+            <div class="table-responsive cyber-feed pe-2" style="max-height: 450px; overflow-y: auto;">
+                <table class="table matrix-table mb-0">
+                    <%-- THIẾT LẬP STICKY CHO THEAD ĐỂ GHIM TIÊU ĐỀ --%>
+                    <thead style="position: sticky; top: 0; z-index: 10; background: var(--dark-void); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);">
                         <tr>
                             <th class="text-start">PHƯƠNG TIỆN</th>
                             <th class="text-center">PHÂN KHÚC</th>
                             <th class="text-end">NIÊM YẾT (VND)</th>
                             <th class="text-center">KHO VẬN</th>
-                            <th class="text-center">HÀNH ĐỘNG</th>
                         </tr>
                     </thead>
                     <tbody>
                         <c:forEach items="${productList}" var="p">
-                            <c:if test="${p.categoryID == 1 || p.categoryID == 2}">
+                            <%-- Lọc ID 1, 2, 3 (SUV, Sport Car, Sedan) để hiển thị danh sách xe --%>
+                            <c:if test="${p.categoryID == 1 || p.categoryID == 2 || p.categoryID == 3}">
                                 <tr>
                                     <td class="text-start">
                                         <div class="d-flex align-items-center">
-                                            <img src="${p.imageURL}" class="car-snap me-4 shadow-lg" alt="car">
+                                            <img src="${p.imageURL}" class="car-snap me-4 shadow-lg" alt="car" style="width: 80px; height: 50px; object-fit: cover; border-radius: 8px;">
                                             <div>
                                                 <div class="fw-bold text-white fs-6 mb-1">${p.productName}</div>
-                                                <span class="id-mono" style="font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--m-cyan);">VIN: FA-${p.productID}</span>
+                                                <span class="id-mono" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--m-cyan);">VIN: FA-${p.productID}</span>
                                             </div>
                                         </div>
                                     </td>
+
                                     <td class="text-center">
-                                        <span class="badge bg-dark border border-info text-info rounded-pill px-3 py-1">
-                                            ${p.categoryID == 1 ? 'SUV LUX' : 'SEDAN PRO'}
+                                        <span class="badge bg-dark border border-info text-info rounded-pill px-3 py-1 text-uppercase">
+                                            <%-- CODE MỀM JSTL: Ánh xạ categoryID từ DTO thành Text ngay trên JSP --%>
+                                            <c:choose>
+                                                <c:when test="${p.categoryID == 1}">SUV LUXURY</c:when>
+                                                <c:when test="${p.categoryID == 2}">SPORT CAR</c:when>
+                                                <c:when test="${p.categoryID == 3}">SEDAN PREMIUM</c:when>
+                                                <c:otherwise>XE SANG</c:otherwise>
+                                            </c:choose>
                                         </span>
                                     </td>
+
                                     <td class="text-end fw-bold text-white fs-5">
-                                        <fmt:formatNumber value="${p.price}" type="currency" currencySymbol="đ"/>
+                                        <fmt:formatNumber value="${p.price}" type="number" pattern="#,###"/> đ
                                     </td>
+
                                     <td class="text-center fw-bold fs-5 text-white">${p.stockQuantity}</td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-light rounded-circle shadow-sm"><i class="fa-solid fa-gear"></i></button>
-                                    </td>
                                 </tr>
                             </c:if>
                         </c:forEach>
@@ -414,55 +496,7 @@
             </div>
         </div>
 
-        <div class="module-panel border-top border-info border-5">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="fw-bold m-0 text-white"><i class="fa-solid fa-screwdriver-wrench text-warning me-3"></i>KHO VẬT PHẨM KỸ THUẬT</h4>
-                <button class="btn btn-info btn-sm rounded-pill px-4 fw-bold shadow-lg">NHẬP HÀNG MỚI</button>
-            </div>
-            <div class="table-responsive">
-                <table class="table matrix-table">
-                    <thead>
-                        <tr>
-                            <th class="text-start">DANH MỤC VẬT PHẨM</th>
-                            <th>MÔ TẢ KỸ THUẬT</th>
-                            <th class="text-end">ĐƠN GIÁ (VND)</th>
-                            <th class="text-center">TỒN KHO</th>
-                            <th class="text-center">THAO TÁC</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach items="${productList}" var="p">
-                            <c:if test="${p.categoryID >= 3}">
-                                <tr>
-                                    <td class="text-start">
-                                        <div class="d-flex align-items-center">
-                                            <div class="p-3 bg-dark border border-secondary rounded-3 me-3 text-warning shadow-sm">
-                                                <i class="fa-solid ${p.categoryID == 4 ? 'fa-circle-dot' : 'fa-toolbox'}"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold text-white mb-1">${p.productName}</div>
-                                                <span class="id-mono" style="font-family: 'JetBrains Mono'; font-size: 0.8rem; color: #94a3b8;">PART-${p.productID}</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-muted small italic" style="max-width: 280px;">${p.description}</td>
-                                    <td class="text-end fw-bold text-white">
-                                        <fmt:formatNumber value="${p.price}" type="currency" currencySymbol="đ"/>
-                                    </td>
-                                    <td class="text-center fw-bold fs-5 text-white">${p.stockQuantity}</td>
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <button class="btn btn-sm btn-outline-warning rounded-circle shadow-sm"><i class="fa-solid fa-pen"></i></button>
-                                            <button class="btn btn-sm btn-outline-danger rounded-circle shadow-sm"><i class="fa-solid fa-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </c:if>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+
 
     </div>
 </div>
@@ -477,39 +511,21 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
-    window.onload = function () {
-        const ctx = document.getElementById('inventoryChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Xe', 'Linh kiện', 'Khác'],
-                datasets: [{
-                        data: [45, 1450, 120],
-                        backgroundColor: ['#06b6d4', '#6366f1', '#1e293b'],
-                        borderWidth: 0, hoverOffset: 15
-                    }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false, cutout: '75%',
-                plugins: {legend: {position: 'bottom', labels: {color: '#94a3b8', font: {family: 'Inter', size: 12}}}}
-            }
-        });
-    };
 </script>
 <script>
     function refreshLogs() {
         // Gọi Servlet với tham số type=ajax
         fetch('DashboardController?type=ajax')
-            .then(response => response.text())
-            .then(html => {
-                // Tìm đến cái div chứa danh sách và thay ruột của nó
-                const feedList = document.querySelector('.feed-list');
-                // Nếu không bị lỗi "Mất kết nối", thì mới cập nhật
-                if (html.trim() !== "") {
-                    feedList.innerHTML = html;
-                }
-            })
-            .catch(err => console.warn('Lỗi auto-reload:', err));
+                .then(response => response.text())
+                .then(html => {
+                    // Tìm đến cái div chứa danh sách và thay ruột của nó
+                    const feedList = document.querySelector('.feed-list');
+                    // Nếu không bị lỗi "Mất kết nối", thì mới cập nhật
+                    if (html.trim() !== "") {
+                        feedList.innerHTML = html;
+                    }
+                })
+                .catch(err => console.warn('Lỗi auto-reload:', err));
     }
 
     // Tự động chạy mỗi 5 giây (5000ms)

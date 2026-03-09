@@ -11,6 +11,9 @@ package model;
 
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -103,4 +106,22 @@ public class OrderDAO {
             em.close();
         }
     }
+    public Double getTotalRevenue() {
+    Double total = 0.0;
+    // Dùng hàm SUM() của SQL để cộng dồn cột TotalAmount
+    // (Có thể thêm WHERE Status = 'SUCCESS' nếu Hảo muốn chỉ tính đơn đã giao)
+    String sql = "SELECT SUM(TotalAmount) FROM [Order]";
+    
+    try (Connection conn = utils.DbUtils.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        
+        if (rs.next()) {
+            total = rs.getDouble(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return total != null ? total : 0.0;
+}
 }
