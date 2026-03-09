@@ -85,7 +85,8 @@ CREATE TABLE Product (
     Price DECIMAL(18,2),
     StockQuantity INT,
     Description NVARCHAR(MAX),
-    ImageURL VARCHAR(500)
+    ImageURL VARCHAR(500),
+    [Status] BIT DEFAULT 1 -- [ĐÃ THÊM] 1: Đang bán (True), 0: Đã ẩn (False)
 );
 
 CREATE TABLE Cart (

@@ -64,7 +64,7 @@
                 <div class="card h-100 product-card shadow-sm ${!p.status ? 'bg-light opacity-75' : ''}">
                     
                     <div class="product-img-wrapper">
-                        <img src="IMG/${p.imageURL}" class="product-img" alt="${p.productName}" 
+                        <img src="${p.imageURL}" class="product-img" alt="${p.productName}" 
                              onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
                         
                         <%-- Hiển thị nhãn "Đã Ẩn" góc phải trên cùng cho Admin dễ nhìn --%>
