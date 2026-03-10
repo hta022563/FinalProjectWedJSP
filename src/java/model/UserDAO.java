@@ -12,6 +12,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import utils.JPAUtil;
 import utils.SecurityUtils; // Import thư viện máy xay của tụi mình
+import utils.DbUtils;
 
 public class UserDAO {
 
@@ -19,7 +20,7 @@ public class UserDAO {
     }
 
     // =========================================================================
-    // 1. HÀM ĐĂNG NHẬP (Lấy User lên rồi so sánh mã băm)
+    // 1. HÀM ĐĂNG NHẬP (Lấy User lên rồi so sánh mã băm) - JPA
     // =========================================================================
     public UserDTO login(String username, String rawPassword) {
         EntityManager em = JPAUtil.getEntityManager();
@@ -50,9 +51,8 @@ public class UserDAO {
         }
     }
 
-    // 1. Hàm kiểm tra xem Username đã có ai dùng chưa
     // =========================================================================
-    // 2. Hàm kiểm tra xem Username đã có ai dùng chưa
+    // 2. Hàm kiểm tra xem Username đã có ai dùng chưa - JPA
     // =========================================================================
     public boolean checkUserExist(String username) {
         EntityManager em = JPAUtil.getEntityManager();
@@ -61,9 +61,6 @@ public class UserDAO {
             TypedQuery<UserDTO> query = em.createQuery(jpql, UserDTO.class);
             query.setParameter("user", username);
 
-            // Nếu danh sách trả về không rỗng -> User đã tồn tại
-            return !query.getResultList().isEmpty();
-            
             // Trả về true nếu list không rỗng (nghĩa là user đã tồn tại)
             return !query.getResultList().isEmpty(); 
         } finally {
@@ -80,12 +77,6 @@ public class UserDAO {
         newUser.setPassword(hashedPass); // Tráo đổi pass thật thành pass đã băm
 
         EntityManager em = JPAUtil.getEntityManager();
-        // Bắt buộc phải dùng Transaction khi Insert/Update/Delete
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            // Lưu đối tượng xuống Database
-            em.persist(newUser);
         EntityTransaction tx = em.getTransaction(); 
         try {
             tx.begin();
@@ -103,35 +94,9 @@ public class UserDAO {
         }
     }
 
-    public int countVIPCustomers() {
-        int count = 0;
-        // Đếm những User có Role = 0 (Khách hàng)
-        String sql = "SELECT COUNT(*) FROM [User] WHERE Role = 0";
-
-        try ( Connection conn = utils.DbUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);  ResultSet rs = ps.executeQuery()) {
-
     // =========================================================================
-    // 4. Hàm Đếm số Khách Hàng (JDBC Thuần)
+    // 4. Hàm cập nhật thông tin cơ bản (Profile) - JPA
     // =========================================================================
-    public int countVIPCustomers() {
-        int count = 0;
-        // Chú ý: SQL Server dùng [User] hoặc [Users] tuỳ tên bảng của bạn nhé
-        String sql = "SELECT COUNT(*) FROM [User] WHERE Role = 0";
-        
-        try (Connection conn = utils.DbUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            
-            if (rs.next()) {
-                count = rs.getInt(1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return count;
-    }
-
-    // 1. Hàm cập nhật thông tin cơ bản
     public boolean updateProfile(UserDTO user) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -149,15 +114,19 @@ public class UserDAO {
         }
     }
 
-    // 2. Hàm đổi mật khẩu
-    public boolean changePassword(int userId, String newPassword) {
+    // =========================================================================
+    // 5. Hàm đổi mật khẩu (User chủ động đổi) - JPA
+    // =========================================================================
+    public boolean changePassword(int userId, String newRawPassword) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             // Tìm user đó trong DB
             UserDTO user = em.find(UserDTO.class, userId);
             if (user != null) {
-                user.setPassword(newPassword); // Set mật khẩu mới
+                // Băm mật khẩu mới trước khi lưu
+                String hashedNewPass = SecurityUtils.hashPassword(newRawPassword);
+                user.setPassword(hashedNewPass); // Set mật khẩu mới
                 em.merge(user); // Lưu lại
             }
             em.getTransaction().commit();
@@ -171,24 +140,60 @@ public class UserDAO {
             em.close();
         }
     }
-}
-    // Ghi chú: Tui đã xóa cái hàm "registerUser" (dùng JDBC) của bạn đi, 
-    // vì cái hàm "register" dùng JPA (số 3) bên trên đã làm quá tốt nhiệm vụ rồi,
-    // giữ cả hai sẽ bị thừa thãi code.
-    
+
     // =========================================================================
-    // 5. Hàm Đổi/Quên Mật Khẩu (Cập nhật pass mới vào Database theo Email - JDBC)
+    // 6. Hàm Đếm số Khách Hàng VIP (Role = 0) - JDBC Thuần
+    // =========================================================================
+    public int countVIPCustomers() {
+        int count = 0;
+        // Chú ý: SQL Server dùng [User] hoặc [Users] tuỳ tên bảng của bạn nhé
+        String sql = "SELECT COUNT(*) FROM [User] WHERE Role = 0";
+        
+        try (Connection conn = DbUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    // =========================================================================
+    // 7. Hàm Kiểm tra Email có tồn tại không - JDBC Thuần
+    // =========================================================================
+    public boolean checkEmailExist(String email) {
+        String sql = "SELECT 1 FROM [User] WHERE Email = ?";
+        
+        try (Connection conn = DbUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+             
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                // Nếu rs.next() là true nghĩa là tìm thấy email trong DB
+                return rs.next(); 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // =========================================================================
+    // 8. Hàm Quên Mật Khẩu (Cập nhật pass mới theo Email) - JDBC Thuần
     // =========================================================================
     public boolean updatePasswordByEmail(String email, String newRawPassword) {
         // 1. Mang mật khẩu mới đi băm nát ra
-        String hashedNewPass = utils.SecurityUtils.hashPassword(newRawPassword);
+        String hashedNewPass = SecurityUtils.hashPassword(newRawPassword);
         
-        // 2. Câu lệnh SQL Update. 
-        // Lưu ý: Tùy Database của bạn tên bảng là [User] hay Users thì sửa lại cho khớp nhé!
+        // 2. Câu lệnh SQL Update
         String sql = "UPDATE [User] SET Password = ? WHERE Email = ?";
 
-        try (java.sql.Connection conn = utils.DbUtils.getConnection();
-             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DbUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
              
             // Truyền tham số vào dấu ?
             ps.setString(1, hashedNewPass);
@@ -200,30 +205,9 @@ public class UserDAO {
             return rowsAffected > 0;
             
         } catch (Exception e) {
-            System.out.println("Lỗi khi cập nhật mật khẩu: " + e.getMessage());
+            System.out.println("Lỗi khi cập nhật mật khẩu theo Email: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
-    // =========================================================================
-    // 6. Hàm Kiểm tra Email có tồn tại không (Dùng JDBC cho nhanh)
-    // =========================================================================
-    public boolean checkEmailExist(String email) {
-        // Nhớ check lại tên bảng là [User] hay Users nha
-        String sql = "SELECT 1 FROM [User] WHERE Email = ?";
-        
-        try (java.sql.Connection conn = utils.DbUtils.getConnection();
-             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
-             
-            ps.setString(1, email);
-            try (java.sql.ResultSet rs = ps.executeQuery()) {
-                // Nếu rs.next() là true nghĩa là tìm thấy email trong DB
-                return rs.next(); 
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
 }
