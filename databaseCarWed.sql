@@ -1,4 +1,4 @@
-﻿USE master;
+USE master;
 GO
 
 -- 1. KIỂM TRA VÀ TẠO DATABASE
