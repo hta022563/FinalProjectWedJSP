@@ -29,11 +29,11 @@
 
     /* CSS Tùy chỉnh riêng cho Form Đăng Nhập F-AUTO */
     .login-card-premium {
-        background: rgba(22, 22, 22, 0.9); 
+        background: rgba(22, 22, 22, 0.85); 
         border: 1px solid #2a2a2a;
         border-radius: 16px;
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
-        backdrop-filter: blur(5px); 
+        backdrop-filter: blur(10px); 
     }
     .login-card-premium .form-label {
         color: #d4af37 !important; 
@@ -103,9 +103,10 @@
                         </div>
                     </c:if>
                     
-                    
                     <form action="UserController" method="POST">
-                        <span style="color:red"> Tk:admin  MK:123456</span>
+                        <div class="text-center mb-3">
+                            <span style="color: #ff4d4d; font-size: 0.85rem;">(Gợi ý Admin: Tk: admin | MK: 123456)</span>
+                        </div>
                         
                         <input type="hidden" name="action" value="login">
                         
@@ -124,8 +125,7 @@
                                 <input class="form-check-input" type="checkbox" id="remember" name="remember" value="ON" ${not empty cookie.cUser ? 'checked' : ''} style="accent-color: #d4af37; background-color: #333; border-color: #555;">
                                 <label class="form-check-label" for="remember" style="color: #adb5bd; cursor: pointer;">Ghi nhớ tôi</label>
                             </div>
-                            <a href="#" class="text-gold-link" style="font-size: 0.9rem; font-weight: normal;">Quên mật khẩu?</a>
-                           <a href="forgot-password.jsp">Quên mật khẩu?</a>
+                            <a href="forgot-password.jsp" class="text-gold-link" style="font-size: 0.9rem; font-weight: normal;">Quên mật khẩu?</a>
                         </div>
                         
                         <div class="d-grid mb-4">
@@ -136,9 +136,6 @@
                     <div class="text-center mt-2" style="font-size: 0.95rem;">
                         <span style="color: #8a939b;">Chưa có tài khoản?</span> 
                         <a href="register.jsp" class="text-gold-link ms-1">Đăng ký ngay</a>
-                    
-                    <div class="text-center mt-4">
-                        <p>Chưa có tài khoản? <a href="register.jsp" class="fw-bold">Đăng ký ngay</a></p>
                     </div>
                     
                 </div>

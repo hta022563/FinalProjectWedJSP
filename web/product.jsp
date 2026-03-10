@@ -11,7 +11,7 @@
 %>
 
 <style>
-    /* -- CSS CHUẨN DARK MODE LUSURY -- */
+    /* -- CSS CHUẨN DARK MODE LUXURY -- */
     body {
         background-color: #0a0a0a; /* Nền tổng thể đen tuyền */
         color: #f8f9fa;
@@ -37,12 +37,6 @@
         font-size: 1.05rem;
         text-transform: uppercase;
         letter-spacing: 1.5px;
-    /* =========================================
-       1. CSS GIỮ NGUYÊN CHO PHẦN HIỂN THỊ XE 
-       ========================================= */
-    /* Hiệu ứng nổi lên khi di chuột vào xe */
-    .product-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
         border: none;
         padding: 12px 25px;
         transition: all 0.3s ease;
@@ -209,8 +203,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-7 col-md-9">
             
-                
-               <div class="search-glass-wrapper p-3 p-md-4">
+            <div class="search-glass-wrapper p-3 p-md-4">
                 
                 <form action="ProductController" method="GET" class="mb-3">
                     <div class="seamless-search-box">
@@ -226,7 +219,6 @@
                     </span>
                     
                     <c:forEach items="${topSearches}" var="ts">
-                        <%-- ĐÃ ĐỔI SANG ProductController --%>
                         <a href="ProductController?keyword=${ts.keyword}" class="trending-pill">
                             ${ts.keyword} <span class="trending-count">(${ts.searchCount})</span>
                         </a>
@@ -241,13 +233,12 @@
                 </div>
                 
             </div>
-                
-                
-            </div>
+            
         </div>
     </div>
 </div>
-<div class="container mb-5">
+
+<div class="container mb-5 mt-5">
     
     <%-- 1. THANH MENU TABS --%>
     <ul class="nav nav-tabs justify-content-center f-auto-tabs" id="categoryTabs" role="tablist">
