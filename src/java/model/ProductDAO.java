@@ -3,14 +3,20 @@ package model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import utils.JPAUtil;
+import utils.DbUtils;
 
 public class ProductDAO {
 
     public ProductDAO() {
     }
+
+    // =========================================================================
+    // PHẦN 1: CÁC HÀM SỬ DỤNG JPA (Hibernate)
+    // =========================================================================
 
     // 1. Dành cho Admin: Lấy TẤT CẢ sản phẩm (kể cả xe đã ẩn)
     public List<ProductDTO> getAllProducts() {
@@ -32,7 +38,7 @@ public class ProductDAO {
         }
     }
 
-    // 3. Lấy 1 xe theo ID (Để Xem chi tiết hoặc đổ dữ liệu vào Form Sửa)
+    // 3. Lấy 1 xe theo ID
     public ProductDTO getProductById(int id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -66,7 +72,7 @@ public class ProductDAO {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            em.merge(product); // merge dùng để update dữ liệu đã có
+            em.merge(product);
             em.getTransaction().commit();
             return true;
         } catch (Exception e) {
@@ -80,15 +86,15 @@ public class ProductDAO {
         }
     }
 
-    // 6. Hàm XÓA MỀM (Chỉ chuyển Status thành false, không xóa hẳn khỏi Database)
+    // 6. Hàm XÓA MỀM (Chuyển Status thành false)
     public boolean deleteProduct(int id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
             ProductDTO p = em.find(ProductDTO.class, id);
             if (p != null) {
-                p.setStatus(false); // Ẩn xe đi
-                em.merge(p);        // Lưu thay đổi
+                p.setStatus(false);
+                em.merge(p);
             }
             em.getTransaction().commit();
             return true;
@@ -102,14 +108,11 @@ public class ProductDAO {
             em.close();
         }
     }
-    
-    // ------------------------------------------------------------------------
-    // 7. [HÀM MỚI THÊM] Lọc sản phẩm theo CategoryID (Dành cho 2 Tab trên Web)
-    // ------------------------------------------------------------------------
+
+    // 7. Lọc sản phẩm theo CategoryID 
     public List<ProductDTO> getProductsByCategoryId(int categoryId) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            // Lấy sản phẩm theo mã Danh mục VÀ phải đang mở bán (status = true)
             String jpql = "SELECT p FROM ProductDTO p WHERE p.categoryID = :catId AND p.status = true";
             return em.createQuery(jpql, ProductDTO.class)
                      .setParameter("catId", categoryId)
@@ -122,42 +125,18 @@ public class ProductDAO {
         }
     }
 
-    // Hàm đếm tổng số lượng xe đang tồn trong kho
+    // =========================================================================
+    // PHẦN 2: CÁC HÀM SỬ DỤNG JDBC THUẦN (Native SQL)
+    // =========================================================================
+
+    // 8. Hàm đếm tổng số lượng XE HƠI đang tồn trong kho
     public int getTotalStockQuantity() {
         int total = 0;
-        // Cộng dồn tất cả các giá trị trong cột StockQuantity
-        String sql = "SELECT SUM(StockQuantity) FROM Product";
-// Hàm đếm tổng số lượng xe đang tồn trong kho (Chỉ tính xe, không tính phụ kiện)
-public int getTotalStockQuantity() {
-    int total = 0;
-    
-    // CODE MỀM: Thêm điều kiện WHERE CategoryID IN (1, 2, 3) để chỉ cộng dồn xe hơi
-    String sql = "SELECT SUM(StockQuantity) FROM Product WHERE CategoryID IN (1, 2, 3)";
+        String sql = "SELECT SUM(StockQuantity) FROM Product WHERE CategoryID IN (1, 2, 3)";
 
-    try ( Connection conn = utils.DbUtils.getConnection();  
-            PreparedStatement ps = conn.prepareStatement(sql); 
-            ResultSet rs = ps.executeQuery()) {
-
-        if (rs.next()) {
-            total = rs.getInt(1);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return total;
-}
-    
-    public int getTotalAccessoryStock() {
-        int total = 0;
-        
-        // Logic: Cộng dồn StockQuantity nhưng BỎ QUA các CategoryID là 1, 2, 3 (Xe hơi)
-        // Nếu sau này Hảo thêm Category số 4 (Nước hoa), 5 (Đệm ghế) thì nó sẽ tự động được cộng vào đây!
-        String sql = "SELECT SUM(StockQuantity) FROM Product WHERE CategoryID NOT IN (1, 2, 3)";
-        
-        try (Connection conn = utils.DbUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = DbUtils.getConnection();  
+             PreparedStatement ps = conn.prepareStatement(sql); 
              ResultSet rs = ps.executeQuery()) {
-            
             if (rs.next()) {
                 total = rs.getInt(1);
             }
@@ -166,27 +145,36 @@ public int getTotalStockQuantity() {
         }
         return total;
     }
-}
-    return total;
-}
-   // =========================================================================
-    // 7. Hàm TÌM KIẾM SẢN PHẨM THEO TÊN (Khớp chuẩn 9 tham số của ProductDTO)
-    // =========================================================================
-    public List<ProductDTO> searchProductsByName(String keyword) {
-        List<ProductDTO> list = new java.util.ArrayList<>();
+    
+    // 9. Hàm đếm tổng số lượng PHỤ KIỆN
+    public int getTotalAccessoryStock() {
+        int total = 0;
+        String sql = "SELECT SUM(StockQuantity) FROM Product WHERE CategoryID NOT IN (1, 2, 3)";
         
-        // Câu lệnh SQL thuần: Chỉ lấy từ bảng Product, lọc xe đang bán (Status = 1)
+        try (Connection conn = DbUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
+    // 10. Hàm TÌM KIẾM SẢN PHẨM THEO TÊN
+    public List<ProductDTO> searchProductsByName(String keyword) {
+        List<ProductDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM Product WHERE ProductName LIKE ? AND Status = 1";
 
-        try (java.sql.Connection conn = utils.DbUtils.getConnection();
-             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DbUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            // Kẹp thêm % ở 2 đầu để tìm kiếm gần đúng
             ps.setString(1, "%" + keyword + "%");
 
-            try (java.sql.ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    // Gọi đúng hàm khởi tạo 9 tham số của ProductDTO
                     ProductDTO p = new ProductDTO(
                         rs.getInt("ProductID"),
                         rs.getInt("CategoryID"),

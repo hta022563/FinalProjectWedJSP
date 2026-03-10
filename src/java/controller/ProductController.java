@@ -20,44 +20,35 @@ public class ProductController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
 
         String action = request.getParameter("action");
-        String keyword = request.getParameter("keyword"); // Hứng từ khóa nếu có
+        String keyword = request.getParameter("keyword"); 
 
         ProductDAO dao = new ProductDAO();
-        SearchHistoryDAO trendDAO = new SearchHistoryDAO(); // Khởi tạo DAO xu hướng
+        SearchHistoryDAO trendDAO = new SearchHistoryDAO(); 
         
         HttpSession session = request.getSession();
         UserDTO user = (UserDTO) session.getAttribute("user");
 
-        // 1. HIỂN THỊ DANH SÁCH (DÙNG CHUNG CHO ADMIN VÀ KHÁCH)
-        if (action == null || action.equals("list")) {
-            List<ProductDTO> listProduct;
-            
-            // Nếu là Admin (role == 1) thì lấy TẤT CẢ
-            if (user != null && user.getRole() == 1) {
-                listProduct = dao.getAllProducts();
-            } else {
-                // Nếu là Khách thì chỉ lấy hàng ĐANG BÁN
-                listProduct = dao.getActiveProducts();
         // ==========================================================
-        // 1. GỘP CHUNG HIỂN THỊ DANH SÁCH (ADMIN, KHÁCH VÀ TÌM KIẾM)
+        // 1. HIỂN THỊ DANH SÁCH (CÓ TÌM KIẾM VÀ CHIA TAB)
         // ==========================================================
         if (action == null || action.equals("list")) {
             List<ProductDTO> listProduct;
 
-            // TRƯỜNG HỢP 1: CÓ GÕ TÌM KIẾM
+            // NẾU CÓ TÌM KIẾM
             if (keyword != null && !keyword.trim().isEmpty()) {
-                trendDAO.saveOrUpdateSearch(keyword); // Lưu vào DB để đua Top
-                listProduct = dao.searchProductsByName(keyword); // Lấy xe theo tên
-                request.setAttribute("currentKeyword", keyword); // Giữ lại chữ đang gõ trên ô Search
+                trendDAO.saveOrUpdateSearch(keyword); 
+                listProduct = dao.searchProductsByName(keyword); 
+                request.setAttribute("currentKeyword", keyword); 
             } 
-            // TRƯỜNG HỢP 2: KHÔNG TÌM KIẾM (BẤM TỪ MENU VÀO)
+            // NẾU KHÔNG TÌM KIẾM
             else {
-                // Kiểm tra phân quyền: Admin lấy hết, Khách chỉ lấy xe đang bán
+                // Admin thấy hết, Khách thấy xe đang bán
                 if (user != null && user.getRole() == 1) {
                     listProduct = dao.getAllProducts();
                 } else {
@@ -65,57 +56,45 @@ public class ProductController extends HttpServlet {
                 }
             }
 
-            // Lấy Top 4 Xu Hướng nhét vào chung luôn
+            // Lấy Top 4 Xu Hướng
             List<SearchHistoryDTO> topTrending = trendDAO.getTopSearches(4);
+            request.setAttribute("topSearches", topTrending);
             
-            // --- XỬ LÝ CHIA TAB THEO QUY ĐỊNH CỦA NHÓM ---
+            // CHIA TAB (Xe Hơi và Phụ Tùng)
             List<ProductDTO> listCars = new ArrayList<>();
             List<ProductDTO> listParts = new ArrayList<>();
             
             if (listProduct != null) {
                 for (ProductDTO p : listProduct) {
-                    // ĐÃ FIX: Bỏ check null vì getCategoryID trả về kiểu int (không bao giờ null)
                     int catID = p.getCategoryID(); 
-                    
-                    // Theo quy định nhóm: 1:Sedan, 2:Sport, 3:SUV, 4:Bán tải, 5:MPV -> Gom vào TAB XE
                     if (catID >= 1 && catID <= 5) {
-                        listCars.add(p);
-                    } 
-                    // Theo quy định nhóm: 6 là Phụ tùng/Phụ kiện -> Gom vào TAB PHỤ TÙNG
-                    else if (catID == 6) {
-                        listParts.add(p);
+                        listCars.add(p); // Tab Xe
+                    } else if (catID == 6) {
+                        listParts.add(p); // Tab Phụ Tùng
                     }
                 }
             }
             
-            // Gửi dữ liệu xuống product.jsp
+            // Đẩy dữ liệu sang JSP
             request.setAttribute("listCars", listCars);
             request.setAttribute("listParts", listParts);
-            request.setAttribute("listP", listProduct); // List tổng dùng cho Admin Dashboard
+            request.setAttribute("listP", listProduct); // Dùng cho Admin
             
             request.getRequestDispatcher("product.jsp").forward(request, response);
 
-        // 2. CHỨC NĂNG XÓA (ADMIN)
+        // ==========================================================
+        // 2. CHỨC NĂNG XÓA MỀM (ADMIN)
+        // ==========================================================
         } else if (action.equals("delete")) {
             try {
                 int id = Integer.parseInt(request.getParameter("id"));
                 dao.deleteProduct(id);
             } catch (Exception e) { e.printStackTrace(); }
             response.sendRedirect("ProductController"); 
-            // Đóng gói tất cả đẩy sang JSP
-            request.setAttribute("listP", listProduct);
-            request.setAttribute("topSearches", topTrending);
-            request.getRequestDispatcher("product.jsp").forward(request, response);
 
         // ==========================================================
-        // 2. CÁC CHỨC NĂNG CỦA ADMIN (XÓA, SỬA, LƯU)
-        // ==========================================================
-        } else if (action.equals("delete")) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            dao.deleteProduct(id);
-            response.sendRedirect("ProductController");
-
         // 3. MỞ FORM CHỈNH SỬA (ADMIN)
+        // ==========================================================
         } else if (action.equals("edit")) {
             try {
                 int id = Integer.parseInt(request.getParameter("id"));
@@ -126,7 +105,9 @@ public class ProductController extends HttpServlet {
                 response.sendRedirect("ProductController");
             }
 
+        // ==========================================================
         // 4. LƯU SẢN PHẨM (THÊM MỚI HOẶC CẬP NHẬT)
+        // ==========================================================
         } else if (action.equals("save")) {
             try {
                 String idStr = request.getParameter("productID");
@@ -138,7 +119,7 @@ public class ProductController extends HttpServlet {
                 String desc = request.getParameter("description");
                 String img = request.getParameter("imageURL");
                 
-                boolean status = true;
+                boolean status = true; // Mặc định mở bán
                 if (request.getParameter("status") != null) {
                     status = Boolean.parseBoolean(request.getParameter("status"));
                 }
@@ -151,24 +132,8 @@ public class ProductController extends HttpServlet {
                     int id = Integer.parseInt(idStr);
                     dao.updateProduct(new ProductDTO(id, cateID, suppID, name, price, stock, desc, img, status));
                 }
-            } catch (Exception e) { e.printStackTrace(); }
-            
-            String idStr = request.getParameter("productID");
-            int cateID = Integer.parseInt(request.getParameter("categoryID"));
-            int suppID = Integer.parseInt(request.getParameter("supplierID"));
-            String name = request.getParameter("productName");
-            double price = Double.parseDouble(request.getParameter("price"));
-            int stock = Integer.parseInt(request.getParameter("stockQuantity"));
-            String desc = request.getParameter("description");
-            String img = request.getParameter("imageURL");
-
-            boolean status = request.getParameter("status") != null ? Boolean.parseBoolean(request.getParameter("status")) : true;
-
-            if (idStr == null || idStr.isEmpty()) {
-                dao.addProduct(new ProductDTO(0, cateID, suppID, name, price, stock, desc, img, true));
-            } else {
-                int id = Integer.parseInt(idStr);
-                dao.updateProduct(new ProductDTO(id, cateID, suppID, name, price, stock, desc, img, status));
+            } catch (Exception e) { 
+                e.printStackTrace(); 
             }
             response.sendRedirect("ProductController"); 
         }
