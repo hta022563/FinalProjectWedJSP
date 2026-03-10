@@ -3,6 +3,15 @@
 
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
 
+<style>
+    /* Đổi màu viền khi click vào ô nhập liệu (Input, Select, Textarea) sang màu Vàng F-AUTO */
+    .form-control:focus, .form-select:focus {
+        border-color: #d4af37 !important;
+        box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+        outline: 0;
+    }
+</style>
+
     <div class="container-fluid w-75 mx-auto mt-4 mb-5">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-dark text-warning fw-bold fs-5">
@@ -38,12 +47,52 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">ID Danh mục (1: SUV, 2: Sedan...)</label>
-                            <input type="number" name="categoryID" class="form-control border-secondary" value="${product != null ? product.categoryID : '1'}" required>
+                            <label class="form-label fw-bold">Danh mục sản phẩm</label>
+                            <select name="categoryID" class="form-select border-secondary" required>
+                                <option value="" disabled ${empty product ? 'selected' : ''}>-- Chọn danh mục --</option>
+                                <option value="1" ${product.categoryID == 1 ? 'selected' : ''}>1: Sedan</option>
+                                <option value="2" ${product.categoryID == 2 ? 'selected' : ''}>2: Sport (Siêu xe thể thao)</option>
+                                <option value="3" ${product.categoryID == 3 ? 'selected' : ''}>3: SUV & CUV</option>
+                                <option value="4" ${product.categoryID == 4 ? 'selected' : ''}>4: Bán tải</option>
+                                <option value="5" ${product.categoryID == 5 ? 'selected' : ''}>5: MPV (Xe đa dụng)</option>
+                                <option value="6" ${product.categoryID == 6 ? 'selected' : ''}>6: Phụ tùng & Phụ kiện</option>
+                            </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">ID Nhà Cung Cấp</label>
-                            <input type="number" name="supplierID" class="form-control border-secondary" value="${product != null ? product.supplierID : '1'}" required>
+                            <label class="form-label fw-bold">Nhà Cung Cấp (Thương hiệu)</label>
+                            <select name="supplierID" class="form-select border-secondary" required>
+                                <option value="" disabled ${empty product ? 'selected' : ''}>-- Chọn thương hiệu --</option>
+                                
+                                <optgroup label="🚗 CÁC HÃNG XE">
+                                    <option value="1" ${product.supplierID == 1 ? 'selected' : ''}>Toyota</option>
+                                    <option value="2" ${product.supplierID == 2 ? 'selected' : ''}>Honda</option>
+                                    <option value="3" ${product.supplierID == 3 ? 'selected' : ''}>Mercedes-Benz</option>
+                                    <option value="4" ${product.supplierID == 4 ? 'selected' : ''}>BMW</option>
+                                    <option value="5" ${product.supplierID == 5 ? 'selected' : ''}>Porsche</option>
+                                    <option value="6" ${product.supplierID == 6 ? 'selected' : ''}>Lexus</option>
+                                    <option value="7" ${product.supplierID == 7 ? 'selected' : ''}>Ford</option>
+                                    <option value="8" ${product.supplierID == 8 ? 'selected' : ''}>Mazda</option>
+                                    <option value="9" ${product.supplierID == 9 ? 'selected' : ''}>Hyundai</option>
+                                    <option value="10" ${product.supplierID == 10 ? 'selected' : ''}>Kia</option>
+                                    <option value="11" ${product.supplierID == 11 ? 'selected' : ''}>Volvo</option>
+                                    <option value="12" ${product.supplierID == 12 ? 'selected' : ''}>Mitsubishi</option>
+                                    <option value="13" ${product.supplierID == 13 ? 'selected' : ''}>Nissan</option>
+                                    <option value="14" ${product.supplierID == 14 ? 'selected' : ''}>Isuzu</option>
+                                    <option value="15" ${product.supplierID == 15 ? 'selected' : ''}>Suzuki</option>
+                                    <option value="16" ${product.supplierID == 16 ? 'selected' : ''}>Lotus</option>
+                                </optgroup>
+                                
+                                <optgroup label="🔧 HÃNG PHỤ KIỆN / ĐỒ CHƠI">
+                                    <option value="17" ${product.supplierID == 17 ? 'selected' : ''}>Michelin</option>
+                                    <option value="18" ${product.supplierID == 18 ? 'selected' : ''}>Vietmap</option>
+                                    <option value="19" ${product.supplierID == 19 ? 'selected' : ''}>Panasonic</option>
+                                    <option value="20" ${product.supplierID == 20 ? 'selected' : ''}>Steelmate</option>
+                                    <option value="21" ${product.supplierID == 21 ? 'selected' : ''}>70mai</option>
+                                    <option value="22" ${product.supplierID == 22 ? 'selected' : ''}>Areon</option>
+                                    <option value="23" ${product.supplierID == 23 ? 'selected' : ''}>KATA</option>
+                                    <option value="24" ${product.supplierID == 24 ? 'selected' : ''}>Khác (Phụ kiện chung)</option>
+                                </optgroup>
+                            </select>
                         </div>
                     </div>
 

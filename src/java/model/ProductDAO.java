@@ -102,8 +102,27 @@ public class ProductDAO {
             em.close();
         }
     }
-// Hàm đếm tổng số lượng xe đang tồn trong kho
+    
+    // ------------------------------------------------------------------------
+    // 7. [HÀM MỚI THÊM] Lọc sản phẩm theo CategoryID (Dành cho 2 Tab trên Web)
+    // ------------------------------------------------------------------------
+    public List<ProductDTO> getProductsByCategoryId(int categoryId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            // Lấy sản phẩm theo mã Danh mục VÀ phải đang mở bán (status = true)
+            String jpql = "SELECT p FROM ProductDTO p WHERE p.categoryID = :catId AND p.status = true";
+            return em.createQuery(jpql, ProductDTO.class)
+                     .setParameter("catId", categoryId)
+                     .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 
+    // Hàm đếm tổng số lượng xe đang tồn trong kho
     public int getTotalStockQuantity() {
         int total = 0;
         // Cộng dồn tất cả các giá trị trong cột StockQuantity
@@ -123,22 +142,22 @@ public class ProductDAO {
     }
     
     public int getTotalAccessoryStock() {
-    int total = 0;
-    
-    // Logic: Cộng dồn StockQuantity nhưng BỎ QUA các CategoryID là 1, 2, 3 (Xe hơi)
-    // Nếu sau này Hảo thêm Category số 4 (Nước hoa), 5 (Đệm ghế) thì nó sẽ tự động được cộng vào đây!
-    String sql = "SELECT SUM(StockQuantity) FROM Product WHERE CategoryID NOT IN (1, 2, 3)";
-    
-    try (Connection conn = utils.DbUtils.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
+        int total = 0;
         
-        if (rs.next()) {
-            total = rs.getInt(1);
+        // Logic: Cộng dồn StockQuantity nhưng BỎ QUA các CategoryID là 1, 2, 3 (Xe hơi)
+        // Nếu sau này Hảo thêm Category số 4 (Nước hoa), 5 (Đệm ghế) thì nó sẽ tự động được cộng vào đây!
+        String sql = "SELECT SUM(StockQuantity) FROM Product WHERE CategoryID NOT IN (1, 2, 3)";
+        
+        try (Connection conn = utils.DbUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return total;
     }
-    return total;
-}
 }

@@ -52,6 +52,17 @@
             }
             /* Hiệu ứng hover cho link news */
             .nav-link:hover { color: #d4af37 !important; }
+
+            /* -- THÊM MỚI: Hiệu ứng hover cho icon Trang Cá Nhân -- */
+            .profile-icon {
+                transition: transform 0.2s ease, color 0.2s ease;
+                cursor: pointer;
+                font-size: 1.3rem;
+            }
+            .profile-icon:hover {
+                transform: scale(1.2);
+                color: #f1c40f !important; 
+            }
         </style>
     </head>
     <body class="d-flex flex-column min-vh-100">
@@ -94,10 +105,13 @@
                                     <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn
                                 </a>
 
-                                <div class="user-greeting">
-                                    <i class="fa-solid fa-user-circle text-warning"></i> 
-                                    Xin chào, <span class="fw-bold">${sessionScope.user.fullName}</span>
+                                <div class="user-greeting d-flex align-items-center">
+                                    <a href="UserController?action=profile" class="text-warning text-decoration-none me-2" title="Xem thông tin cá nhân">
+                                        <i class="fa-solid fa-user-circle profile-icon"></i> 
+                                    </a>
+                                    <span>Xin chào, <span class="fw-bold">${sessionScope.user.fullName}</span></span>
                                 </div>
+
                                 <a href="UserController?action=logout" class="btn btn-outline-danger btn-sm fw-bold">
                                     <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
                                 </a>
