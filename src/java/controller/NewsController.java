@@ -36,18 +36,18 @@ public class NewsController extends HttpServlet {
                 response.sendRedirect("NewsController");
                 
             } else if ("edit".equals(action)) {
-                // SỬA BÀI VIẾT: Lấy bài cũ lên và đẩy sang JSP để đưa vào form
+                // SỬA BÀI VIẾT
                 int id = Integer.parseInt(request.getParameter("id"));
                 NewsDTO editNews = dao.getNewsByID(id);
-                request.setAttribute("editNews", editNews); // Biến này để form nhận diện là đang Sửa
+                request.setAttribute("editNews", editNews); 
                 
-                // Vẫn phải load danh sách tin tức để hiển thị phần trên
+                // Load danh sách tin tức
                 List<NewsDTO> listNews = dao.getAllNews();
                 request.setAttribute("listN", listNews);
                 request.getRequestDispatcher("news.jsp").forward(request, response);
                 
             } else if ("save".equals(action)) {
-                // LƯU BÀI VIẾT (Dùng cho cả THÊM MỚI và CẬP NHẬT)
+                // LƯU BÀI VIẾT (THÊM MỚI & CẬP NHẬT)
                 String idStr = request.getParameter("newsID");
                 String title = request.getParameter("title");
                 String content = request.getParameter("content");
@@ -62,15 +62,15 @@ public class NewsController extends HttpServlet {
                 news.setPublishDate(new Date());
 
                 if (idStr == null || idStr.trim().isEmpty()) {
-                    dao.addNews(news); // Nếu không có ID -> Thêm mới
+                    dao.addNews(news); 
                 } else {
                     news.setNewsID(Integer.parseInt(idStr));
-                    dao.updateNews(news); // Nếu có ID -> Cập nhật
+                    dao.updateNews(news); 
                 }
                 response.sendRedirect("NewsController");
                 
             } else {
-                // MẶC ĐỊNH LÀ DANH SÁCH (action = list)
+                // MẶC ĐỊNH LÀ DANH SÁCH
                 List<NewsDTO> listNews = dao.getAllNews();
                 request.setAttribute("listN", listNews);
                 request.getRequestDispatcher("news.jsp").forward(request, response);
