@@ -5,13 +5,11 @@
 <%
     int cartBadge = 0;
     try {
-        // Lấy user từ session để đếm giỏ hàng chính xác cho từng người
         UserDTO authUser = (UserDTO) session.getAttribute("user");
         if (authUser != null) {
             CartDAO hCartDAO = new CartDAO();
             CartItemDAO hItemDAO = new CartItemDAO();
 
-            // Lấy giỏ hàng theo ID của người đang đăng nhập
             CartDTO hCart = hCartDAO.getCartByUserId(authUser.getUserID());
             if (hCart != null) {
                 List<CartItemDTO> hItems = hItemDAO.getCartItems(hCart.getCartID());
@@ -62,10 +60,12 @@
                 border-right: 1px solid #6c757d;
                 margin-right: 15px;
             }
-            /* Hiệu ứng hover cho link news */
-            .nav-link:hover { color: #d4af37 !important; }
+            
+            .nav-link:hover { 
+                color: #d4af37 !important; 
+            }
 
-            /* -- THÊM MỚI: Hiệu ứng hover cho icon Trang Cá Nhân -- */
+            /* Hiệu ứng hover cho icon Trang Cá Nhân */
             .profile-icon {
                 transition: transform 0.2s ease, color 0.2s ease;
                 cursor: pointer;
@@ -74,19 +74,20 @@
             .profile-icon:hover {
                 transform: scale(1.2);
                 color: #f1c40f !important; 
-            .nav-link:hover {
-                color: #d4af37 !important;
+            } /* LỖI ĐÃ ĐƯỢC VÁ Ở ĐÂY NÈ */
+
+            /* Nút Trang Quản Trị màu vàng sáng */
+            .btn-gold-nav {
+                background: linear-gradient(135deg, #D4AF37, #FFD700);
+                color: #000 !important;
+                border: none;
+        
+                transition: all 0.5s ease;
             }
-            /* Chỉ 1 class duy nhất để đè màu và thêm hiệu ứng chuẩn Luxury */
-            .btn-gold {
-                color: #D4AF37;
-               
-                background: transparent;
-                transition: all 0.7s ease; /* Chuyển động siêu mượt */
-            }
-            .btn-gold:hover {
-               color: #D4AF37;
-                transform: translateY(-3px); /* Nảy lên một chút cực kỳ tinh tế */
+            .btn-gold-nav:hover {
+                transform: translateX(-2px) scale(1.05);
+               ;
+                color: #000 !important;
             }
         </style>
     </head>
@@ -103,13 +104,12 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" href="home.jsp">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="ProductController">Sản phẩm</a></li>
-
-                        <%-- MỤC TIN TỨC MỚI THÊM --%>
                         <li class="nav-item"><a class="nav-link fw-bold" href="NewsController">Tin tức</a></li>
 
+                        <%-- MỤC TRANG QUẢN TRỊ --%>
                         <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
                             <li class="nav-item ms-3 d-flex align-items-center">
-                                <a class="btn btn-gold rounded-pill fw-bold px-4" href="DashboardController">
+                                <a class="btn btn-gold-nav rounded-pill fw-bold px-4" href="DashboardController">
                                      <i class="fa-solid fa-user-shield"></i> TRANG QUẢN TRỊ
                                 </a>
                             </li>
