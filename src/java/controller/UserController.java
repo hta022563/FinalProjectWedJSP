@@ -27,18 +27,40 @@ public class UserController extends HttpServlet {
 
         HttpSession session = request.getSession();
 
-        // Nút bấm từ form login.jsp
         String txtUsername = request.getParameter("txtUsername");
         String txtPassword = request.getParameter("txtPassword");
+        // Lấy giá trị của ô checkbox "Ghi nhớ tôi"
+        String remember = request.getParameter("remember");
 
         UserDAO udao = new UserDAO();
         UserDTO user = udao.login(txtUsername, txtPassword);
 
         if (user != null) {
-            // Lưu thông tin user vào session
             session.setAttribute("user", user);
+
+            // --- XỬ LÝ COOKIE (GHI NHỚ TÀI KHOẢN) ---
+            // Tạo 2 cái thẻ Cookie để lưu Username và Password
+            javax.servlet.http.Cookie cUser = new javax.servlet.http.Cookie("cUser", txtUsername);
+            javax.servlet.http.Cookie cPass = new javax.servlet.http.Cookie("cPass", txtPassword);
+
+            cUser.setPath("/");
+            cPass.setPath("/");
+
+            if (remember != null) {
+                // Nếu khách có tích chọn -> Lưu Cookie sống 7 ngày (7 * 24 * 60 * 60 giây)
+                cUser.setMaxAge(7 * 24 * 60 * 60);
+                cPass.setMaxAge(7 * 24 * 60 * 60);
+            } else {
+                // Nếu khách KHÔNG tích -> Hủy Cookie ngay lập tức (set thời gian = 0)
+                cUser.setMaxAge(0);
+                cPass.setMaxAge(0);
+            }
+            // Gắn Cookie vào response để gửi về trình duyệt
+            response.addCookie(cUser);
+            response.addCookie(cPass);
+            // ----------------------------------------
+
             url = "home.jsp";
-            // Dùng sendRedirect để đổi hẳn URL thay vì forward
             response.sendRedirect(url);
             return;
         } else {
@@ -62,7 +84,7 @@ public class UserController extends HttpServlet {
         String url = "login.jsp";
         response.sendRedirect(url);
     }
-    
+
     protected void doRegister(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Cài đặt tiếng Việt để lưu FullName có dấu không bị lỗi font
@@ -114,6 +136,70 @@ public class UserController extends HttpServlet {
         }
     }
 
+    // --- HÀM MỚI: XỬ LÝ CẬP NHẬT THÔNG TIN ---
+    protected void doUpdateProfile(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        HttpSession session = request.getSession();
+        UserDTO currentUser = (UserDTO) session.getAttribute("user");
+
+        if (currentUser != null) {
+            String fullName = request.getParameter("txtFullName");
+            String email = request.getParameter("txtEmail");
+            String phone = request.getParameter("txtPhone");
+
+            currentUser.setFullName(fullName);
+            currentUser.setEmail(email);
+            currentUser.setPhone(phone);
+
+            UserDAO dao = new UserDAO();
+            if (dao.updateProfile(currentUser)) {
+                session.setAttribute("user", currentUser); // Cập nhật lại session
+                request.setAttribute("message", "Cập nhật thông tin cá nhân thành công!");
+            } else {
+                request.setAttribute("error", "Lỗi hệ thống! Không thể cập nhật thông tin.");
+            }
+            request.getRequestDispatcher("profile.jsp").forward(request, response);
+        } else {
+            response.sendRedirect("login.jsp"); // Lỡ mất session thì bắt đăng nhập lại
+        }
+    }
+
+    // --- HÀM MỚI: XỬ LÝ ĐỔI MẬT KHẨU ---
+    protected void doChangePassword(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+
+        HttpSession session = request.getSession();
+        UserDTO currentUser = (UserDTO) session.getAttribute("user");
+
+        if (currentUser != null) {
+            String oldPass = request.getParameter("oldPassword");
+            String newPass = request.getParameter("newPassword");
+            String confirmPass = request.getParameter("confirmPassword");
+
+            if (!currentUser.getPassword().equals(oldPass)) {
+                request.setAttribute("error", "Mật khẩu hiện tại không chính xác!");
+            } else if (!newPass.equals(confirmPass)) {
+                request.setAttribute("error", "Mật khẩu xác nhận không trùng khớp!");
+            } else {
+                UserDAO dao = new UserDAO();
+                if (dao.changePassword(currentUser.getUserID(), newPass)) {
+                    currentUser.setPassword(newPass);
+                    session.setAttribute("user", currentUser);
+                    request.setAttribute("message", "Đổi mật khẩu thành công! Vui lòng ghi nhớ mật khẩu mới.");
+                } else {
+                    request.setAttribute("error", "Đổi mật khẩu thất bại do lỗi hệ thống!");
+                }
+            }
+            request.getRequestDispatcher("profile.jsp").forward(request, response);
+        } else {
+            response.sendRedirect("login.jsp");
+        }
+    }
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -127,8 +213,17 @@ public class UserController extends HttpServlet {
             doLogin(request, response);
         } else if (action.equals("logout")) {
             doLogout(request, response);
-        } else if (action.equals("register")) {  
+        } else if (action.equals("register")) {
             doRegister(request, response);
+        } else if (action.equals("profile")) {
+            // Điều hướng sang trang jsp
+            request.getRequestDispatcher("profile.jsp").forward(request, response);
+        } else if (action.equals("updateProfile")) {
+            // Gọi hàm cập nhật
+            doUpdateProfile(request, response);
+        } else if (action.equals("changePassword")) {
+            // Gọi hàm đổi mật khẩu
+            doChangePassword(request, response);
         }
     }
 
@@ -146,6 +241,6 @@ public class UserController extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "UserController handles login and logout via action parameter";
+        return "UserController handles login, logout, register, and profile updates via action parameter";
     }
 }

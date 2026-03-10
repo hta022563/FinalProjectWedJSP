@@ -50,6 +50,7 @@ public class UserDAO {
         }
     }
 
+    // 1. Hàm kiểm tra xem Username đã có ai dùng chưa
     // =========================================================================
     // 2. Hàm kiểm tra xem Username đã có ai dùng chưa
     // =========================================================================
@@ -59,6 +60,9 @@ public class UserDAO {
             String jpql = "SELECT u FROM UserDTO u WHERE u.username = :user";
             TypedQuery<UserDTO> query = em.createQuery(jpql, UserDTO.class);
             query.setParameter("user", username);
+
+            // Nếu danh sách trả về không rỗng -> User đã tồn tại
+            return !query.getResultList().isEmpty();
             
             // Trả về true nếu list không rỗng (nghĩa là user đã tồn tại)
             return !query.getResultList().isEmpty(); 
@@ -76,6 +80,12 @@ public class UserDAO {
         newUser.setPassword(hashedPass); // Tráo đổi pass thật thành pass đã băm
 
         EntityManager em = JPAUtil.getEntityManager();
+        // Bắt buộc phải dùng Transaction khi Insert/Update/Delete
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            // Lưu đối tượng xuống Database
+            em.persist(newUser);
         EntityTransaction tx = em.getTransaction(); 
         try {
             tx.begin();
@@ -92,6 +102,13 @@ public class UserDAO {
             em.close();
         }
     }
+
+    public int countVIPCustomers() {
+        int count = 0;
+        // Đếm những User có Role = 0 (Khách hàng)
+        String sql = "SELECT COUNT(*) FROM [User] WHERE Role = 0";
+
+        try ( Connection conn = utils.DbUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);  ResultSet rs = ps.executeQuery()) {
 
     // =========================================================================
     // 4. Hàm Đếm số Khách Hàng (JDBC Thuần)
@@ -114,6 +131,47 @@ public class UserDAO {
         return count;
     }
 
+    // 1. Hàm cập nhật thông tin cơ bản
+    public boolean updateProfile(UserDTO user) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(user); // Lệnh merge sẽ tự động ghi đè dữ liệu mới vào Database
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    // 2. Hàm đổi mật khẩu
+    public boolean changePassword(int userId, String newPassword) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            // Tìm user đó trong DB
+            UserDTO user = em.find(UserDTO.class, userId);
+            if (user != null) {
+                user.setPassword(newPassword); // Set mật khẩu mới
+                em.merge(user); // Lưu lại
+            }
+            em.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+}
     // Ghi chú: Tui đã xóa cái hàm "registerUser" (dùng JDBC) của bạn đi, 
     // vì cái hàm "register" dùng JPA (số 3) bên trên đã làm quá tốt nhiệm vụ rồi,
     // giữ cả hai sẽ bị thừa thãi code.
