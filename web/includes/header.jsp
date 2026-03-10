@@ -10,19 +10,20 @@
         if (authUser != null) {
             CartDAO hCartDAO = new CartDAO();
             CartItemDAO hItemDAO = new CartItemDAO();
-            
+
             // Lấy giỏ hàng theo ID của người đang đăng nhập
-            CartDTO hCart = hCartDAO.getCartByUserId(authUser.getUserID()); 
-            if(hCart != null) {
+            CartDTO hCart = hCartDAO.getCartByUserId(authUser.getUserID());
+            if (hCart != null) {
                 List<CartItemDTO> hItems = hItemDAO.getCartItems(hCart.getCartID());
-                if(hItems != null) {
-                    for(CartItemDTO it : hItems) {
-                        cartBadge += it.getQuantity(); 
+                if (hItems != null) {
+                    for (CartItemDTO it : hItems) {
+                        cartBadge += it.getQuantity();
                     }
                 }
             }
         }
-    } catch(Exception e) {}
+    } catch (Exception e) {
+    }
     request.setAttribute("cartBadge", cartBadge);
 %>
 <!DOCTYPE html>
@@ -34,15 +35,26 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <style>
-            body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+            body {
+                background-color: #f4f7f6;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
             .luxury-logo {
-                font-size: 1.8rem; font-weight: 900; letter-spacing: 3px;
+                font-size: 1.8rem;
+                font-weight: 900;
+                letter-spacing: 3px;
                 background: linear-gradient(to right, #ffffff 20%, #d4af37 40%, #d4af37 60%, #ffffff 80%);
-                background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
                 animation: shine 4s linear infinite;
             }
-            @keyframes shine { to { background-position: 200% center; } }
-            
+            @keyframes shine {
+                to {
+                    background-position: 200% center;
+                }
+            }
+
             .user-greeting {
                 color: #f8f9fa;
                 font-size: 0.95rem;
@@ -62,6 +74,19 @@
             .profile-icon:hover {
                 transform: scale(1.2);
                 color: #f1c40f !important; 
+            .nav-link:hover {
+                color: #d4af37 !important;
+            }
+            /* Chỉ 1 class duy nhất để đè màu và thêm hiệu ứng chuẩn Luxury */
+            .btn-gold {
+                color: #D4AF37;
+               
+                background: transparent;
+                transition: all 0.7s ease; /* Chuyển động siêu mượt */
+            }
+            .btn-gold:hover {
+               color: #D4AF37;
+                transform: translateY(-3px); /* Nảy lên một chút cực kỳ tinh tế */
             }
         </style>
     </head>
@@ -78,19 +103,19 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" href="home.jsp">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="ProductController">Sản phẩm</a></li>
-                        
+
                         <%-- MỤC TIN TỨC MỚI THÊM --%>
                         <li class="nav-item"><a class="nav-link fw-bold" href="NewsController">Tin tức</a></li>
-                        
+
                         <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
-                            <li class="nav-item ms-3">
-                                <a class="btn btn-danger fw-bold" href="DashboardController">
-                                    <i class="fa-solid fa-user-shield"></i> VÀO TRANG QUẢN TRỊ
+                            <li class="nav-item ms-3 d-flex align-items-center">
+                                <a class="btn btn-gold rounded-pill fw-bold px-4" href="DashboardController">
+                                     <i class="fa-solid fa-user-shield"></i> TRANG QUẢN TRỊ
                                 </a>
                             </li>
                         </c:if>
                     </ul>
-                    
+
                     <div class="d-flex align-items-center">
                         <c:choose>
                             <c:when test="${not empty sessionScope.user}">
@@ -100,7 +125,7 @@
                                         <span class="badge bg-danger rounded-pill ms-1 border border-light">${cartBadge}</span>
                                     </c:if>
                                 </a>
-                                
+
                                 <a href="OrderController?action=history" class="btn btn-outline-info btn-sm border-2 text-white me-3">
                                     <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn
                                 </a>
@@ -116,7 +141,7 @@
                                     <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
                                 </a>
                             </c:when>
-                            
+
                             <c:otherwise>
                                 <a href="login.jsp" class="btn btn-outline-light btn-sm me-2"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</a>
                                 <a href="register.jsp" class="btn btn-warning btn-sm fw-bold"><i class="fa-solid fa-user-plus"></i> Đăng ký</a>

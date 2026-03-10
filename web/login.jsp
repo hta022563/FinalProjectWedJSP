@@ -103,7 +103,10 @@
                         </div>
                     </c:if>
                     
+                    
                     <form action="UserController" method="POST">
+                        <span style="color:red"> Tk:admin  MK:123456</span>
+                        
                         <input type="hidden" name="action" value="login">
                         
                         <div class="mb-3">
@@ -122,6 +125,7 @@
                                 <label class="form-check-label" for="remember" style="color: #adb5bd; cursor: pointer;">Ghi nhớ tôi</label>
                             </div>
                             <a href="#" class="text-gold-link" style="font-size: 0.9rem; font-weight: normal;">Quên mật khẩu?</a>
+                           <a href="forgot-password.jsp">Quên mật khẩu?</a>
                         </div>
                         
                         <div class="d-grid mb-4">
@@ -132,6 +136,9 @@
                     <div class="text-center mt-2" style="font-size: 0.95rem;">
                         <span style="color: #8a939b;">Chưa có tài khoản?</span> 
                         <a href="register.jsp" class="text-gold-link ms-1">Đăng ký ngay</a>
+                    
+                    <div class="text-center mt-4">
+                        <p>Chưa có tài khoản? <a href="register.jsp" class="fw-bold">Đăng ký ngay</a></p>
                     </div>
                     
                 </div>

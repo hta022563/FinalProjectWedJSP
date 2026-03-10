@@ -328,7 +328,7 @@
 
                                             <c:otherwise>
                                                 <c:set var="titleColor" value="text-info" />
-                                                <c:set var="rightTag"><span class="text-muted small font-monospace">#${act.referenceCode}</span></c:set>
+                                                <c:set var="rightTag"><span class="text-white small font-monospace">#${act.referenceCode}</span></c:set>
                                             </c:otherwise>
                                         </c:choose>
 
