@@ -134,7 +134,8 @@ CREATE TABLE News (
     Title NVARCHAR(500),
     Content NVARCHAR(MAX),
     Thumbnail VARCHAR(500),
-    PublishDate DATETIME DEFAULT GETDATE()
+    PublishDate DATETIME DEFAULT GETDATE(),
+    ExternalLink NVARCHAR(MAX)
 );
 
 CREATE TABLE SearchHistory (
