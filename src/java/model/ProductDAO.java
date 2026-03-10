@@ -143,4 +143,42 @@ public int getTotalStockQuantity() {
     }
     return total;
 }
+   // =========================================================================
+    // 7. Hàm TÌM KIẾM SẢN PHẨM THEO TÊN (Khớp chuẩn 9 tham số của ProductDTO)
+    // =========================================================================
+    public List<ProductDTO> searchProductsByName(String keyword) {
+        List<ProductDTO> list = new java.util.ArrayList<>();
+        
+        // Câu lệnh SQL thuần: Chỉ lấy từ bảng Product, lọc xe đang bán (Status = 1)
+        String sql = "SELECT * FROM Product WHERE ProductName LIKE ? AND Status = 1";
+
+        try (java.sql.Connection conn = utils.DbUtils.getConnection();
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // Kẹp thêm % ở 2 đầu để tìm kiếm gần đúng
+            ps.setString(1, "%" + keyword + "%");
+
+            try (java.sql.ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    // Gọi đúng hàm khởi tạo 9 tham số của ProductDTO
+                    ProductDTO p = new ProductDTO(
+                        rs.getInt("ProductID"),
+                        rs.getInt("CategoryID"),
+                        rs.getInt("SupplierID"),
+                        rs.getString("ProductName"),
+                        rs.getDouble("Price"),
+                        rs.getInt("StockQuantity"),
+                        rs.getString("Description"),
+                        rs.getString("ImageURL"),
+                        rs.getBoolean("Status")
+                    );
+                    list.add(p);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi khi tìm kiếm xe: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
