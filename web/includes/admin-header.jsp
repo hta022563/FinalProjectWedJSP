@@ -69,12 +69,17 @@
             <a href="${pageContext.request.contextPath}/PaymentMethodController"><i class="fa-solid fa-credit-card me-2"></i> PT Thanh Toán</a>
             <a href="${pageContext.request.contextPath}/PromotionController"><i class="fa-solid fa-tags me-2"></i> Khuyến Mãi</a>
             <a href="${pageContext.request.contextPath}/ShowroomController"><i class="fa-solid fa-building me-2"></i> Showroom</a>
-
+            <a href="${pageContext.request.contextPath}/NewsController">
+                <i class="fa-solid fa-newspaper me-2"></i>News
+            </a>
+            <a href="${pageContext.request.contextPath}/ProductController">
+                <i class="fa-solid fa-car-side me-2"></i>Sản Phẩm
+            </a>
             <a href="${pageContext.request.contextPath}/home.jsp" class="text-warning"><i class="fa-solid fa-globe me-2"></i> Exit Dashboard</a>
-            
+
             <a href="${pageContext.request.contextPath}/UserController?action=logout" class="text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất</a>
 
-         
+
 
         </div>
 

@@ -1,4 +1,4 @@
-﻿USE CarStore_FinalWeb;
+USE CarStore_FinalWeb;
 GO
 
 -- 1. BƠM DỮ LIỆU DANH MỤC (Category)

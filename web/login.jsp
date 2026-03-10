@@ -22,7 +22,9 @@
                         </div>
                     </c:if>
                     
+                    
                     <form action="UserController" method="POST">
+                        <span style="color:red"> Tk:admin  MK:123456</span>
                         
                         <input type="hidden" name="action" value="login">
                         
@@ -39,12 +41,13 @@
                                 <input class="form-check-input" type="checkbox" id="remember">
                                 <label class="form-check-label" for="remember">Ghi nhớ tôi</label>
                             </div>
-                            <a href="#" class="text-decoration-none">Quên mật khẩu?</a>
+                           <a href="forgot-password.jsp">Quên mật khẩu?</a>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg fw-bold">ĐĂNG NHẬP</button>
                         </div>
                     </form>
+                    
                     
                     <div class="text-center mt-4">
                         <p>Chưa có tài khoản? <a href="register.jsp" class="fw-bold">Đăng ký ngay</a></p>
