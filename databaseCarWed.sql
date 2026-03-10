@@ -1,10 +1,14 @@
 USE master;
 GO
 
--- 1. KIỂM TRA VÀ TẠO DATABASE
--- Sửa lỗi logic: Kiểm tra đúng tên CarStore_FinalWeb trước khi Drop
+-- ==============================================================================
+-- 1. KHỞI TẠO DATABASE (Xóa DB cũ nếu đã tồn tại để làm lại từ đầu)
+-- ==============================================================================
 IF EXISTS (SELECT * FROM sys.databases WHERE name = 'CarStore_FinalWeb')
+BEGIN
+    ALTER DATABASE CarStore_FinalWeb SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
     DROP DATABASE CarStore_FinalWeb;
+END
 GO
 
 CREATE DATABASE CarStore_FinalWeb;
@@ -13,27 +17,13 @@ GO
 USE CarStore_FinalWeb;
 GO
 
--- 2. TẠO LOGIN VÀ USER (Dành cho kết nối từ Java Web/Ứng dụng)
-IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = 'car_admin')
-BEGIN
-    CREATE LOGIN car_admin WITH PASSWORD = 'Password123', CHECK_POLICY = OFF;
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'car_admin')
-BEGIN
-    CREATE USER car_admin FOR LOGIN car_admin;
-    EXEC sp_addrolemember 'db_owner', 'car_admin';
-END
-GO
-
--- 3. TẠO CÁC BẢNG (TABLES)
--- Sử dụng IsActive để quản lý trạng thái (Soft Delete)
-
+-- ==============================================================================
+-- 2. TẠO CẤU TRÚC BẢNG (TABLES)
+-- ==============================================================================
 CREATE TABLE Category (
     CategoryID INT PRIMARY KEY IDENTITY(1,1),
     CategoryName NVARCHAR(255) NOT NULL,
-    IsActive INT DEFAULT 1 -- 1: Đang hoạt động, 0: Đã ẩn
+    IsActive INT DEFAULT 1 
 );
 
 CREATE TABLE Supplier (
@@ -41,13 +31,13 @@ CREATE TABLE Supplier (
     SupplierName NVARCHAR(255) NOT NULL,
     Phone VARCHAR(20),
     Address NVARCHAR(500),
-    IsActive INT DEFAULT 1 -- 1: Đang hợp tác, 0: Ngừng hợp tác
+    IsActive INT DEFAULT 1 
 );
 
 CREATE TABLE PaymentMethod (
     MethodID INT PRIMARY KEY IDENTITY(1,1),
     MethodName NVARCHAR(100) NOT NULL,
-    IsActive INT DEFAULT 1 -- 1: Khả dụng, 0: Tạm khóa
+    IsActive INT DEFAULT 1 
 );
 
 CREATE TABLE Promotion (
@@ -56,7 +46,7 @@ CREATE TABLE Promotion (
     DiscountPercent INT,
     StartDate DATETIME,
     EndDate DATETIME,
-    IsActive INT DEFAULT 1 -- 1: Kích hoạt, 0: Vô hiệu hóa
+    IsActive INT DEFAULT 1 
 );
 
 CREATE TABLE Showroom (
@@ -64,7 +54,7 @@ CREATE TABLE Showroom (
     ShowroomName NVARCHAR(255) NOT NULL,
     Address NVARCHAR(500),
     Hotline VARCHAR(20),
-    IsActive INT DEFAULT 1 -- 1: Đang mở cửa, 0: Đóng cửa
+    IsActive INT DEFAULT 1 
 );
 
 CREATE TABLE [User] (
@@ -86,7 +76,7 @@ CREATE TABLE Product (
     StockQuantity INT,
     Description NVARCHAR(MAX),
     ImageURL VARCHAR(500),
-    [Status] BIT DEFAULT 1 -- [ĐÃ THÊM] 1: Đang bán (True), 0: Đã ẩn (False)
+    [Status] BIT DEFAULT 1 -- 1: Đang bán (True), 0: Đã ẩn (False)
 );
 
 CREATE TABLE Cart (
@@ -146,11 +136,11 @@ CREATE TABLE SearchHistory (
 
 CREATE TABLE Activity_Logs (
     log_id INT IDENTITY(1,1) PRIMARY KEY,
-    log_type VARCHAR(50) NOT NULL,        -- VD: 'IMPORT', 'SECURITY', 'ORDER'
-    title NVARCHAR(255) NOT NULL,         -- VD: 'Nhập kho thành công'
-    created_by NVARCHAR(100),             -- Người thực hiện
+    log_type VARCHAR(50) NOT NULL,        
+    title NVARCHAR(255) NOT NULL,         
+    created_by NVARCHAR(100),             
     created_at DATETIME DEFAULT GETDATE(), 
     reference_code VARCHAR(50),           
-    amount DECIMAL(18, 2) NULL          
+    amount DECIMAL(18, 2) NULL            
 );
 GO

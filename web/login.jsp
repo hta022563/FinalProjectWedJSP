@@ -105,7 +105,9 @@
                     
                     <form action="UserController" method="POST">
                         <div class="text-center mb-3">
-                            <span style="color: #ff4d4d; font-size: 0.85rem;">(Gợi ý Admin: Tk: admin | MK: 123456)</span>
+                            <span style="color:green">TỰ TẠO USER Nhé</span><br>
+                            <span style="color: #ff4d4d; font-size: 0.85rem;">(Gợi ý Admin: Tk: admin_hao | MK: 123456)</span> <br>
+                            <span style="color:#ffffff; font-size: 0.85rem;">(Gợi ý customer: Tk: hao | MK: 1)</span>
                         </div>
                         
                         <input type="hidden" name="action" value="login">
