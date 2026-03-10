@@ -1,19 +1,24 @@
 <%-- File: web/includes/header.jsp --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page import="model.CartDAO, model.CartItemDAO, model.CartDTO, model.CartItemDTO, java.util.List"%>
+<%@page import="model.CartDAO, model.CartItemDAO, model.CartDTO, model.CartItemDTO, model.UserDTO, java.util.List"%>
 <%
     int cartBadge = 0;
     try {
-        CartDAO hCartDAO = new CartDAO();
-        CartItemDAO hItemDAO = new CartItemDAO();
-        // Giả sử đang fix cứng UserId = 1 để test (Sau này bạn có thể thay bằng ID của sessionScope.user)
-        CartDTO hCart = hCartDAO.getCartByUserId(1); 
-        if(hCart != null) {
-            List<CartItemDTO> hItems = hItemDAO.getCartItems(hCart.getCartID());
-            if(hItems != null) {
-                for(CartItemDTO it : hItems) {
-                    cartBadge += it.getQuantity(); 
+        // Lấy user từ session để đếm giỏ hàng chính xác cho từng người
+        UserDTO authUser = (UserDTO) session.getAttribute("user");
+        if (authUser != null) {
+            CartDAO hCartDAO = new CartDAO();
+            CartItemDAO hItemDAO = new CartItemDAO();
+            
+            // Lấy giỏ hàng theo ID của người đang đăng nhập
+            CartDTO hCart = hCartDAO.getCartByUserId(authUser.getUserID()); 
+            if(hCart != null) {
+                List<CartItemDTO> hItems = hItemDAO.getCartItems(hCart.getCartID());
+                if(hItems != null) {
+                    for(CartItemDTO it : hItems) {
+                        cartBadge += it.getQuantity(); 
+                    }
                 }
             }
         }
@@ -38,7 +43,6 @@
             }
             @keyframes shine { to { background-position: 200% center; } }
             
-            /* Căn chỉnh text tên người dùng cho đẹp */
             .user-greeting {
                 color: #f8f9fa;
                 font-size: 0.95rem;
@@ -46,6 +50,8 @@
                 border-right: 1px solid #6c757d;
                 margin-right: 15px;
             }
+            /* Hiệu ứng hover cho link news */
+            .nav-link:hover { color: #d4af37 !important; }
         </style>
     </head>
     <body class="d-flex flex-column min-vh-100">
@@ -59,9 +65,12 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link active" href="home.jsp">Trang chủ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="home.jsp">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link" href="ProductController">Sản phẩm</a></li>
-                        <%-- Kiểm tra Admin --%>
+                        
+                        <%-- MỤC TIN TỨC MỚI THÊM --%>
+                        <li class="nav-item"><a class="nav-link fw-bold" href="NewsController">Tin tức</a></li>
+                        
                         <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
                             <li class="nav-item ms-3">
                                 <a class="btn btn-danger fw-bold" href="DashboardController">
@@ -72,13 +81,8 @@
                     </ul>
                     
                     <div class="d-flex align-items-center">
-                        
-                        <%-- KIỂM TRA ĐĂNG NHẬP Ở ĐÂY --%>
                         <c:choose>
-                            <%-- NẾU ĐÃ ĐĂNG NHẬP --%>
                             <c:when test="${not empty sessionScope.user}">
-                                
-                                <%-- Giỏ hàng với Badge số lượng --%>
                                 <a href="CartController?action=viewCart" class="btn btn-light btn-sm me-2 fw-bold">
                                     <i class="fa-solid fa-cart-shopping text-dark"></i> <span class="text-dark">Giỏ hàng</span> 
                                     <c:if test="${cartBadge > 0}">
@@ -86,7 +90,6 @@
                                     </c:if>
                                 </a>
                                 
-                                <%-- Lịch sử đơn --%>
                                 <a href="OrderController?action=history" class="btn btn-outline-info btn-sm border-2 text-white me-3">
                                     <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn
                                 </a>
@@ -100,16 +103,11 @@
                                 </a>
                             </c:when>
                             
-                        
-
-                            
-                            <%-- NẾU CHƯA ĐĂNG NHẬP --%>
                             <c:otherwise>
                                 <a href="login.jsp" class="btn btn-outline-light btn-sm me-2"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</a>
                                 <a href="register.jsp" class="btn btn-warning btn-sm fw-bold"><i class="fa-solid fa-user-plus"></i> Đăng ký</a>
                             </c:otherwise>
                         </c:choose>
-                        
                     </div>
                 </div>
             </div>
