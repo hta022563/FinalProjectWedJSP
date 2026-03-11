@@ -181,7 +181,7 @@
     }
 </style>
 
-<div class="hero-banner d-flex align-items-center">
+<div id="hero-banner" class="hero-banner d-flex align-items-center" style="transition: opacity 0.1s ease-out;">
     <div class="hero-overlay"></div>
     <div class="container position-relative z-index-1">
         <div class="col-md-8 col-lg-6">
@@ -357,8 +357,6 @@
                         <p class="text-secondary small mb-4" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                             Tuyệt tác thể thao đến từ Đức đã sẵn sàng để khách hàng chiêm ngưỡng và lái thử với nhiều nâng cấp đáng giá về động cơ.
                         </p>
-                        <!--                        <a href="NewsController" class="text-white text-decoration-none border-bottom border-warning pb-1" style="font-size: 0.85rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#fff'">Đọc tiếp <i class="fa-solid fa-arrow-right ms-1"></i></a>
- -->                  
                     </div>
                 </div>
             </div>
@@ -374,8 +372,6 @@
                         <p class="text-secondary small mb-4" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                             Cùng khám phá khoang nội thất thương gia hạng nhất và các công nghệ an toàn dẫn đầu thế giới trên mẫu xe sedan đầu bảng.
                         </p>
-                        <!--                         <a href="NewsController" class="text-white text-decoration-none border-bottom border-warning pb-1" style="font-size: 0.85rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#fff'">Đọc tiếp <i class="fa-solid fa-arrow-right ms-1"></i></a>
- -->
                     </div>
                 </div>
             </div>
@@ -391,7 +387,6 @@
                         <p class="text-secondary small mb-4" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                             Sự kiện quy tụ hàng chục mẫu siêu xe hiếm nhất thế giới sẽ diễn ra vào cuối tháng này dành riêng cho khách hàng VIP.
                         </p>
-                        <!-- <a href="NewsController" class="text-white text-decoration-none border-bottom border-warning pb-1" style="font-size: 0.85rem; transition: 0.3s;" onmouseover="this.style.color='#D4AF37'" onmouseout="this.style.color='#fff'">Đọc tiếp <i class="fa-solid fa-arrow-right ms-1"></i></a> --> 
                     </div>
                 </div>
             </div>
@@ -402,5 +397,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    window.addEventListener('scroll', function() {
+        var banner = document.getElementById('hero-banner');
+        if (banner) {
+            var scrollPos = window.scrollY;
+            var opacityValue = 1 - (scrollPos / 600);
+            if (opacityValue < 0) opacityValue = 0;
+            banner.style.opacity = opacityValue;
+        }
+    });
+</script>
 
 <jsp:include page="includes/footer.jsp"></jsp:include>

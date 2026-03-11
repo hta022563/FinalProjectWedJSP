@@ -14,9 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.ActivityDAO;
 import model.OrderDAO;
+import model.OrderDTO;
 import model.ProductDAO;
 import model.ProductDTO;
 import model.UserDAO;
+
 
 /**
  *
@@ -116,7 +118,8 @@ public class DashboardController extends HttpServlet {
 // 2. NHÉT VÀO REQUEST (Tên biến phải khớp 100% với tên trong c:forEach)
             request.setAttribute("productList", listProduct);
             // 3. [R] READ - LẤY DỮ LIỆU HIỂN THỊ
-            request.setAttribute("listActivities", actDAO.getRecentActivities(5));
+List<OrderDTO> listAllOrders = orderDAO.getAllOrders();
+            request.setAttribute("listAllOrders", listAllOrders);
 
             String type = request.getParameter("type");
             if ("ajax".equals(type)) {
@@ -131,7 +134,8 @@ public class DashboardController extends HttpServlet {
             e.printStackTrace();
             response.sendRedirect("home.jsp");
         }
-
+model.OrderDAO orderDAO = new model.OrderDAO();
+request.setAttribute("listAllOrders", orderDAO.getAllOrders());
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

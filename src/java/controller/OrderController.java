@@ -4,9 +4,7 @@
  */
 package controller;
 
-import model.ActivityDAO; // Hoặc thư mục chứa ActivityDAO của Hảo
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,13 +13,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.CartDAO;
-import model.CartItemDAO;
+import javax.servlet.http.HttpSession;
 import model.OrderDAO;
 import model.OrderDTO;
 import model.OrderDetailDAO;
 import model.OrderDetailDTO;
-
+import model.UserDTO;
 /**
  *
  * @author AngDeng
@@ -46,71 +43,21 @@ public class OrderController extends HttpServlet {
         OrderDAO orderDAO = new OrderDAO();
 
         try {
-            int userId = 1; // User test
-
+            HttpSession session = request.getSession();
+            UserDTO user = (UserDTO) session.getAttribute("user");
+            if (user == null) {
+                response.sendRedirect("login.jsp");
+                return; 
+            }
+            int userId = user.getUserID();
+            
             if ("checkout".equals(action)) {
-                int methodId = 1;
-                Integer promotionId = null;
-                String shippingAddress = "Giao xe tại Showroom F-Auto";
-
-                // BƯỚC 1: Xử lý nghiệp vụ chính
-                boolean isSuccess = orderDAO.checkout(userId, methodId, promotionId, shippingAddress);
-
+                boolean isSuccess = orderDAO.checkout(userId, 1, null, "Giao xe tại Showroom F-Auto");
                 if (isSuccess) {
                     request.setAttribute("msg", "Ting ting! Chốt đơn siêu xe thành công!");
-
-                    // ========================================================
-                    // 🚀 BƯỚC 2: KỸ THUẬT GHI VẾT (LOGGING) TỰ ĐỘNG - VERSION PRO
-                    // ========================================================
-                    try {
-                        ActivityDAO actDAO = new ActivityDAO();
-                        OrderDetailDAO detailDAO = new OrderDetailDAO(); // Gọi thêm DAO chi tiết để lấy tên xe
-
-                        // Lấy danh sách đơn hàng mới nhất để truy xuất ID vừa tạo
-                        List<OrderDTO> recentOrders = orderDAO.getOrdersByUserId(userId);
-
-                        if (recentOrders != null && !recentOrders.isEmpty()) {
-                            OrderDTO newOrder = recentOrders.get(0);
-
-                            // 1. Lấy danh sách chi tiết của đơn hàng này
-                            List<OrderDetailDTO> details = detailDAO.getDetailsByOrderId(newOrder.getOrderID());
-
-                            // 2. Dùng StringBuilder để gom tên tất cả xe khách vừa mua
-                            StringBuilder carNames = new StringBuilder();
-                            for (int i = 0; i < details.size(); i++) {
-                                String name = detailDAO.getProductName(details.get(i).getProductID());
-                                carNames.append(name);
-                                if (i < details.size() - 1) {
-                                    carNames.append(", "); // Thêm dấu phẩy nếu mua nhiều xe
-                                }
-                            }
-
-                            // 3. Tiêu đề giờ đây sẽ hiển thị tên xe thực tế thay vì chỉ hiện mã số!
-                            String title = "Đặt hàng thành công: " + carNames.toString();
-                            String refCode = "ORD-" + newOrder.getOrderID();
-                            Double amount = newOrder.getTotalAmount().doubleValue();
-
-                            // Ghi log xuống Database
-                            actDAO.logActivity("ORDER", title, "User ID: " + userId, refCode, amount);
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Lỗi ghi log chi tiết: " + e.getMessage());
-                    }
-                    // ========================================================
                 } else {
                     request.setAttribute("error", "Lỗi: Giỏ hàng trống hoặc hệ thống đang bận!");
                 }
-
-                // BƯỚC 3: Đẩy ra giao diện Lịch sử đặt hàng
-                List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
-                request.setAttribute("listOrders", listOrders);
-                request.getRequestDispatcher("order-history.jsp").forward(request, response);
-
-            } else if ("history".equals(action)) {
-                List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
-                request.setAttribute("listOrders", listOrders);
-                request.getRequestDispatcher("order-history.jsp").forward(request, response);
-
             } else if ("detail".equals(action)) {
                 String orderIdStr = request.getParameter("id");
                 if (orderIdStr != null && !orderIdStr.isEmpty()) {
@@ -118,33 +65,40 @@ public class OrderController extends HttpServlet {
                     OrderDetailDAO detailDAO = new OrderDetailDAO();
                     List<OrderDetailDTO> listDetails = detailDAO.getDetailsByOrderId(orderId);
                     Map<Integer, String> productNames = new HashMap<>();
-                    for (OrderDetailDTO item : listDetails) {
+                    for(OrderDetailDTO item : listDetails) {
                         productNames.put(item.getProductID(), detailDAO.getProductName(item.getProductID()));
-                    }
+                    }                   
                     request.setAttribute("listDetails", listDetails);
                     request.setAttribute("productNames", productNames);
                     request.setAttribute("orderId", orderId);
                     request.getRequestDispatcher("order-detail.jsp").forward(request, response);
-                } else {
-                    response.sendRedirect("OrderController?action=history");
-                }
-
+                    return; 
+                } 
             } else if ("delete".equals(action)) {
                 String orderIdStr = request.getParameter("id");
                 if (orderIdStr != null && !orderIdStr.isEmpty()) {
-                    int orderId = Integer.parseInt(orderIdStr);
-                    boolean isDeleted = orderDAO.deleteOrder(orderId);
-                    if (isDeleted) {
-                        request.setAttribute("msg", "Đã xóa đơn hàng thành công!");
-                    }
+                    boolean isDeleted = orderDAO.deleteOrder(Integer.parseInt(orderIdStr));
+                    if (isDeleted) { request.setAttribute("msg", "Đã xóa đơn hàng thành công!"); }
                 }
-                List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
-                request.setAttribute("listOrders", listOrders);
-                request.getRequestDispatcher("order-history.jsp").forward(request, response);
-
-            } else {
-                response.sendRedirect("home.jsp");
+            } else if ("updateStatus".equals(action)) {
+                if (user != null && user.getRole() == 1) {
+                    String orderIdStr = request.getParameter("orderId");
+                    String newStatus = request.getParameter("status"); 
+                    if (orderIdStr != null && newStatus != null) {
+                        orderDAO.updateOrderStatus(Integer.parseInt(orderIdStr), newStatus);
+                    }
+                    response.sendRedirect("DashboardController"); 
+                    return;
+                } else {
+                    response.sendRedirect("home.jsp");
+                    return;
+                }
             }
+            
+            List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
+            request.setAttribute("listOrders", listOrders);
+            request.getRequestDispatcher("order-history.jsp").forward(request, response);
+
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Hệ thống đang bảo trì!");

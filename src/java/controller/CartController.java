@@ -15,10 +15,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.CartDAO;
 import model.CartDTO;
 import model.CartItemDAO;
 import model.CartItemDTO;
+import model.UserDTO;
 import utils.JPAUtil;
 /**
  *
@@ -45,7 +47,15 @@ public class CartController extends HttpServlet {
         CartItemDAO cartItemDAO = new CartItemDAO();
 
         try {
-            int userId = 1; // Mặc định User số 1
+            HttpSession session = request.getSession();
+            UserDTO user = (UserDTO) session.getAttribute("user");
+            
+            // CHỐT CHẶN: Nếu chưa đăng nhập -> Ép văng về trang Đăng nhập
+            if (user == null) {
+                response.sendRedirect("login.jsp");
+                return; 
+            }
+            int userId = user.getUserID();
 
             if ("addToCart".equals(action)) {
                 String productIdStr = request.getParameter("productId");
@@ -67,12 +77,10 @@ public class CartController extends HttpServlet {
                 Map<Integer, BigDecimal> productPrices = new HashMap<>();
                 BigDecimal cartTotal = BigDecimal.ZERO; 
                 
-                // TỰ ĐỘNG LẤY GIÁ TRỰC TIẾP KHÔNG CẦN QUA HÀM CỦA DAO
                 EntityManager em = JPAUtil.getEntityManager();
                 try {
                     for (CartItemDTO item : cartItems) {
-                        Object priceObj = em.createNativeQuery("SELECT Price FROM Product WHERE ProductID = ?")
-                                            .setParameter(1, item.getProductID()).getSingleResult();
+                        Object priceObj = em.createNativeQuery("SELECT Price FROM Product WHERE ProductID = ?").setParameter(1, item.getProductID()).getSingleResult();
                         BigDecimal price = new BigDecimal(priceObj.toString());
                         productPrices.put(item.getProductID(), price);
                         cartTotal = cartTotal.add(price.multiply(new BigDecimal(item.getQuantity())));

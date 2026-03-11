@@ -108,8 +108,6 @@ public class OrderDAO {
     }
     public Double getTotalRevenue() {
     Double total = 0.0;
-    // Dùng hàm SUM() của SQL để cộng dồn cột TotalAmount
-    // (Có thể thêm WHERE Status = 'SUCCESS' nếu Hảo muốn chỉ tính đơn đã giao)
     String sql = "SELECT SUM(TotalAmount) FROM [Order]";
     
     try (Connection conn = utils.DbUtils.getConnection();
@@ -124,4 +122,31 @@ public class OrderDAO {
     }
     return total != null ? total : 0.0;
 }
+    public List<OrderDTO> getAllOrders() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT o FROM OrderDTO o ORDER BY o.orderDate DESC", OrderDTO.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+    public boolean updateOrderStatus(int orderId, String newStatus) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            OrderDTO order = em.find(OrderDTO.class, orderId);
+            if (order != null) {
+                order.setStatus(newStatus); // Cập nhật trạng thái mới
+                em.merge(order);
+            }
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            return false;
+        } finally {
+            em.close();
+        }
+    }
 }
