@@ -5,6 +5,7 @@
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
 
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         /* ==========================================================
@@ -17,7 +18,6 @@
             --m-glass: rgba(15, 23, 42, 0.8);
         }
 
-        /* ÉP TOÀN BỘ HỆ THỐNG SANG DARK MODE - KHÔNG CHỪA KHOẢNG TRẮNG */
         html, body, .grand-wrapper, .main-viewport, .container-fluid {
             background-color: var(--dark-void) !important;
             color: #f1f5f9 !important;
@@ -32,16 +32,15 @@
             background: var(--dark-void) !important;
         }
 
-        /* VÙNG NỘI DUNG CHÍNH - TỰ ĐỘNG LẤP ĐẦY KHOẢNG TRỐNG */
         .main-viewport {
-            flex: 1; /* Ép nó chiếm toàn bộ phần còn lại bên phải Sidebar */
+            flex: 1; 
             min-width: 0;
             padding: 40px !important;
             background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.05), transparent 40%) !important;
         }
 
         /* ==========================================================
-           2. HERO TERMINAL: PHỤC HỒI ẢNH XE CHÌM (DƯỚI CHỮ)
+           2. HERO TERMINAL: PHỤC HỒI ẢNH XE CHÌM
            ========================================================== */
         .terminal-hero {
             position: relative;
@@ -55,155 +54,107 @@
 
         .hero-bg-car {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('IMG/Por.jpg');
             background-size: cover;
             background-position: center;
             z-index: 0;
-            filter: brightness(0.2) contrast(1.2); /* Làm xe chìm sâu để nổi chữ */
+            filter: brightness(0.2) contrast(1.2); 
             transform: scale(1.02);
             transition: 15s linear;
         }
-        .terminal-hero:hover .hero-bg-car {
-            transform: scale(1.1);
-        }
+        .terminal-hero:hover .hero-bg-car { transform: scale(1.1); }
 
         .hero-mask {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(90deg, #2e3241 30%, transparent);
             z-index: 1;
         }
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-        }
+        .hero-content { position: relative; z-index: 2; width: 100%; }
 
         .hud-clock {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 4rem;
-            font-weight: 800;
-            letter-spacing: -2px;
+            font-size: 4rem; font-weight: 800; letter-spacing: -2px;
             background: linear-gradient(to bottom right, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
         /* ==========================================================
-           3. MODULE CARDS & TABLES (CYBER DARK STYLE)
+           3. MODULE CARDS & TABLES
            ========================================================== */
         .cyber-metric {
             background: rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 25px;
-            padding: 35px 30px;
-            transition: 0.3s;
+            border-radius: 25px; padding: 35px 30px; transition: 0.3s;
         }
-        .cyber-metric:hover {
-            border-color: var(--m-cyan);
-            transform: translateY(-5px);
-        }
+        .cyber-metric:hover { border-color: var(--m-cyan); transform: translateY(-5px); }
 
         .module-panel {
-            background: var(--m-glass);
-            border-radius: 35px;
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 35px;
+            background: var(--m-glass); border-radius: 35px;
+            border: 1px solid rgba(255,255,255,0.05); padding: 35px;
         }
 
-        .matrix-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-        }
-        .matrix-table thead th {
-            color: #94a3b8;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 20px;
-            border: none;
-            background: transparent !important;
-        }
-        .matrix-table tbody tr {
-            background: rgba(255, 255, 255, 0.02) !important;
-            transition: 0.2s;
-        }
-        .matrix-table td {
-            padding: 20px;
-            border: none;
-            vertical-align: middle;
-            background: transparent !important;
-        }
+        .matrix-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        .matrix-table thead th { color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; padding: 20px; border: none; background: transparent !important; }
+        .matrix-table tbody tr { background: rgba(255, 255, 255, 0.02) !important; transition: 0.2s; }
+        .matrix-table td { padding: 20px; border: none; vertical-align: middle; background: transparent !important; }
 
-        .car-snap {
-            width: 120px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .pulse {
-            width: 10px;
-            height: 10px;
-            background: #10b981;
-            border-radius: 50%;
-            animation: blink 2s infinite;
-        }
-        /* Custom Scrollbar cho phong cách Cyberpunk */
-        .cyber-feed::-webkit-scrollbar {
-            width: 6px;
-        }
-        .cyber-feed::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 10px;
-        }
-        .cyber-feed::-webkit-scrollbar-thumb {
-            background: rgba(251, 191, 36, 0.3);
-            border-radius: 10px;
-        }
-        .cyber-feed::-webkit-scrollbar-thumb:hover {
-            background: rgba(251, 191, 36, 0.8);
-        }
+        .car-snap { width: 120px; height: 70px; object-fit: cover; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .pulse { width: 10px; height: 10px; background: #10b981; border-radius: 50%; animation: blink 2s infinite; }
+        
+        .cyber-feed::-webkit-scrollbar { width: 6px; }
+        .cyber-feed::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
+        .cyber-feed::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.3); border-radius: 10px; }
+        .cyber-feed::-webkit-scrollbar-thumb:hover { background: rgba(251, 191, 36, 0.8); }
 
-        /* Hiệu ứng Hover cho từng dòng Log */
-        .log-row {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
-        .log-row:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateX(5px);
-            box-shadow: -5px 0 15px rgba(0,0,0,0.2);
-        }
+        .log-row { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+        .log-row:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.15); transform: translateX(5px); box-shadow: -5px 0 15px rgba(0,0,0,0.2); }
+        .log-actions { opacity: 0; transition: 0.3s; }
+        .log-row:hover .log-actions { opacity: 1; }
+        
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* Nút thao tác ẩn/hiện thông minh */
-        .log-actions {
-            opacity: 0;
-            transition: 0.3s;
-        }
-        .log-row:hover .log-actions {
-            opacity: 1;
-        }
-        @keyframes blink {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
+        /* ================= CSS CHUẨN CHO POPUP CYBERPUNK ================= */
+        .swal-cyber-popup {
+            border: 1px solid var(--m-cyan) !important;
+            border-radius: 15px !important;
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.2) !important;
         }
     </style>
+
+    <script>
+        function dieuPhoiDon(event, url, actionType, orderId) {
+            event.preventDefault(); // Chặn chuyển link tức thì
+            let titleText = ''; let htmlText = ''; let confirmColor = ''; let btnClass = '';
+            
+            if(actionType === 'duyet') {
+                titleText = 'XÁC NHẬN DUYỆT ĐƠN'; htmlText = 'Kích hoạt hợp đồng mã <b style="color: #06b6d4;">#' + orderId + '</b>?'; confirmColor = '#06b6d4'; btnClass = 'btn-outline-info';
+            } else if(actionType === 'giao') {
+                titleText = 'BÀN GIAO XE'; htmlText = 'Chuyển hợp đồng mã <b style="color: #6366f1;">#' + orderId + '</b> sang trạng thái ĐANG GIAO?'; confirmColor = '#6366f1'; btnClass = 'btn-outline-primary';
+            } else if(actionType === 'chot') {
+                titleText = 'HOÀN TẤT GIAO DỊCH'; htmlText = 'Xác nhận hợp đồng mã <b style="color: #10b981;">#' + orderId + '</b> đã giao thành công?'; confirmColor = '#10b981'; btnClass = 'btn-outline-success';
+            }
+
+            Swal.fire({
+                title: '<span style="font-family: \'JetBrains Mono\', monospace; color: ' + confirmColor + ';">' + titleText + '</span>',
+                html: '<span style="color: #ccc; font-family: \'Inter\', sans-serif;">' + htmlText + '</span>',
+                icon: 'warning', iconColor: confirmColor, background: '#020617',
+                showCancelButton: true, confirmButtonText: 'Tiến Hành', cancelButtonText: 'Hủy Bỏ',
+                customClass: { popup: 'swal-cyber-popup', confirmButton: 'btn ' + btnClass + ' rounded-pill px-4 mx-2 fw-bold', cancelButton: 'btn btn-outline-secondary text-white rounded-pill px-4 mx-2 fw-bold border-secondary' },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: '<span style="color: ' + confirmColor + '; font-family: \'JetBrains Mono\', monospace;">Đang đồng bộ Data...</span>',
+                        background: '#020617', allowOutsideClick: false,
+                        didOpen: () => { Swal.showLoading(); setTimeout(() => { window.location.href = url; }, 800); }
+                    });
+                }
+            });
+        }
+    </script>
 
     <div class="grand-wrapper">
         <div class="main-viewport">
@@ -237,7 +188,6 @@
                             <i class="fa-solid fa-toolbox fs-4"></i>
                         </div>
                         <h2 class="fw-bold m-0 text-white">
-                        <%-- Gọi biến totalAccessories từ Controller sang --%>
                         <c:choose>
                             <c:when test="${totalAccessories > 0}">
                                 <fmt:formatNumber value="${totalAccessories}" type="number" pattern="#,###"/>
@@ -251,11 +201,9 @@
             <div class="col-md-3">
                 <div class="cyber-metric">
                     <div class="p-3 bg-info bg-opacity-10 text-info rounded-4 d-inline-block mb-3">
-
                         <i class="fa-solid fa-car-side fs-4"></i>
                     </div>
                     <h2 class="fw-bold m-0 text-white">
-                        <%-- Gọi biến totalStock từ Controller và format dấu phẩy --%>
                         <fmt:formatNumber value="${totalStock}" type="number" pattern="#,###"/>
                     </h2>
                     <small class="text-white fw-bold d-block mt-1">KHO XE SẴN SÀNG</small>
@@ -267,7 +215,6 @@
                         <i class="fa-solid fa-users fs-4"></i>
                     </div>
                     <h2 class="fw-bold m-0 text-white">
-                        <%-- Gọi biến totalCustomers từ Controller truyền sang --%>
                         <fmt:formatNumber value="${totalCustomers}" type="number" pattern="#,###"/>
                     </h2>
                     <small class="text-white fw-bold d-block mt-1">KHÁCH HÀNG VIP</small>
@@ -278,108 +225,75 @@
                     <div class="p-3 bg-success bg-opacity-10 text-success rounded-4 d-inline-block mb-3">
                         <i class="fa-solid fa-vault fs-4"></i> 
                     </div>
-
-                    <%-- Gọi biến đã được format gọn gàng từ Controller sang --%>
                     <h2 class="fw-bold m-0 text-white">${totalRevenue}</h2>
-
                     <small class="text-white fw-bold d-block mt-1">DOANH THU MỤC TIÊU</small>
                 </div>
             </div>
         </div>
 
         <div class="row g-5 mb-5">
-            <%-- Đã mở rộng Luồng Giao Dịch ra chiếm trọn chiều ngang (col-12) --%>
             <div class="col-12">
                 <div class="module-panel h-100 p-4 rounded-4 shadow-lg" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05);">
-
                     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-25 pb-3">
                         <h5 class="fw-bold m-0 text-white" style="letter-spacing: 1px;">
-                            <i class="fa-solid fa-bolt text-warning me-2" style="text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);"></i>
-                            LUỒNG GIAO DỊCH
+                            <i class="fa-solid fa-bolt text-warning me-2" style="text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);"></i> LUỒNG GIAO DỊCH
                         </h5>
                         <a href="DashboardController" class="btn btn-sm btn-outline-warning rounded-pill px-3 transition-all" title="Làm mới dữ liệu">
                             <i class="fa-solid fa-rotate-right"></i> Đồng bộ
                         </a>
                     </div>
-
                     <div class="cyber-feed pe-2" style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
                         <c:choose>
-                            <%-- TRƯỜNG HỢP 1: CÓ DỮ LIỆU --%>
                             <c:when test="${not empty listActivities}">
                                 <c:forEach items="${listActivities}" var="act">
                                     <div class="log-row d-flex align-items-center p-3 rounded-4 mb-3 position-relative">
-
-                                        <%-- Phân loại cấu hình (Đã lược bỏ hoàn toàn icon ở đầu) --%>
                                         <c:choose>
                                             <c:when test="${act.type == 'IMPORT'}">
-                                                <c:set var="titleColor" value="text-white" />
-                                                <c:set var="rightTag"><span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2 py-1">#${act.referenceCode}</span></c:set>
+                                                <c:set var="titleColor" value="text-white" /> <c:set var="rightTag"><span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2 py-1">#${act.referenceCode}</span></c:set>
                                             </c:when>
-
                                             <c:when test="${act.type == 'SECURITY'}">
-                                                <c:set var="titleColor" value="text-danger" />
-                                                <c:set var="rightTag"><span class="badge bg-danger text-white px-2 py-1 rounded-1 shadow-sm"><i class="fa-solid fa-ban me-1"></i>BLOCKED</span></c:set>
+                                                <c:set var="titleColor" value="text-danger" /> <c:set var="rightTag"><span class="badge bg-danger text-white px-2 py-1 rounded-1 shadow-sm"><i class="fa-solid fa-ban me-1"></i>BLOCKED</span></c:set>
                                             </c:when>
-
                                             <c:when test="${act.type == 'ORDER'}">
-                                                <c:set var="titleColor" value="text-warning" />
-                                                <c:set var="rightTag"><span class="text-success fw-bold fs-6">+ <fmt:formatNumber value="${act.amount}" type="number" pattern="#,###"/> ₫</span></c:set>
+                                                <c:set var="titleColor" value="text-warning" /> <c:set var="rightTag"><span class="text-success fw-bold fs-6">+ <fmt:formatNumber value="${act.amount}" type="number" pattern="#,###"/> ₫</span></c:set>
                                             </c:when>
-
                                             <c:otherwise>
-                                                <c:set var="titleColor" value="text-info" />
-                                                <c:set var="rightTag"><span class="text-white small font-monospace">#${act.referenceCode}</span></c:set>
+                                                <c:set var="titleColor" value="text-info" /> <c:set var="rightTag"><span class="text-white small font-monospace">#${act.referenceCode}</span></c:set>
                                             </c:otherwise>
                                         </c:choose>
 
-                                        <%-- Nội dung chính (Sẽ tự động canh lề trái thẳng tắp) --%>
                                         <div class="flex-grow-1">
                                             <h6 class="m-0 ${titleColor} fw-bold mb-1" style="font-size: 0.9rem;">${act.title}</h6>
                                             <small class="text-white d-flex align-items-center" style="font-size: 0.75rem;">
                                                 <i class="fa-solid fa-network-wired me-1 opacity-50"></i> Node: ${act.createdBy} 
-                                                <span class="mx-2 opacity-25">|</span> 
-                                                <i class="fa-regular fa-clock me-1 opacity-50"></i> ${act.timeAgo}
+                                                <span class="mx-2 opacity-25">|</span> <i class="fa-regular fa-clock me-1 opacity-50"></i> ${act.timeAgo}
                                             </small>
                                         </div>
 
-                                        <%-- Tag trạng thái & Cột Nút Thao Tác (Hiện khi Hover) --%>
                                         <div class="d-flex flex-column align-items-end justify-content-center ms-3">
                                             ${rightTag}
-
                                             <div class="log-actions mt-2 d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-info rounded-circle d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" 
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#editLogModal"
-                                                        onclick="prepareEditModal('${act.logId}', '${act.title}', '${act.type}', '${act.referenceCode}', '${act.amount}')">
+                                                <button class="btn btn-sm btn-outline-info rounded-circle d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" data-bs-toggle="modal" data-bs-target="#editLogModal" onclick="prepareEditModal('${act.logId}', '${act.title}', '${act.type}', '${act.referenceCode}', '${act.amount}')">
                                                     <i class="fa-solid fa-pen" style="font-size: 0.7rem;"></i>
                                                 </button>
-
-                                                <a href="DashboardController?action=deleteLog&id=${act.logId}" 
-                                                   class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" 
-                                                   onclick="return confirm('Cảnh báo: Xác nhận tiêu hủy dòng nhật ký hệ thống này?');">
+                                                <a href="DashboardController?action=deleteLog&id=${act.logId}" class="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" onclick="return confirm('Cảnh báo: Xác nhận tiêu hủy dòng nhật ký hệ thống này?');">
                                                     <i class="fa-solid fa-trash" style="font-size: 0.7rem;"></i>
                                                 </a>
                                             </div>
                                         </div>
-
                                     </div>
                                 </c:forEach>
                             </c:when>
-
-                            <%-- TRƯỜNG HỢP 2: TRỐNG DỮ LIỆU --%>
                             <c:otherwise>
                                 <div class="text-center p-5 mt-2 border border-danger border-opacity-50 rounded-4 position-relative overflow-hidden" style="background: rgba(220, 53, 69, 0.05);">
                                     <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10" style="background: repeating-linear-gradient(45deg, transparent, transparent 10px, #dc3545 10px, #dc3545 20px);"></div>
-
                                     <div class="position-relative z-index-2">
                                         <div class="p-4 bg-danger bg-opacity-10 rounded-circle d-inline-flex mb-3 shadow-lg" style="border: 1px solid rgba(220, 53, 69, 0.3);">
                                             <i class="fa-solid fa-satellite-dish text-danger fs-1 heartbeat-animation"></i>
                                         </div>
                                         <h5 class="text-danger fw-bold text-uppercase" style="letter-spacing: 2px;">Mất tín hiệu radar</h5>
                                         <p class="text-muted small mb-4">Hệ thống chưa ghi nhận giao dịch nào hoặc đường truyền bị gián đoạn.</p>
-                                        <a href="DashboardController" class="btn btn-outline-danger rounded-pill px-5 py-2 fw-bold small">
-                                            <i class="fa-solid fa-plug me-2"></i> KÍCH HOẠT LẠI
-                                        </a>
+                                        <a href="DashboardController" class="btn btn-outline-danger rounded-pill px-5 py-2 fw-bold small"><i class="fa-solid fa-plug me-2"></i> KÍCH HOẠT LẠI</a>
                                     </div>
                                 </div>
                             </c:otherwise>
@@ -430,12 +344,95 @@
 
             <script>
                 function prepareEditModal(id, title, type, ref, amount) {
-                    document.getElementById('editLogId').value = id;
-                    document.getElementById('editLogTitle').value = title;
-                    document.getElementById('editLogType').value = type;
-                    document.getElementById('editLogRef').value = ref;
+                    document.getElementById('editLogId').value = id; document.getElementById('editLogTitle').value = title;
+                    document.getElementById('editLogType').value = type; document.getElementById('editLogRef').value = ref;
                 }
             </script>
+        </div>
+
+
+        <div class="module-panel mb-5" style="border-top: 4px solid var(--m-indigo);">
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-25 pb-3">
+                <h4 class="fw-bold m-0 text-white" style="letter-spacing: 1px;">
+                    <i class="fa-solid fa-file-contract text-info me-3" style="text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);"></i>
+                    TRẠM ĐIỀU PHỐI HỢP ĐỒNG
+                </h4>
+                <span class="badge bg-dark border border-info text-info px-3 py-2 rounded-pill shadow-sm">ĐƠN HÀNG LIVE</span>
+            </div>
+
+            <div class="table-responsive cyber-feed pe-2" style="max-height: 450px; overflow-y: auto;">
+                <table class="table matrix-table mb-0">
+                    <thead style="position: sticky; top: 0; z-index: 10; background: var(--dark-void); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);">
+                        <tr>
+                            <th class="text-start">MÃ HỢP ĐỒNG</th>
+                            <th class="text-center">NGÀY THIẾT LẬP</th>
+                            <th class="text-end">GIÁ TRỊ (VND)</th>
+                            <th class="text-center">TÌNH TRẠNG</th>
+                            <th class="text-center">TÁC VỤ ĐIỀU PHỐI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:choose>
+                            <c:when test="${empty listAllOrders}">
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-satellite fa-spin fs-1 mb-3 opacity-50 text-warning"></i><br>
+                                        Đang chờ tín hiệu giao dịch mới từ Radar...
+                                    </td>
+                                </tr>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="order" items="${listAllOrders}">
+                                    <tr>
+                                        <td class="text-start">
+                                            <span class="fw-bold text-white fs-6">#${order.orderID}</span><br>
+                                            <span class="id-mono" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #94a3b8;">UID Khách: ${order.userID}</span>
+                                        </td>
+                                        <td class="text-center text-light opacity-75">
+                                            <fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy HH:mm" />
+                                        </td>
+                                        <td class="text-end fw-bold" style="color: var(--m-cyan);">
+                                            <fmt:formatNumber value="${order.totalAmount}" type="number" pattern="#,###"/> đ
+                                        </td>
+                                        <td class="text-center">
+                                            <c:choose>
+                                                <c:when test="${order.status == 'Đang xử lý'}">
+                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-notch fa-spin me-1"></i>CHỜ DUYỆT</span>
+                                                </c:when>
+                                                <c:when test="${order.status == 'Đã duyệt'}">
+                                                    <span class="badge bg-info bg-opacity-10 text-info border border-info px-3 py-2 rounded-pill"><i class="fa-solid fa-check-double me-1"></i>ĐÃ DUYỆT</span>
+                                                </c:when>
+                                                <c:when test="${order.status == 'Đang giao'}">
+                                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill"><i class="fa-solid fa-truck-fast me-1"></i>ĐANG GIAO</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill"><i class="fa-solid fa-shield-check me-1"></i>HOÀN TẤT</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td class="text-center">
+                                            <c:choose>
+                                                <c:when test="${order.status == 'Đang xử lý'}">
+                                                    <a href="OrderController?action=updateStatus&orderId=${order.orderID}&status=Đã duyệt" class="btn btn-sm btn-outline-info rounded-pill px-4 fw-bold" style="letter-spacing: 1px;" onclick="dieuPhoiDon(event, this.href, 'duyet', '${order.orderID}')">DUYỆT</a>
+                                                </c:when>
+                                                <c:when test="${order.status == 'Đã duyệt'}">
+                                                    <a href="OrderController?action=updateStatus&orderId=${order.orderID}&status=Đang giao" class="btn btn-sm btn-outline-primary rounded-pill px-4 fw-bold" style="letter-spacing: 1px;" onclick="dieuPhoiDon(event, this.href, 'giao', '${order.orderID}')">GIAO XE</a>
+                                                </c:when>
+                                                <c:when test="${order.status == 'Đang giao'}">
+                                                    <a href="OrderController?action=updateStatus&orderId=${order.orderID}&status=Hoàn thành" class="btn btn-sm btn-outline-success rounded-pill px-4 fw-bold" style="letter-spacing: 1px;" onclick="dieuPhoiDon(event, this.href, 'chot', '${order.orderID}')">CHỐT</a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-4" disabled style="opacity: 0.5;"><i class="fa-solid fa-lock"></i> LƯU TRỮ</button>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="module-panel mb-5 border-info border-5">
@@ -444,10 +441,8 @@
                 <span class="badge bg-dark border border-info text-info px-3 py-2 rounded-pill">PHÂN KHÚC LUXURY</span>
             </div>
 
-            <%-- THÊM CLASS cyber-feed VÀ GIỚI HẠN CHIỀU CAO (max-height) --%>
             <div class="table-responsive cyber-feed pe-2" style="max-height: 450px; overflow-y: auto;">
                 <table class="table matrix-table mb-0">
-                    <%-- THIẾT LẬP STICKY CHO THEAD ĐỂ GHIM TIÊU ĐỀ --%>
                     <thead style="position: sticky; top: 0; z-index: 10; background: var(--dark-void); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);">
                         <tr>
                             <th class="text-start">PHƯƠNG TIỆN</th>
@@ -458,7 +453,6 @@
                     </thead>
                     <tbody>
                         <c:forEach items="${productList}" var="p">
-                            <%-- Lọc ID 1, 2, 3 (SUV, Sport Car, Sedan) để hiển thị danh sách xe --%>
                             <c:if test="${p.categoryID == 1 || p.categoryID == 2 || p.categoryID == 3}">
                                 <tr>
                                     <td class="text-start">
@@ -473,7 +467,6 @@
 
                                     <td class="text-center">
                                         <span class="badge bg-dark border border-info text-info rounded-pill px-3 py-1 text-uppercase">
-                                            <%-- CODE MỀM JSTL: Ánh xạ categoryID từ DTO thành Text ngay trên JSP --%>
                                             <c:choose>
                                                 <c:when test="${p.categoryID == 1}">SUV LUXURY</c:when>
                                                 <c:when test="${p.categoryID == 2}">SPORT CAR</c:when>
@@ -496,8 +489,6 @@
             </div>
         </div>
 
-
-
     </div>
 </div>
 
@@ -514,21 +505,16 @@
 </script>
 <script>
     function refreshLogs() {
-        // Gọi Servlet với tham số type=ajax
         fetch('DashboardController?type=ajax')
                 .then(response => response.text())
                 .then(html => {
-                    // Tìm đến cái div chứa danh sách và thay ruột của nó
                     const feedList = document.querySelector('.feed-list');
-                    // Nếu không bị lỗi "Mất kết nối", thì mới cập nhật
-                    if (html.trim() !== "") {
+                    if (html.trim() !== "" && feedList) {
                         feedList.innerHTML = html;
                     }
                 })
                 .catch(err => console.warn('Lỗi auto-reload:', err));
     }
-
-    // Tự động chạy mỗi 5 giây (5000ms)
     setInterval(refreshLogs, 5000);
 </script>
 

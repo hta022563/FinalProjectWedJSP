@@ -36,28 +36,36 @@ public class ReviewController extends HttpServlet {
         String action = request.getParameter("action");
         ReviewDAO dao = new ReviewDAO();
         UserDTO user = (UserDTO) request.getSession().getAttribute("user");
-        int userId = (user != null) ? user.getUserID() : 1; 
-
+        
         String productIdStr = request.getParameter("productId");
         String returnUrl = "detail.jsp?id=" + productIdStr;
 
         try {
             if ("add".equals(action)) {
+                if (user == null) {
+                    response.sendRedirect("login.jsp");
+                    return; 
+                }
+                
                 ReviewDTO r = new ReviewDTO();
-                r.setUserID(userId);
+                r.setUserID(user.getUserID());
                 r.setProductID(Integer.parseInt(productIdStr));
                 r.setRating(Integer.parseInt(request.getParameter("rating")));
                 r.setComment(request.getParameter("comment"));
                 dao.addReview(r);
                 
             } else if ("delete".equals(action)) {
-                dao.deleteReview(Integer.parseInt(request.getParameter("reviewId")));
+                if (user != null) {
+                    dao.deleteReview(Integer.parseInt(request.getParameter("reviewId")));
+                }
                 
             } else if ("update".equals(action)) {
-                int reviewId = Integer.parseInt(request.getParameter("reviewId"));
-                int rating = Integer.parseInt(request.getParameter("rating"));
-                String comment = request.getParameter("comment");
-                dao.updateReview(reviewId, comment, rating);
+                if (user != null) {
+                    int reviewId = Integer.parseInt(request.getParameter("reviewId"));
+                    int rating = Integer.parseInt(request.getParameter("rating"));
+                    String comment = request.getParameter("comment");
+                    dao.updateReview(reviewId, comment, rating);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
