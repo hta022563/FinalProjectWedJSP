@@ -22,6 +22,7 @@ import model.CartItemDAO;
 import model.CartItemDTO;
 import model.UserDTO;
 import utils.JPAUtil;
+
 /**
  *
  * @author AngDeng
@@ -29,15 +30,6 @@ import utils.JPAUtil;
 @WebServlet(name = "CartController", urlPatterns = {"/CartController"})
 public class CartController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -52,6 +44,7 @@ public class CartController extends HttpServlet {
             
             // CHỐT CHẶN: Nếu chưa đăng nhập -> Ép văng về trang Đăng nhập
             if (user == null) {
+                session.setAttribute("msgError", "Vui lòng đăng nhập để sử dụng tính năng này!");
                 response.sendRedirect("login.jsp");
                 return; 
             }
@@ -60,15 +53,27 @@ public class CartController extends HttpServlet {
             if ("addToCart".equals(action)) {
                 String productIdStr = request.getParameter("productId");
                 String quantityStr = request.getParameter("quantity");
+                
                 if (productIdStr != null) {
                     int productId = Integer.parseInt(productIdStr);
                     int quantity = (quantityStr != null && !quantityStr.isEmpty()) ? Integer.parseInt(quantityStr) : 1;
+                    
+                    // FIX 1: "Mồi" giỏ hàng trước để tránh lỗi SQL
+                    cartDAO.getCartByUserId(userId); 
+                    
                     boolean success = cartItemDAO.addToCart(userId, productId, quantity);
-                    if (success) { request.setAttribute("msg", "Đã thêm xe vào giỏ hàng thành công!"); } 
+                    if (success) { 
+                        // FIX 2: Lưu thông báo vào session để xài sendRedirect
+                        session.setAttribute("msg", "Đã thêm siêu phẩm vào gara thành công!"); 
+                    } 
                 }
+                
                 String returnUrl = request.getParameter("returnUrl");
                 if (returnUrl == null || returnUrl.isEmpty()) { returnUrl = "home.jsp"; }
-                request.getRequestDispatcher(returnUrl).forward(request, response);
+                
+                // FIX 3: Dùng sendRedirect thay vì forward để trị dứt điểm bệnh "Trắng trang"
+                response.sendRedirect(returnUrl);
+                return; // Ngắt luồng tại đây
                 
             } else if ("viewCart".equals(action)) {
                 CartDTO cart = cartDAO.getCartByUserId(userId);
@@ -113,44 +118,25 @@ public class CartController extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            request.getRequestDispatcher("home.jsp").forward(request, response);
+            // FIX 4: Nếu lỡ có Exception, cũng đá văng về Product kèm thông báo lỗi thay vì đứng hình trắng trang
+            request.getSession().setAttribute("msgError", "Hệ thống bận, vui lòng thử lại sau!");
+            response.sendRedirect("ProductController");
         }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
