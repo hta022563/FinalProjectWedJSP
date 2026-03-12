@@ -179,24 +179,71 @@ public class UserController extends HttpServlet {
             String oldPass = request.getParameter("oldPassword");
             String newPass = request.getParameter("newPassword");
             String confirmPass = request.getParameter("confirmPassword");
+            String inputOtp = request.getParameter("otp"); // Lấy OTP khách nhập
 
-            if (!currentUser.getPassword().equals(oldPass)) {
-                request.setAttribute("error", "Mật khẩu hiện tại không chính xác!");
-            } else if (!newPass.equals(confirmPass)) {
-                request.setAttribute("error", "Mật khẩu xác nhận không trùng khớp!");
+            String sessionOtp = (String) session.getAttribute("change_pass_otp"); // Lấy OTP hệ thống đã gửi
+
+            // 1. KIỂM TRA OTP ĐẦU TIÊN
+            if (sessionOtp == null || !sessionOtp.equals(inputOtp)) {
+                request.setAttribute("error", "Mã OTP không chính xác hoặc bạn chưa bấm Nhận mã!");
             } else {
-                UserDAO dao = new UserDAO();
-                if (dao.changePassword(currentUser.getUserID(), newPass)) {
-                    currentUser.setPassword(newPass);
-                    session.setAttribute("user", currentUser);
-                    request.setAttribute("message", "Đổi mật khẩu thành công! Vui lòng ghi nhớ mật khẩu mới.");
+                // 2. NẾU OTP ĐÚNG -> TIẾP TỤC ĐỔI MẬT KHẨU
+                String hashedOldPass = utils.SecurityUtils.hashPassword(oldPass);
+
+                if (!currentUser.getPassword().equals(hashedOldPass)) {
+                    request.setAttribute("error", "Mật khẩu hiện tại không chính xác!");
+                } else if (!newPass.equals(confirmPass)) {
+                    request.setAttribute("error", "Mật khẩu xác nhận không trùng khớp!");
                 } else {
-                    request.setAttribute("error", "Đổi mật khẩu thất bại do lỗi hệ thống!");
+                    model.UserDAO dao = new model.UserDAO();
+                    String hashedNewPass = utils.SecurityUtils.hashPassword(newPass);
+
+                    if (dao.changePassword(currentUser.getUserID(), hashedNewPass)) {
+                        // Đổi thành công -> Tiêu hủy OTP để không dùng lại được nữa
+                        session.removeAttribute("change_pass_otp");
+                        
+                        currentUser.setPassword(hashedNewPass);
+                        session.setAttribute("user", currentUser);
+                        
+                        request.setAttribute("message", "Xác thực 2 lớp thành công! Đã cập nhật mật khẩu mới.");
+                    } else {
+                        request.setAttribute("error", "Đổi mật khẩu thất bại do lỗi hệ thống Database!");
+                    }
                 }
             }
             request.getRequestDispatcher("profile.jsp").forward(request, response);
         } else {
             response.sendRedirect("login.jsp");
+        }
+    }
+    // =========================================================================
+    // HÀM MỚI: XỬ LÝ GỬI OTP VỀ EMAIL KHI ĐANG ĐĂNG NHẬP
+    // =========================================================================
+    protected void doSendChangePassOTP(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        UserDTO currentUser = (UserDTO) session.getAttribute("user");
+        
+        if (currentUser != null && currentUser.getEmail() != null) {
+            // Random mã OTP 6 số
+            String otp = String.format("%06d", new java.util.Random().nextInt(999999));
+            
+            // Lưu OTP vào Session chờ lát nữa kiểm tra
+            session.setAttribute("change_pass_otp", otp);
+            
+            // Soạn và Gửi mail
+            String subject = "Mã xác thực đổi mật khẩu - F-AUTO";
+            String body = "Xin chào " + currentUser.getFullName() + ",\n\n"
+                        + "Hệ thống F-AUTO vừa nhận được yêu cầu đổi mật khẩu tài khoản của bạn.\n"
+                        + "Mã xác thực (OTP) của bạn là: " + otp + "\n\n"
+                        + "Vui lòng không cung cấp mã này cho bất kỳ ai.\n\n"
+                        + "Trân trọng,\nĐội ngũ bảo mật F-AUTO.";
+                        
+            utils.EmailUtils.sendEmail(currentUser.getEmail(), subject, body);
+            
+            // Trả về chữ "success" cho cái script AJAX trên trang JSP nó biết
+            response.getWriter().write("success");
+        } else {
+            response.getWriter().write("error");
         }
     }
 
@@ -224,7 +271,10 @@ public class UserController extends HttpServlet {
         } else if (action.equals("changePassword")) {
             // Gọi hàm đổi mật khẩu
             doChangePassword(request, response);
-        }
+        } else if (action.equals("sendChangePassOTP")) {
+            doSendChangePassOTP(request, response);
+    }
+    
     }
 
     @Override

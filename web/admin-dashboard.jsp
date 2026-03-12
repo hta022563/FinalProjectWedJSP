@@ -508,7 +508,8 @@
         fetch('DashboardController?type=ajax')
                 .then(response => response.text())
                 .then(html => {
-                    const feedList = document.querySelector('.feed-list');
+                    // [ĐÃ FIX] Đổi '.feed-list' thành '.cyber-feed' để AJAX tìm đúng chỗ nhét dữ liệu
+                    const feedList = document.querySelector('.cyber-feed');
                     if (html.trim() !== "" && feedList) {
                         feedList.innerHTML = html;
                     }
@@ -518,4 +519,5 @@
     setInterval(refreshLogs, 5000);
 </script>
 
+<jsp:include page="includes/admin-footer.jsp"></jsp:include>
 <jsp:include page="includes/admin-footer.jsp"></jsp:include>

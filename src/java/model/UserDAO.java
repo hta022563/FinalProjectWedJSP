@@ -114,27 +114,34 @@ public class UserDAO {
         }
     }
 
+
     // =========================================================================
-    // 5. Hàm đổi mật khẩu (User chủ động đổi) - JPA
+    // Hàm Đổi Mật Khẩu (Đã nâng cấp dùng chuẩn JPA để không bị lỗi Cache)
     // =========================================================================
-    public boolean changePassword(int userId, String newRawPassword) {
+    public boolean changePassword(int userId, String alreadyHashedPassword) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            // Tìm user đó trong DB
-            UserDTO user = em.find(UserDTO.class, userId);
-            if (user != null) {
-                // Băm mật khẩu mới trước khi lưu
-                String hashedNewPass = SecurityUtils.hashPassword(newRawPassword);
-                user.setPassword(hashedNewPass); // Set mật khẩu mới
-                em.merge(user); // Lưu lại
+            
+            // 1. Tìm User trong Database lên (Để JPA theo dõi)
+            UserDTO u = em.find(UserDTO.class, userId);
+            
+            if (u != null) {
+                // 2. Ghi đè mật khẩu mới (đã được băm từ Controller)
+                u.setPassword(alreadyHashedPassword);
+                
+                // 3. Lệnh commit sẽ tự động Lưu xuống DB và Cập nhật luôn Cache
+                em.getTransaction().commit();
+                return true;
             }
-            em.getTransaction().commit();
-            return true;
+            return false;
+            
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
+            System.out.println("Lỗi khi đổi mật khẩu: " + e.getMessage());
+            e.printStackTrace();
             return false;
         } finally {
             em.close();

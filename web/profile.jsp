@@ -153,7 +153,7 @@
                     <hr class="border-secondary mb-5">
 
                     <h5 class="fw-bold mb-4" style="color: #d4af37;"><i class="fa-solid fa-shield-halved me-2"></i>Bảo mật tài khoản</h5>
-                    <form action="UserController" method="POST">
+                  <form action="UserController" method="POST">
                         <input type="hidden" name="action" value="changePassword">
                         
                         <div class="mb-3">
@@ -161,7 +161,7 @@
                             <input type="password" name="oldPassword" class="form-control" placeholder="Nhập mật khẩu cũ..." required>
                         </div>
                         
-                        <div class="row mb-4">
+                        <div class="row mb-3">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label class="form-label">Mật khẩu mới</label>
                                 <input type="password" name="newPassword" class="form-control" placeholder="Nhập mật khẩu mới..." required>
@@ -172,10 +172,66 @@
                             </div>
                         </div>
 
+                        <div class="mb-4">
+                            <label class="form-label">Mã xác thực OTP (Gửi về Email: <span class="text-info">${sessionScope.user.email}</span>)</label>
+                            <div class="input-group">
+                                <input type="text" name="otp" class="form-control" placeholder="Nhập mã OTP 6 số..." required maxlength="6">
+                                <button type="button" class="btn btn-outline-warning fw-bold" id="btnGetOTP" onclick="requestOTP()" style="width: 150px;">Nhận mã OTP</button>
+                            </div>
+                            <small class="text-muted mt-2 d-block" id="otpMessage"></small>
+                        </div>
+
                         <div class="text-end">
                             <button type="submit" class="btn btn-outline-light fw-bold px-4"><i class="fa-solid fa-key me-2"></i>ĐỔI MẬT KHẨU</button>
                         </div>
                     </form>
+
+                  <script>
+                        function requestOTP() {
+                            const btn = document.getElementById('btnGetOTP');
+                            const msg = document.getElementById('otpMessage');
+                            
+                            btn.disabled = true;
+                            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gửi...';
+                            
+                            fetch('UserController?action=sendChangePassOTP')
+                                .then(response => response.text())
+                                .then(data => {
+                                    if(data.trim() === 'success') {
+                                        // Hiện thông báo kèm chỗ đếm ngược thời gian
+                                        msg.innerHTML = '<span class="text-success"><i class="fa-solid fa-circle-check"></i> Đã gửi mã OTP đến email! Có thể yêu cầu gửi lại sau <b id="countdown" class="text-white fs-5">30s</b></span>';
+                                        
+                                        // Đếm ngược 30 giây
+                                        let timeLeft = 30; 
+                                        const timer = setInterval(() => {
+                                            timeLeft--;
+                                            btn.innerText = `Gửi lại (${timeLeft}s)`;
+                                            
+                                            // Cập nhật số giây xuống dòng chữ thông báo
+                                            const countdownSpan = document.getElementById('countdown');
+                                            if (countdownSpan) {
+                                                countdownSpan.innerText = timeLeft + 's';
+                                            }
+
+                                            if (timeLeft <= 0) {
+                                                clearInterval(timer);
+                                                btn.disabled = false;
+                                                btn.innerText = 'Nhận lại mã';
+                                                // Đổi câu thông báo khi hết giờ
+                                                msg.innerHTML = '<span class="text-info"><i class="fa-solid fa-circle-info"></i> Bạn chưa nhận được mã? Hãy bấm Nhận lại mã.</span>';
+                                            }
+                                        }, 1000);
+                                    } else {
+                                        throw new Error("Lỗi Server");
+                                    }
+                                })
+                                .catch(err => {
+                                    msg.innerHTML = '<span class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi gửi mail, vui lòng kiểm tra lại kết nối mạng!</span>';
+                                    btn.disabled = false;
+                                    btn.innerText = 'Nhận mã OTP';
+                                });
+                        }
+                    </script>
 
                 </div>
             </div>
