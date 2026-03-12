@@ -219,28 +219,22 @@ public class UserController extends HttpServlet {
     // =========================================================================
     // HÀM MỚI: XỬ LÝ GỬI OTP VỀ EMAIL KHI ĐANG ĐĂNG NHẬP
     // =========================================================================
-    protected void doSendChangePassOTP(HttpServletRequest request, HttpServletResponse response) throws IOException {
+   protected void doSendChangePassOTP(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         UserDTO currentUser = (UserDTO) session.getAttribute("user");
         
         if (currentUser != null && currentUser.getEmail() != null) {
-            // Random mã OTP 6 số
+            // 1. Random mã OTP
             String otp = String.format("%06d", new java.util.Random().nextInt(999999));
-            
-            // Lưu OTP vào Session chờ lát nữa kiểm tra
             session.setAttribute("change_pass_otp", otp);
             
-            // Soạn và Gửi mail
-            String subject = "Mã xác thực đổi mật khẩu - F-AUTO";
-            String body = "Xin chào " + currentUser.getFullName() + ",\n\n"
-                        + "Hệ thống F-AUTO vừa nhận được yêu cầu đổi mật khẩu tài khoản của bạn.\n"
-                        + "Mã xác thực (OTP) của bạn là: " + otp + "\n\n"
-                        + "Vui lòng không cung cấp mã này cho bất kỳ ai.\n\n"
-                        + "Trân trọng,\nĐội ngũ bảo mật F-AUTO.";
-                        
-            utils.EmailUtils.sendEmail(currentUser.getEmail(), subject, body);
+            // 2. Nhờ EmailUtils lấy cái giao diện HTML đã vẽ sẵn
+            String subject = "[F-AUTO] MÃ XÁC THỰC BẢO MẬT TÀI KHOẢN";
+            String bodyHtml = utils.EmailUtils.getOtpEmailTemplate(currentUser.getFullName(), otp);
             
-            // Trả về chữ "success" cho cái script AJAX trên trang JSP nó biết
+            // 3. Tiến hành gửi mail
+            utils.EmailUtils.sendEmail(currentUser.getEmail(), subject, bodyHtml);
+            
             response.getWriter().write("success");
         } else {
             response.getWriter().write("error");
