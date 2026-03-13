@@ -42,6 +42,14 @@
         color: #D4AF37; border: 1px solid #D4AF37; border-radius: 50px; font-weight: 600; transition: 0.4s; background: transparent;
     }
     .btn-outline-luxury:hover { background: #D4AF37; color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
+
+    /* CSS NÚT THANH TOÁN (Mới thêm) */
+    .btn-luxury {
+        background: linear-gradient(45deg, #B8860B, #FFD700, #B8860B);
+        background-size: 200% auto; color: #000 !important; font-weight: 700; text-transform: uppercase;
+        border: none; border-radius: 50px; transition: 0.5s; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    }
+    .btn-luxury:hover { background-position: right center; transform: translateY(-3px); box-shadow: 0 0 30px rgba(212, 175, 55, 0.8); }
 </style>
 
 <div class="container my-5">
@@ -81,6 +89,14 @@
                 </tbody>
             </table>
         </div>
+        
+        <%-- NÚT THANH TOÁN (Mới thêm) --%>
+        <div class="d-flex justify-content-end p-4 border-top" style="border-color: rgba(212, 175, 55, 0.2) !important;">
+            <a href="payment.jsp?orderId=${orderId}" class="btn btn-luxury btn-lg px-5 py-3 fs-5 shadow-lg">
+                <i class="fa-solid fa-qrcode me-2"></i> THANH TOÁN HỢP ĐỒNG
+            </a>
+        </div>
+        
     </div>
 </div>
 

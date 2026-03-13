@@ -19,6 +19,10 @@ import model.OrderDTO;
 import model.OrderDetailDAO;
 import model.OrderDetailDTO;
 import model.UserDTO;
+import utils.EmailUtils;
+import model.PaymentMethodDAO; // Đã thêm Import
+import model.PaymentMethodDTO; // Đã thêm Import
+
 /**
  *
  * @author AngDeng
@@ -26,15 +30,6 @@ import model.UserDTO;
 @WebServlet(name = "OrderController", urlPatterns = {"/OrderController"})
 public class OrderController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -93,6 +88,66 @@ public class OrderController extends HttpServlet {
                     response.sendRedirect("home.jsp");
                     return;
                 }
+            } else if ("processPayment".equals(action)) {
+                String orderIdStr = request.getParameter("orderId");
+                String paymentMethodId = request.getParameter("paymentMethod");
+
+                try {
+                    // CẬP NHẬT TRẠNG THÁI VÀO CSDL TẠI ĐÂY NẾU CẦN
+                    // orderDAO.updatePaymentInfo(Integer.parseInt(orderIdStr), Integer.parseInt(paymentMethodId));
+
+                    if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                        
+                        // --- BẮT ĐẦU: LẤY TÊN THẬT CỦA PHƯƠNG THỨC THANH TOÁN ---
+                        PaymentMethodDAO pmDao = new PaymentMethodDAO();
+                        String methodName = "Cổng số " + paymentMethodId; // Mặc định nếu không tìm thấy trong DB
+
+                        try {
+                            int pmId = Integer.parseInt(paymentMethodId);
+                            List<PaymentMethodDTO> listPM = pmDao.getAllActive();
+                            for (PaymentMethodDTO pm : listPM) {
+                                if (pm.getMethodID() == pmId) {
+                                    methodName = pm.getMethodName();
+                                    // Kèm theo tên ngân hàng nếu đó là QR Code và có thông tin BankName
+                                    if(pm.getBankName() != null && !pm.getBankName().trim().isEmpty()) {
+                                        methodName += " (" + pm.getBankName() + ")"; 
+                                    }
+                                    break; // Tìm thấy thì dừng vòng lặp
+                                }
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Lỗi khi tìm tên phương thức thanh toán: " + e.getMessage());
+                        }
+                        // --- KẾT THÚC: LẤY TÊN THẬT CỦA PHƯƠNG THỨC THANH TOÁN ---
+
+                        // Khởi tạo các biến final để dùng trong Background Thread
+                        final String customerName = (user.getFullName() != null && !user.getFullName().isEmpty()) 
+                                ? user.getFullName() : user.getUsername();
+                        final String customerEmail = user.getEmail();
+                        final String fOrderId = orderIdStr;
+                        final String fPaymentMethod = methodName; // Đưa tên thật vừa lấy được vào đây
+
+                        // Đẩy tiến trình gửi mail ra Background Thread để web không bị đơ
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String subject = "[F-AUTO] Xác nhận yêu cầu thanh toán Hợp đồng #" + fOrderId;
+                                String body = EmailUtils.getOrderConfirmationTemplate(customerName, fOrderId, fPaymentMethod);
+                                EmailUtils.sendEmail(customerEmail, subject, body);
+                            }
+                        }).start();
+                    }
+
+                    // Thông báo và đá về trang lịch sử đơn hàng ngay lập tức
+                    session.setAttribute("msg", "Xác nhận thành công! Vui lòng kiểm tra hộp thư Email.");
+                    response.sendRedirect("OrderController"); 
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    session.setAttribute("msgError", "Lỗi giao dịch: " + e.getMessage());
+                    response.sendRedirect("OrderController");
+                    return;
+                }
             }
             
             List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
@@ -106,43 +161,20 @@ public class OrderController extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }
