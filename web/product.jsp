@@ -22,8 +22,27 @@
 
     .product-card { background-color: #141414; border: 1px solid #2a2a2a; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease; border-radius: 12px; overflow: hidden; }
     .product-card:hover { transform: translateY(-10px); border-color: #d4af37; box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15); z-index: 10; }
-    .product-img-wrapper { height: 220px; overflow: hidden; background-color: #000; display: flex; align-items: center; justify-content: center; position: relative; }
-    .product-img { max-width: 90%; max-height: 90%; object-fit: contain; transition: transform 0.5s ease; }
+    
+    /* ĐÃ SỬA: Ép khung ảnh nền trắng và rộng 100% */
+    .product-img-wrapper { 
+        height: 230px; 
+        width: 100%;
+        overflow: hidden; 
+        background-color: #ffffff; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        position: relative; 
+    }
+    
+    /* ĐÃ SỬA: Căng ảnh lấp đầy khung 100% */
+    .product-img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; /* Hoặc có thể thử 'contain' nếu 'cover' làm xe bị mất đầu/đuôi */
+        transition: transform 0.5s ease; 
+    }
+    
     .product-card:hover .product-img { transform: scale(1.08); }
     .car-price { color: #d4af37; font-weight: 900; font-size: 1.35rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #a0a0a0; }
@@ -115,12 +134,15 @@
                             <c:set var="countProduct" value="${countProduct + 1}" />
                             <div class="col-md-4 col-lg-3">
                                 <div class="card h-100 product-card shadow-sm ${!p.status ? 'opacity-50' : ''}">
+                                    
+                                    <%-- Thẻ chứa ảnh đã được tối ưu --%>
                                     <div class="product-img-wrapper">
-                                        <img src="${p.imageURL}" class="product-img" alt="${p.productName}" onerror="this.src='https://via.placeholder.com/300x200/111/d4af37?text=F-AUTO'">
+                                        <img src="${p.imageURL}" class="product-img" alt="${p.productName}" onerror="this.src='https://via.placeholder.com/300x230/ffffff/d4af37?text=F-AUTO'">
                                         <c:if test="${!p.status && sessionScope.user != null && sessionScope.user.role == 1}">
                                             <span class="badge bg-danger position-absolute top-0 end-0 m-2 px-2 py-1 shadow">ĐÃ ẨN</span>
                                         </c:if>
                                     </div>
+                                    
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title fw-bold text-white mb-2">${p.productName}</h5>
                                         <p class="small mb-3 line-clamp-2">${p.description}</p>
@@ -146,7 +168,6 @@
                                                         </div>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <%-- NÚT THÊM GIỎ HÀNG CHUẨN: Gọi đến Controller kèm returnUrl --%>
                                                         <a href="CartController?action=addToCart&productId=${p.productID}&returnUrl=ProductController" class="btn btn-warning fw-bold text-dark text-uppercase" style="letter-spacing: 1px;">
                                                             <i class="fa-solid fa-cart-shopping me-1"></i> Thêm giỏ hàng
                                                         </a>
