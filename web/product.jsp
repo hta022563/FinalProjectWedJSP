@@ -315,7 +315,11 @@
                             <a href="admin-product-form.jsp" class="card h-100 shadow-sm d-flex flex-column align-items-center justify-content-center text-decoration-none product-card" style="border: 2px dashed #d4af37; min-height: 380px; background-color: rgba(212, 175, 55, 0.03);">
                                 <i class="fa-solid fa-circle-plus fa-3x mb-3" style="color: #d4af37;"></i>
                                 <h5 class="fw-bold text-center text-uppercase" style="color: #d4af37; letter-spacing: 1px;">
-                                    ${catId == 0 ? 'THÊM MỚI SẢN PHẨM' : 'THÊM '.concat(catNames[catId])}
+                                    <c:choose>
+                                        <c:when test="${catId == 0}">THÊM MỚI SẢN PHẨM</c:when>
+                                        <c:otherwise>THÊM ${catNames[catId]}</c:otherwise>
+                                    </c:choose>
+
                                 </h5>
                             </a>
                         </div>
