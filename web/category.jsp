@@ -4,21 +4,121 @@
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { background: linear-gradient(135deg, #f5f7ff 0%, #e8eaff 100%); color: #2d3436; font-family: 'Inter', sans-serif; }
-        .banner-container { height: 280px; border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(108, 92, 231, 0.15); }
-        .banner-img { width: 100%; height: 100%; object-fit: cover; background-image: url('IMG/Cha.jpg'); background-size: cover; background-position: center; filter: brightness(0.6); }
-        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(30, 30, 80, 0.6) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .cat-main-title { background: linear-gradient(45deg, #6c5ce7, #a29bfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; font-size: 3.5rem; margin-bottom: 5px; font-family: 'Be Vietnam Pro', sans-serif !important; text-shadow: 0 10px 20px rgba(108, 92, 231, 0.3); }
-        .aero-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); }
-        .aero-input { background: #ffffff !important; border: 1px solid #d1d9ff !important; border-radius: 14px !important; padding: 12px 16px; transition: all 0.3s ease; }
-        .aero-input:focus { border-color: #6c5ce7 !important; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1) !important; }
-        .btn-cat-gradient { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); border: none; color: #fff; font-weight: 700; border-radius: 14px; padding: 14px 30px; box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3); transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-cat-gradient:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(108, 92, 231, 0.5); }
-        .aero-table thead th { background: #f0f2ff; color: #5f27cd; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; padding: 20px; border: none; }
-        .aero-table td { padding: 25px 20px; border-bottom: 1px solid #eef0ff; }
-        .aero-table tr:hover { background-color: rgba(108, 92, 231, 0.03); }
-        .id-tag { background: #f0f2ff; color: #6c5ce7; padding: 6px 14px; border-radius: 10px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
-        .icon-box { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(108, 92, 231, 0.1); color: #6c5ce7; font-size: 1.2rem; }
+        body {
+            background: linear-gradient(135deg, #f5f7ff 0%, #e8eaff 100%);
+            color: #2d3436;
+            font-family: 'Inter', sans-serif;
+        }
+        .banner-container {
+            height: 280px;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(108, 92, 231, 0.15);
+        }
+        .banner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-image: url('IMG/Cha.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6);
+        }
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(30, 30, 80, 0.6) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .cat-main-title {
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 3.5rem;
+            margin-bottom: 5px;
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+            text-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+        }
+        .aero-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+        }
+        .aero-input {
+            background: #ffffff !important;
+            border: 1px solid #d1d9ff !important;
+            border-radius: 14px !important;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+        .aero-input:focus {
+            border-color: #6c5ce7 !important;
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1) !important;
+        }
+        .btn-cat-gradient {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 14px;
+            padding: 14px 30px;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-cat-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(108, 92, 231, 0.5);
+        }
+        .aero-table thead th {
+            background: #f0f2ff;
+            color: #5f27cd;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 20px;
+            border: none;
+        }
+        .aero-table td {
+            padding: 25px 20px;
+            border-bottom: 1px solid #eef0ff;
+        }
+        .aero-table tr:hover {
+            background-color: rgba(108, 92, 231, 0.03);
+        }
+        .id-tag {
+            background: #f0f2ff;
+            color: #6c5ce7;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .icon-box {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(108, 92, 231, 0.1);
+            color: #6c5ce7;
+            font-size: 1.2rem;
+        }
     </style>
 
     <div class="container-fluid py-5 px-5">

@@ -13,7 +13,8 @@
 <%
     // BỌC THÉP: Xử lý an toàn mọi trường hợp id bị null, rỗng, hoặc chứa chữ "null"
     String carIdStr = request.getParameter("id");
-    if (carIdStr == null || carIdStr.trim().isEmpty() || carIdStr.equalsIgnoreCase("null")) {
+
+    if (carIdStr == null || carIdStr.trim().isEmpty() || carIdStr.equalsIgnoreCase("null"))A {
         carIdStr = request.getParameter("pid");
     }
     
@@ -25,7 +26,6 @@
     } catch (Exception e) {
         cId = 1; // Bất chấp lỗi gì cũng trả về xe số 1 để web không bị sập
     }
-
     ReviewDAO reviewDAO = new ReviewDAO();
     List<ReviewDTO> reviewList = reviewDAO.getReviewsByProduct(cId);
     request.setAttribute("reviewList", reviewList);

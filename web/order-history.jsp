@@ -241,7 +241,7 @@
                                                 Xem
                                             </a>
 
-                                           <%-- NẾU BỊ TỪ CHỐI RỒI THÌ KHÓA NÚT HỦY LUÔN --%>
+                                            <%-- NẾU BỊ TỪ CHỐI RỒI THÌ KHÓA NÚT HỦY LUÔN --%>
                                             <c:choose>
                                                 <c:when test="${order.status == 'Đang xử lý'}">
                                                     <a href="MainController?target=Order&action=delete&id=${order.orderID}" class="btn btn-sm btn-outline-danger-lux px-3" onclick="xoaDonHang(event, this.href, '${order.orderID}')">

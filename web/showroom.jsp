@@ -4,20 +4,107 @@
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
 
     <style>
-        body { background: radial-gradient(circle at center, #3d2b1f 0%, #1a120b 100%); color: #dcdde1; font-family: 'Inter', sans-serif; }
-        .banner-container { height: 280px; border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); }
-        .banner-img { width: 100%; height: 100%; object-fit: cover; background-image: url('IMG/audi.jpg'); background-size: cover; background-position: center; filter: brightness(0.4) sepia(0.3); }
-        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(26, 18, 11, 0.9) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .showroom-title { color: #d4af37; font-weight: 900; text-transform: uppercase; letter-spacing: 5px; font-size: 3.2rem; font-family: 'Be Vietnam Pro', sans-serif !important; margin-bottom: 5px; text-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
-        .wood-card { background: rgba(44, 30, 20, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); }
-        .wood-input { border: 1px solid #5d4037 !important; border-radius: 12px !important; padding: 14px 18px; color:black !important; transition: all 0.3s ease; }
-        .wood-input:focus { border-color: #d4af37 !important; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1) !important; }
-        .btn-brass { background: linear-gradient(135deg, #d4af37 0%, #aa8928 100%); border: none; color: #1a120b; font-weight: 800; border-radius: 12px; padding: 12px 25px; transition: all 0.3s ease; text-transform: uppercase; }
-        .btn-brass:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3); }
-        .aero-table thead th { background: rgba(0, 0, 0, 0.4); color: #d4af37; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; padding: 22px; border: none; }
-        .aero-table td { padding: 25px 22px; border-bottom: 1px solid rgba(212, 175, 55, 0.05); vertical-align: middle; }
-        .aero-table tr:hover { background-color: rgba(212, 175, 55, 0.03); }
-        .id-tag { background: rgba(212, 175, 55, 0.1); color: #d4af37; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-family: 'JetBrains Mono', monospace; border: 1px solid rgba(212, 175, 55, 0.2); }
+        body {
+            background: radial-gradient(circle at center, #3d2b1f 0%, #1a120b 100%);
+            color: #dcdde1;
+            font-family: 'Inter', sans-serif;
+        }
+        .banner-container {
+            height: 280px;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        .banner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-image: url('IMG/audi.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.4) sepia(0.3);
+        }
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(26, 18, 11, 0.9) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .showroom-title {
+            color: #d4af37;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-size: 3.2rem;
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+        .wood-card {
+            background: rgba(44, 30, 20, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        .wood-input {
+            border: 1px solid #5d4037 !important;
+            border-radius: 12px !important;
+            padding: 14px 18px;
+            color:black !important;
+            transition: all 0.3s ease;
+        }
+        .wood-input:focus {
+            border-color: #d4af37 !important;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1) !important;
+        }
+        .btn-brass {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8928 100%);
+            border: none;
+            color: #1a120b;
+            font-weight: 800;
+            border-radius: 12px;
+            padding: 12px 25px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        .btn-brass:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+        }
+        .aero-table thead th {
+            background: rgba(0, 0, 0, 0.4);
+            color: #d4af37;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 22px;
+            border: none;
+        }
+        .aero-table td {
+            padding: 25px 22px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.05);
+            vertical-align: middle;
+        }
+        .aero-table tr:hover {
+            background-color: rgba(212, 175, 55, 0.03);
+        }
+        .id-tag {
+            background: rgba(212, 175, 55, 0.1);
+            color: #d4af37;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
     </style>
 
     <div class="container-fluid py-5 px-5">
