@@ -3,39 +3,126 @@
 
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
 
-<style>
-    body { background: linear-gradient(135deg, #f0f7ff 0%, #e2eeff 100%); color: #2d3436; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-    .banner-container { height: 250px; border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 20px 40px rgba(0, 210, 255, 0.15); }
-    .banner-img { width: 100%; height: 100%; object-fit: cover; background-image: url('IMG/lambo.jpg'); background-size: cover; background-position: center; filter: brightness(0.55); }
-    .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0, 58, 123, 0.7) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-    .supplier-main-title { color: #00d2ff; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 3rem; margin-bottom: 5px; text-shadow: 0 5px 15px rgba(0, 210, 255, 0.4); }
-    .aero-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(0, 210, 255, 0.1); border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); }
-    .aero-input { background: #ffffff !important; border: 1px solid #cce5ff !important; border-radius: 14px !important; padding: 12px 16px; transition: all 0.3s ease; }
-    .aero-input:focus { border-color: #00d2ff !important; box-shadow: 0 0 0 4px rgba(0, 210, 255, 0.1) !important; }
-    .btn-supplier-gradient { background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%); border: none; color: #fff; font-weight: 700; border-radius: 14px; padding: 14px 30px; box-shadow: 0 8px 20px rgba(0, 210, 255, 0.2); transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
-    .btn-supplier-gradient:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(0, 210, 255, 0.3); }
-    .aero-table thead th { background: #f0f7ff; color: #3a7bd5; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; padding: 20px; border: none; }
-    .aero-table td { padding: 25px 20px; border-bottom: 1px solid #e1efff; }
-    .aero-table tr:hover { background-color: rgba(0, 210, 255, 0.03); }
-    .id-tag { background: #e1f5fe; color: #0288d1; padding: 6px 14px; border-radius: 10px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
-</style>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e2eeff 100%);
+            color: #2d3436;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        .banner-container {
+            height: 250px;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 210, 255, 0.15);
+        }
+        .banner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-image: url('IMG/lambo.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.55);
+        }
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0, 58, 123, 0.7) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .supplier-main-title {
+            color: #00d2ff;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 3rem;
+            margin-bottom: 5px;
+            text-shadow: 0 5px 15px rgba(0, 210, 255, 0.4);
+        }
+        .aero-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 210, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+        }
+        .aero-input {
+            background: #ffffff !important;
+            border: 1px solid #cce5ff !important;
+            border-radius: 14px !important;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+        .aero-input:focus {
+            border-color: #00d2ff !important;
+            box-shadow: 0 0 0 4px rgba(0, 210, 255, 0.1) !important;
+        }
+        .btn-supplier-gradient {
+            background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 14px;
+            padding: 14px 30px;
+            box-shadow: 0 8px 20px rgba(0, 210, 255, 0.2);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-supplier-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(0, 210, 255, 0.3);
+        }
+        .aero-table thead th {
+            background: #f0f7ff;
+            color: #3a7bd5;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 20px;
+            border: none;
+        }
+        .aero-table td {
+            padding: 25px 20px;
+            border-bottom: 1px solid #e1efff;
+        }
+        .aero-table tr:hover {
+            background-color: rgba(0, 210, 255, 0.03);
+        }
+        .id-tag {
+            background: #e1f5fe;
+            color: #0288d1;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
 
-<div class="container-fluid py-5 px-5">
-    
-    <div class="banner-container mb-5">
-        <div class="banner-img"></div>
-        <div class="banner-overlay">
-            <h1 class="supplier-main-title">Hệ Thống Nhà Cung Cấp</h1>
-            <p class="text-white-50 fs-5 fw-light m-0">F-AUTO | Quản trị mạng lưới đối tác chiến lược toàn cầu</p>
-         <div class="mt-3 badge rounded-pill px-4 py-2 border border-info border-opacity-25 shadow-lg" 
-     style="background: rgba(0, 184, 212, 0.15) !important; backdrop-filter: blur(15px); border: 1px solid rgba(0, 229, 255, 0.3) !important; box-shadow: 0 8px 32px 0 rgba(0, 184, 212, 0.3);">
-    <i class="fa-solid fa-truck-fast me-2" style="color: #00e5ff;"></i> 
-    <span id="digital-clock" class="fw-bold" style="color: #ffffff; text-shadow: 0 0 12px rgba(0, 229, 255, 0.8); letter-spacing: 2px; font-family: 'JetBrains Mono', monospace;">
-        00:00:00
-    </span>
-</div>
+    <div class="container-fluid py-5 px-5">
+
+        <div class="banner-container mb-5">
+            <div class="banner-img"></div>
+            <div class="banner-overlay">
+                <h1 class="supplier-main-title">Hệ Thống Nhà Cung Cấp</h1>
+                <p class="text-white-50 fs-5 fw-light m-0">F-AUTO | Quản trị mạng lưới đối tác chiến lược toàn cầu</p>
+                <div class="mt-3 badge rounded-pill px-4 py-2 border border-info border-opacity-25 shadow-lg" 
+                     style="background: rgba(0, 184, 212, 0.15) !important; backdrop-filter: blur(15px); border: 1px solid rgba(0, 229, 255, 0.3) !important; box-shadow: 0 8px 32px 0 rgba(0, 184, 212, 0.3);">
+                    <i class="fa-solid fa-truck-fast me-2" style="color: #00e5ff;"></i> 
+                    <span id="digital-clock" class="fw-bold" style="color: #ffffff; text-shadow: 0 0 12px rgba(0, 229, 255, 0.8); letter-spacing: 2px; font-family: 'JetBrains Mono', monospace;">
+                        00:00:00
+                    </span>
+                </div>
+            </div>
         </div>
-    </div>
 
     <c:if test="${not empty errorMessage}">
         <div class="alert alert-danger border-0 rounded-4 shadow-sm mb-4">
@@ -127,7 +214,7 @@
                             <td class="text-start text-muted fw-light"><del class="fw-bold">${delSup.supplierName}</del></td>
                             <td>
                                 <a href="MainController?target=Supplier&action=restore&id=${delSup.supplierID}" class="btn btn-outline-success btn-sm rounded-pill px-4 border-0 fw-bold shadow-sm">
-                                   <i class="fa-solid fa-rotate-left me-2"></i> KHÔI PHỤC
+                                    <i class="fa-solid fa-rotate-left me-2"></i> KHÔI PHỤC
                                 </a>
                             </td>
                         </tr>
@@ -151,7 +238,7 @@
                         <input type="hidden" name="target" value="Supplier">
                         <input type="hidden" name="action" value="update">
                         <input type="hidden" name="id" value="${sup.supplierID}">
-                        
+
                         <div class="mb-4">
                             <label class="fw-bold text-muted small mb-2 text-uppercase">Tên Nhà Cung Cấp</label>
                             <input type="text" name="supplierName" class="form-control aero-input" value="${sup.supplierName}" required>
@@ -178,13 +265,15 @@
 <script>
     function updateClock() {
         const now = new Date();
-        const time = now.getHours().toString().padStart(2, '0') + ":" + 
-                     now.getMinutes().toString().padStart(2, '0') + ":" + 
-                     now.getSeconds().toString().padStart(2, '0');
+        const time = now.getHours().toString().padStart(2, '0') + ":" +
+                now.getMinutes().toString().padStart(2, '0') + ":" +
+                now.getSeconds().toString().padStart(2, '0');
         const clockEl = document.getElementById('digital-clock');
-        if(clockEl) clockEl.innerText = time;
+        if (clockEl)
+            clockEl.innerText = time;
     }
-    setInterval(updateClock, 1000); updateClock();
+    setInterval(updateClock, 1000);
+    updateClock();
 </script>
 
 <jsp:include page="includes/admin-footer.jsp"></jsp:include>

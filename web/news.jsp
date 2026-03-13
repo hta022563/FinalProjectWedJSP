@@ -4,9 +4,9 @@
 
 <jsp:include page="includes/header.jsp"></jsp:include>
 
-<div class="container my-5">
-    <h2 class="fw-bold mb-4 border-bottom pb-2 text-uppercase luxury-logo">Tin tức & Sự kiện</h2>
-    
+    <div class="container my-5">
+        <h2 class="fw-bold mb-4 border-bottom pb-2 text-uppercase luxury-logo">Tin tức & Sự kiện</h2>
+
     <%-- DANH SÁCH BÀI VIẾT --%>
     <div class="row">
         <c:forEach items="${listN}" var="n">
@@ -26,12 +26,12 @@
                                 <p class="card-text text-muted mb-3" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
                                     ${n.content}
                                 </p>
-                                
+
                                 <div class="mt-auto">
                                     <a href="${n.externalLink}" target="_blank" class="btn btn-outline-warning btn-sm fw-bold">
                                         Đọc tiếp <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
                                     </a>
-                                    
+
                                     <%-- NÚT XÓA/SỬA CHỈ HIỂN THỊ KHI LÀ ADMIN (role == 1) --%>
                                     <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
                                         <div class="mt-2 pt-2 border-top">

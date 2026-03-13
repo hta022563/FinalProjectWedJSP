@@ -3,24 +3,85 @@
 
 <jsp:include page="includes/header.jsp"></jsp:include>
 
-<style>
-    /* Đồng bộ nền tối với F-AUTO Premium Theme */
-    body { background-color: #1a1a1a; }
-    .profile-card-premium { background: #222; border: 1px solid #333; border-radius: 16px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); }
-    .profile-card-premium .card-header { background: linear-gradient(135deg, #111 0%, #2a2a2a 100%); border-bottom: 1px solid #444; border-top-left-radius: 16px; border-top-right-radius: 16px; color: #d4af37; font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; }
-    .profile-card-premium .form-label { color: #adb5bd; font-weight: 600; font-size: 0.95rem; }
-    .profile-card-premium .form-control { background-color: #1a1a1a; border: 1px solid #444; color: #fff !important; padding: 10px 15px; border-radius: 8px; transition: all 0.3s; }
-    .profile-card-premium .form-control:disabled, .profile-card-premium .form-control[readonly] { background-color: #111; color: #6c757d !important; border-color: #333; }
-    .profile-card-premium .form-control:focus { background-color: #1a1a1a; border-color: #d4af37; box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25); }
-    .btn-gold { background-color: #d4af37; color: #111; font-weight: 700; padding: 10px 20px; border-radius: 8px; border: none; transition: all 0.3s; }
-    .btn-gold:hover { background-color: #f1c40f; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
-    .avatar-circle { width: 120px; height: 120px; background-color: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto -60px auto; border: 4px solid #222; position: relative; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.8); overflow: hidden; }
-</style>
+    <style>
+        /* Đồng bộ nền tối với F-AUTO Premium Theme */
+        body {
+            background-color: #1a1a1a;
+        }
+        .profile-card-premium {
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+        .profile-card-premium .card-header {
+            background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
+            border-bottom: 1px solid #444;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            color: #d4af37;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+        .profile-card-premium .form-label {
+            color: #adb5bd;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .profile-card-premium .form-control {
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            color: #fff !important;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .profile-card-premium .form-control:disabled, .profile-card-premium .form-control[readonly] {
+            background-color: #111;
+            color: #6c757d !important;
+            border-color: #333;
+        }
+        .profile-card-premium .form-control:focus {
+            background-color: #1a1a1a;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+        }
+        .btn-gold {
+            background-color: #d4af37;
+            color: #111;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.3s;
+        }
+        .btn-gold:hover {
+            background-color: #f1c40f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto -60px auto;
+            border: 4px solid #222;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            overflow: hidden;
+        }
+    </style>
 
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
-            
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+
             <c:if test="${not empty message}">
                 <div class="alert alert-success text-center fw-bold border-0 shadow-sm" style="background-color: rgba(40, 167, 69, 0.1); color: #28a745;">
                     <i class="fa-solid fa-circle-check me-2"></i>${message}
@@ -35,18 +96,18 @@
             </c:if>
 
             <div class="card profile-card-premium border-0 mt-5">
-                
+
                 <div class="avatar-circle">
-                    <img src="IMG/avatars/avatar_${sessionScope.user.userID}.jpg?v=<%= System.currentTimeMillis() %>" 
+                    <img src="IMG/avatars/avatar_${sessionScope.user.userID}.jpg?v=<%= System.currentTimeMillis()%>" 
                          onerror="this.src='https://ui-avatars.com/api/?name=${sessionScope.user.username}&background=333&color=d4af37&size=120'" 
                          style="width: 100%; height: 100%; object-fit: cover;" alt="Avatar">
                 </div>
-                
+
                 <div class="card-header text-center pt-5 pb-3 mt-3">
                     THÔNG TIN CÁ NHÂN
                 </div>
                 <div class="card-body p-4 p-md-5 pt-3">
-                    
+
                     <form action="MainController" method="POST" enctype="multipart/form-data" class="mb-5 text-center border-bottom border-secondary pb-4">
                         <input type="hidden" name="target" value="User">
                         <input type="hidden" name="action" value="uploadAvatar">
@@ -61,7 +122,7 @@
                     <form action="MainController" method="POST" class="mb-5">
                         <input type="hidden" name="target" value="User">
                         <input type="hidden" name="action" value="updateProfile">
-                        
+
                         <div class="row mb-3">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label class="form-label"><i class="fa-solid fa-id-badge me-2 text-warning"></i>Tên đăng nhập</label>
@@ -77,7 +138,7 @@
                             <label class="form-label"><i class="fa-solid fa-address-card me-2 text-warning"></i>Họ và Tên</label>
                             <input type="text" name="txtFullName" class="form-control" value="${sessionScope.user.fullName}" required>
                         </div>
-                        
+
                         <div class="row mb-4">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label class="form-label"><i class="fa-solid fa-envelope me-2 text-warning"></i>Email</label>
@@ -88,7 +149,7 @@
                                 <input type="text" name="txtPhone" class="form-control" value="${sessionScope.user.phone}">
                             </div>
                         </div>
-                        
+
                         <div class="text-end">
                             <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk me-2"></i>LƯU THAY ĐỔI</button>
                         </div>
@@ -100,12 +161,12 @@
                     <form action="MainController" method="POST">
                         <input type="hidden" name="target" value="User">
                         <input type="hidden" name="action" value="changePassword">
-                        
+
                         <div class="mb-3">
                             <label class="form-label">Mật khẩu hiện tại</label>
                             <input type="password" name="oldPassword" class="form-control" placeholder="Nhập mật khẩu cũ..." required>
                         </div>
-                        
+
                         <div class="row mb-3">
                             <div class="col-md-6 mb-3 mb-md-0">
                                 <label class="form-label">Mật khẩu mới</label>
@@ -135,43 +196,43 @@
                         function requestOTP() {
                             const btn = document.getElementById('btnGetOTP');
                             const msg = document.getElementById('otpMessage');
-                            
+
                             btn.disabled = true;
                             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gửi...';
-                            
+
                             // GỌI MAIN CONTROLLER ĐỂ LẤY MÃ OTP
                             fetch('MainController?target=User&action=sendChangePassOTP')
-                                .then(response => response.text())
-                                .then(data => {
-                                    if(data.trim() === 'success') {
-                                        msg.innerHTML = '<span class="text-success"><i class="fa-solid fa-circle-check"></i> Đã gửi mã OTP đến email! Có thể yêu cầu gửi lại sau <b id="countdown" class="text-white fs-5">30s</b></span>';
-                                        
-                                        let timeLeft = 30; 
-                                        const timer = setInterval(() => {
-                                            timeLeft--;
-                                            btn.innerText = `Gửi lại (${timeLeft}s)`;
-                                            
-                                            const countdownSpan = document.getElementById('countdown');
-                                            if (countdownSpan) {
-                                                countdownSpan.innerText = timeLeft + 's';
-                                            }
+                                    .then(response => response.text())
+                                    .then(data => {
+                                        if (data.trim() === 'success') {
+                                            msg.innerHTML = '<span class="text-success"><i class="fa-solid fa-circle-check"></i> Đã gửi mã OTP đến email! Có thể yêu cầu gửi lại sau <b id="countdown" class="text-white fs-5">30s</b></span>';
 
-                                            if (timeLeft <= 0) {
-                                                clearInterval(timer);
-                                                btn.disabled = false;
-                                                btn.innerText = 'Nhận lại mã';
-                                                msg.innerHTML = '<span class="text-info"><i class="fa-solid fa-circle-info"></i> Bạn chưa nhận được mã? Hãy bấm Nhận lại mã.</span>';
-                                            }
-                                        }, 1000);
-                                    } else {
-                                        throw new Error("Lỗi Server");
-                                    }
-                                })
-                                .catch(err => {
-                                    msg.innerHTML = '<span class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi gửi mail, vui lòng kiểm tra lại kết nối mạng!</span>';
-                                    btn.disabled = false;
-                                    btn.innerText = 'Nhận mã OTP';
-                                });
+                                            let timeLeft = 30;
+                                            const timer = setInterval(() => {
+                                                timeLeft--;
+                                                btn.innerText = `Gửi lại (${timeLeft}s)`;
+
+                                                const countdownSpan = document.getElementById('countdown');
+                                                if (countdownSpan) {
+                                                    countdownSpan.innerText = timeLeft + 's';
+                                                }
+
+                                                if (timeLeft <= 0) {
+                                                    clearInterval(timer);
+                                                    btn.disabled = false;
+                                                    btn.innerText = 'Nhận lại mã';
+                                                    msg.innerHTML = '<span class="text-info"><i class="fa-solid fa-circle-info"></i> Bạn chưa nhận được mã? Hãy bấm Nhận lại mã.</span>';
+                                                }
+                                            }, 1000);
+                                        } else {
+                                            throw new Error("Lỗi Server");
+                                        }
+                                    })
+                                    .catch(err => {
+                                        msg.innerHTML = '<span class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi gửi mail, vui lòng kiểm tra lại kết nối mạng!</span>';
+                                        btn.disabled = false;
+                                        btn.innerText = 'Nhận mã OTP';
+                                    });
                         }
                     </script>
 

@@ -5,57 +5,144 @@
 
 <jsp:include page="includes/header.jsp"></jsp:include>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<style>
-    body { background-color: #0a0a0a; color: #e0e0e0; font-family: 'Montserrat', sans-serif; }
-    .luxury-title { font-family: 'Playfair Display', serif; color: #D4AF37; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(212, 175, 55, 0.4); }
-    .text-gold { color: #D4AF37 !important; }
-    .text-light-grey { color: #cccccc !important; }
-    .luxury-container { background: linear-gradient(145deg, #1a1a1a, #121212); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.05); padding: 25px; }
-    .table-luxury { --bs-table-bg: transparent; border-color: rgba(212, 175, 55, 0.2); }
-    .table-luxury tbody, .table-luxury tr, .table-luxury td, .table-luxury th, .table-luxury thead { background-color: transparent !important; background: none !important; color: #ffffff !important; }
-    .table-luxury thead th { background-color: rgba(0, 0, 0, 0.5) !important; border-bottom: 2px solid #D4AF37 !important; color: #D4AF37 !important; font-family: 'Playfair Display', serif; letter-spacing: 1px; }
-    .table-luxury tbody tr { transition: 0.3s; }
-    .table-luxury tbody tr:hover td { background-color: rgba(212, 175, 55, 0.08) !important; }
-    .table-luxury td { border-bottom: 1px solid rgba(212, 175, 55, 0.1); vertical-align: middle; }
-    .btn-luxury { background: linear-gradient(45deg, #B8860B, #FFD700, #B8860B); background-size: 200% auto; color: #000 !important; font-weight: 700; text-transform: uppercase; border: none; border-radius: 50px; padding: 12px 25px; transition: 0.5s; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
-    .btn-luxury:hover { background-position: right center; transform: translateY(-3px); box-shadow: 0 0 30px rgba(212, 175, 55, 0.8); }
-    .btn-outline-luxury { color: #D4AF37; border: 1px solid #D4AF37; border-radius: 50px; text-transform: uppercase; font-weight: 600; transition: 0.4s; background: transparent; }
-    .btn-outline-luxury:hover { background: #D4AF37; color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
-    .btn-qty { background: transparent; border: 1px solid #D4AF37; color: #D4AF37; font-weight: bold; }
-    .btn-qty:hover { background: #D4AF37; color: #000; }
-    .input-qty { color: #ffffff !important; background-color: transparent !important; }
-    .swal-luxury-popup { border: 1px solid rgba(212, 175, 55, 0.3) !important; border-radius: 12px !important; box-shadow: 0 15px 40px rgba(0,0,0,0.8) !important; }
-</style>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .luxury-title {
+            font-family: 'Playfair Display', serif;
+            color: #D4AF37;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.4);
+        }
+        .text-gold {
+            color: #D4AF37 !important;
+        }
+        .text-light-grey {
+            color: #cccccc !important;
+        }
+        .luxury-container {
+            background: linear-gradient(145deg, #1a1a1a, #121212);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.05);
+            padding: 25px;
+        }
+        .table-luxury {
+            --bs-table-bg: transparent;
+            border-color: rgba(212, 175, 55, 0.2);
+        }
+        .table-luxury tbody, .table-luxury tr, .table-luxury td, .table-luxury th, .table-luxury thead {
+            background-color: transparent !important;
+            background: none !important;
+            color: #ffffff !important;
+        }
+        .table-luxury thead th {
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            border-bottom: 2px solid #D4AF37 !important;
+            color: #D4AF37 !important;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 1px;
+        }
+        .table-luxury tbody tr {
+            transition: 0.3s;
+        }
+        .table-luxury tbody tr:hover td {
+            background-color: rgba(212, 175, 55, 0.08) !important;
+        }
+        .table-luxury td {
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            vertical-align: middle;
+        }
+        .btn-luxury {
+            background: linear-gradient(45deg, #B8860B, #FFD700, #B8860B);
+            background-size: 200% auto;
+            color: #000 !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            transition: 0.5s;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        .btn-luxury:hover {
+            background-position: right center;
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.8);
+        }
+        .btn-outline-luxury {
+            color: #D4AF37;
+            border: 1px solid #D4AF37;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: 0.4s;
+            background: transparent;
+        }
+        .btn-outline-luxury:hover {
+            background: #D4AF37;
+            color: #000;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+        .btn-qty {
+            background: transparent;
+            border: 1px solid #D4AF37;
+            color: #D4AF37;
+            font-weight: bold;
+        }
+        .btn-qty:hover {
+            background: #D4AF37;
+            color: #000;
+        }
+        .input-qty {
+            color: #ffffff !important;
+            background-color: transparent !important;
+        }
+        .swal-luxury-popup {
+            border: 1px solid rgba(212, 175, 55, 0.3) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8) !important;
+        }
+    </style>
 
-<script>
-    function xoaKhoiGio(event, url) {
-        event.preventDefault();
-        Swal.fire({
-            title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37; font-size: 1.8rem;">Loại Bỏ Siêu Xe</span>',
-            html: '<p style="color: #ccc; font-family: \'Montserrat\', sans-serif; font-size: 1rem; margin-top: 10px;">Bạn có chắc chắn muốn bỏ siêu phẩm này khỏi giỏ hàng không?</p>',
-            icon: 'question', iconColor: '#D4AF37', background: '#121212', backdrop: `rgba(0, 0, 0, 0.7)`,
-            showCancelButton: true, confirmButtonText: 'Xác nhận bỏ', cancelButtonText: 'Giữ lại',
-            customClass: { popup: 'swal-luxury-popup', confirmButton: 'btn btn-danger px-4 py-2 mx-2 rounded-pill fw-bold', cancelButton: 'btn btn-outline-secondary text-white border-secondary px-4 py-2 mx-2 rounded-pill fw-bold' },
-            buttonsStyling: false
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({ title: '<span style="color: #D4AF37; font-family: \'Playfair Display\', serif;">Đang cập nhật...</span>', background: '#121212', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); setTimeout(() => { window.location.href = url; }, 500); } });
-            }
-        })
-    }
-</script>
+    <script>
+        function xoaKhoiGio(event, url) {
+            event.preventDefault();
+            Swal.fire({
+                title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37; font-size: 1.8rem;">Loại Bỏ Siêu Xe</span>',
+                html: '<p style="color: #ccc; font-family: \'Montserrat\', sans-serif; font-size: 1rem; margin-top: 10px;">Bạn có chắc chắn muốn bỏ siêu phẩm này khỏi giỏ hàng không?</p>',
+                icon: 'question', iconColor: '#D4AF37', background: '#121212', backdrop: `rgba(0, 0, 0, 0.7)`,
+                showCancelButton: true, confirmButtonText: 'Xác nhận bỏ', cancelButtonText: 'Giữ lại',
+                customClass: {popup: 'swal-luxury-popup', confirmButton: 'btn btn-danger px-4 py-2 mx-2 rounded-pill fw-bold', cancelButton: 'btn btn-outline-secondary text-white border-secondary px-4 py-2 mx-2 rounded-pill fw-bold'},
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({title: '<span style="color: #D4AF37; font-family: \'Playfair Display\', serif;">Đang cập nhật...</span>', background: '#121212', allowOutsideClick: false, didOpen: () => {
+                            Swal.showLoading();
+                            setTimeout(() => {
+                                window.location.href = url;
+                            }, 500);
+                        }});
+                }
+            })
+        }
+    </script>
 
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-warning pb-2">
-        <h2 class="luxury-title mb-0">Gara Của Bạn</h2>
-    </div>
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-warning pb-2">
+            <h2 class="luxury-title mb-0">Gara Của Bạn</h2>
+        </div>
 
     <c:if test="${not empty msg}">
         <script>
-            Swal.fire({ title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37;">Thành Công</span>', html: '<span style="color: #e0e0e0; font-family: \'Montserrat\', sans-serif;">${msg}</span>', icon: 'success', iconColor: '#D4AF37', background: '#121212', customClass: { popup: 'swal-luxury-popup', confirmButton: 'btn btn-outline-luxury px-4 py-2 rounded-pill fw-bold' }, buttonsStyling: false, confirmButtonText: 'Đóng' });
+            Swal.fire({title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37;">Thành Công</span>', html: '<span style="color: #e0e0e0; font-family: \'Montserrat\', sans-serif;">${msg}</span>', icon: 'success', iconColor: '#D4AF37', background: '#121212', customClass: {popup: 'swal-luxury-popup', confirmButton: 'btn btn-outline-luxury px-4 py-2 rounded-pill fw-bold'}, buttonsStyling: false, confirmButtonText: 'Đóng'});
         </script>
         <c:remove var="msg" />
     </c:if>
@@ -93,7 +180,7 @@
                             </c:forEach>
                             <c:if test="${empty cartItems}">
                                 <tr><td colspan="5" class="text-center py-5"><i class="fa-solid fa-car mb-3" style="font-size: 4rem; color: #333;"></i><br><span class="fs-5 text-light-grey">Gara của bạn đang trống.</span></td></tr>
-                            </c:if>
+                                    </c:if>
                         </tbody>
                     </table>
                 </div>

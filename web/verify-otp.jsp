@@ -2,14 +2,14 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="includes/header.jsp"></jsp:include>
 
-<div class="container" style="margin-top: 100px; margin-bottom: 100px;">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card p-4" style="background: #111; border: 1px solid #D4AF37; border-radius: 20px; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);">
-                <div class="text-center mb-4">
-                    <i class="fa-solid fa-shield-halved fa-3x text-warning mb-3"></i>
-                    <h3 class="fw-bold" style="color: #D4AF37;">XÁC MINH OTP</h3>
-                    <p class="text-white small">Mã 6 số đã được gửi tới <b>${sessionScope.email_dang_khoi_phuc}</b></p>
+    <div class="container" style="margin-top: 100px; margin-bottom: 100px;">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card p-4" style="background: #111; border: 1px solid #D4AF37; border-radius: 20px; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);">
+                    <div class="text-center mb-4">
+                        <i class="fa-solid fa-shield-halved fa-3x text-warning mb-3"></i>
+                        <h3 class="fw-bold" style="color: #D4AF37;">XÁC MINH OTP</h3>
+                        <p class="text-white small">Mã 6 số đã được gửi tới <b>${sessionScope.email_dang_khoi_phuc}</b></p>
                 </div>
 
                 <c:if test="${not empty message}">

@@ -12,7 +12,9 @@
 
 <%
     String carIdStr = request.getParameter("id");
-    if (carIdStr == null) { carIdStr = "1"; }
+    if (carIdStr == null) {
+        carIdStr = "1";
+    }
     int cId = Integer.parseInt(carIdStr);
     ReviewDAO reviewDAO = new ReviewDAO();
     List<ReviewDTO> reviewList = reviewDAO.getReviewsByProduct(cId);
@@ -43,41 +45,91 @@
 
 <jsp:include page="includes/header.jsp"></jsp:include>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<style>
-    body { background-color: #0a0a0a; color: #e0e0e0; font-family: 'Montserrat', sans-serif; }
-    .luxury-title { font-family: 'Playfair Display', serif; color: #D4AF37; text-transform: uppercase; letter-spacing: 2px; }
-    .text-gold { color: #D4AF37 !important; }
-    .text-light-grey { color: #cccccc !important; }
-    
-    /* Giao diện khung chứa Dark Theme */
-    .luxury-container { background: #111; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); padding: 30px; }
-    .review-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(212, 175, 55, 0.1); border-radius: 10px; transition: 0.3s; }
-    .review-card:hover { border-color: rgba(212, 175, 55, 0.4); background: rgba(255, 255, 255, 0.05); }
-    
-    /* Giao diện form nhập liệu Dark Theme */
-    .form-control-luxury, .form-select-luxury { background-color: rgba(0, 0, 0, 0.5) !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; color: #fff !important; }
-    .form-control-luxury:focus, .form-select-luxury:focus { border-color: #D4AF37 !important; box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25) !important; }
-    .form-control-luxury::placeholder { color: #888; }
-    
-    /* Nút bấm Vàng F-AUTO */
-    .btn-luxury { background: linear-gradient(135deg, #D4AF37, #FFD700); color: #000 !important; font-weight: bold; border: none; transition: 0.3s; }
-    .btn-luxury:hover { background: #f1c40f; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
-    
-    .swal-luxury-popup { border: 1px solid rgba(212, 175, 55, 0.3) !important; border-radius: 12px !important; box-shadow: 0 15px 40px rgba(0,0,0,0.8) !important; }
-</style>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .luxury-title {
+            font-family: 'Playfair Display', serif;
+            color: #D4AF37;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .text-gold {
+            color: #D4AF37 !important;
+        }
+        .text-light-grey {
+            color: #cccccc !important;
+        }
 
-<div class="container my-5">
-    
+        /* Giao diện khung chứa Dark Theme */
+        .luxury-container {
+            background: #111;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 30px;
+        }
+        .review-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .review-card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Giao diện form nhập liệu Dark Theme */
+        .form-control-luxury, .form-select-luxury {
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            border: 1px solid rgba(212, 175, 55, 0.3) !important;
+            color: #fff !important;
+        }
+        .form-control-luxury:focus, .form-select-luxury:focus {
+            border-color: #D4AF37 !important;
+            box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25) !important;
+        }
+        .form-control-luxury::placeholder {
+            color: #888;
+        }
+
+        /* Nút bấm Vàng F-AUTO */
+        .btn-luxury {
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            color: #000 !important;
+            font-weight: bold;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-luxury:hover {
+            background: #f1c40f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .swal-luxury-popup {
+            border: 1px solid rgba(212, 175, 55, 0.3) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8) !important;
+        }
+    </style>
+
+    <div class="container my-5">
+
     <c:if test="${not empty msg}">
         <script>
             Swal.fire({
                 title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37;">Thành Công</span>',
                 html: '<span style="color: #e0e0e0; font-family: \'Montserrat\', sans-serif;">${msg}</span>',
                 icon: 'success', iconColor: '#D4AF37', background: '#121212',
-                customClass: { popup: 'swal-luxury-popup', confirmButton: 'btn btn-outline-warning px-4 py-2 rounded-pill fw-bold' },
+                customClass: {popup: 'swal-luxury-popup', confirmButton: 'btn btn-outline-warning px-4 py-2 rounded-pill fw-bold'},
                 buttonsStyling: false, confirmButtonText: 'Đóng'
             });
         </script>
@@ -139,7 +191,7 @@
                                     <input type="hidden" name="target" value="Review">
                                     <input type="hidden" name="action" value="add">
                                     <input type="hidden" name="productId" value="${carId}">
-                                    
+
                                     <div class="mb-3">
                                         <label class="form-label fw-bold text-light-grey small">Mức độ hài lòng</label>
                                         <select name="rating" class="form-select form-select-luxury p-2">
@@ -159,7 +211,7 @@
                                     </button>
                                 </form>
                             </c:when>
-                            
+
                             <c:otherwise>
                                 <div class="p-4 rounded-3 text-center border border-secondary border-opacity-25" style="background: rgba(255,255,255,0.02);">
                                     <i class="fa-solid fa-lock fs-1 text-gold mb-3 opacity-75"></i>
@@ -191,9 +243,9 @@
                                                     <div>
                                                         <h6 class="fw-bold mb-0 text-white">${reviewDAO.getUsername(rev.userID)}</h6>
                                                         <div class="text-warning" style="font-size: 0.85rem;"><c:forEach begin="1" end="${rev.rating}">⭐</c:forEach></div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <small class="text-light-grey"><fmt:formatDate value="${rev.reviewDate}" pattern="dd/MM/yyyy" /></small>
+                                                    <small class="text-light-grey"><fmt:formatDate value="${rev.reviewDate}" pattern="dd/MM/yyyy" /></small>
                                             </div>
 
                                             <p class="mt-3 mb-0 text-white fs-6" style="line-height: 1.6;">${rev.comment}</p>
