@@ -31,6 +31,21 @@
                 <div class="mt-3 badge rounded-pill px-4 py-2 border border-success border-opacity-25 shadow-lg" style="background: rgba(17, 153, 142, 0.15) !important; backdrop-filter: blur(15px); border: 1px solid rgba(56, 239, 125, 0.3) !important; box-shadow: 0 8px 32px 0 rgba(17, 153, 142, 0.3);">
                     <i class="fa-solid fa-money-bill-transfer me-2" style="color: #38ef7d;"></i> 
                     <span id="digital-clock" class="fw-bold" style="color: #ffffff; text-shadow: 0 0 12px rgba(56, 239, 125, 0.8); letter-spacing: 2px; font-family: 'JetBrains Mono', monospace;">00:00:00</span>
+                <div class="mt-3 badge rounded-pill px-4 py-2 border border-success border-opacity-25 shadow-lg" 
+                     style="background: rgba(17, 153, 142, 0.15) !important;
+                     backdrop-filter: blur(15px);
+                     border: 1px solid rgba(56, 239, 125, 0.3) !important;
+                     box-shadow: 0 8px 32px 0 rgba(17, 153, 142, 0.3);">
+
+                    <i class="fa-solid fa-money-bill-transfer me-2" style="color: #38ef7d;"></i> 
+
+                    <span id="digital-clock" class="fw-bold" 
+                          style="color: #ffffff;
+                          text-shadow: 0 0 12px rgba(56, 239, 125, 0.8);
+                          letter-spacing: 2px;
+                          font-family: 'JetBrains Mono', monospace;">
+                        00:00:00
+                    </span>
                 </div>
             </div>
         </div>
@@ -125,7 +140,7 @@
                                 </span>
                             </td>
                             <td>
-                               <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3 me-2 border-0 fw-bold" 
+                                <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3 me-2 border-0 fw-bold" 
                                         data-bs-toggle="modal" data-bs-target="#editModalPM${pm.methodID}">SỬA</button>
                                 <a href="PaymentMethodController?action=delete&id=${pm.methodID}" 
                                    class="btn btn-outline-danger btn-sm rounded-pill px-3 border-0 fw-bold" 
@@ -273,6 +288,8 @@
             bankBox.style.display = 'none';
         }
     }
+    setInterval(updateClock, 1000);
+    updateClock();
 </script>
 
 <jsp:include page="includes/admin-footer.jsp"></jsp:include>

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import java.io.IOException;
@@ -14,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.UserDAO;
 import model.UserDTO;
+import javax.servlet.http.Part;
+import java.io.File;
+import model.ActivityDAO;
 
 @WebServlet(name = "UserController", urlPatterns = {"/UserController"})
 public class UserController extends HttpServlet {
@@ -124,6 +123,14 @@ public class UserController extends HttpServlet {
         newUser.setPhone(phone);
         newUser.setRole(0); // 0: Mặc định là Khách hàng (Customer)
 
+        ActivityDAO actDao = new ActivityDAO();
+        actDao.logActivity(
+                "SYSTEM",
+                "Gia nhập hệ thống: Khách hàng mới " + username,
+                username,
+                "NEW-USER",
+                null
+        );
         // 5. Gọi DAO lưu vào Database
         if (dao.register(newUser)) {
             // Đăng ký thành công -> Đá về trang đăng nhập kèm thông báo
@@ -195,16 +202,24 @@ public class UserController extends HttpServlet {
                 } else if (!newPass.equals(confirmPass)) {
                     request.setAttribute("error", "Mật khẩu xác nhận không trùng khớp!");
                 } else {
+                    ActivityDAO actDao = new ActivityDAO();
+                    actDao.logActivity(
+                            "SECURITY",
+                            "Cập nhật khóa bảo mật tài khoản",
+                            currentUser.getUsername(),
+                            "SEC-PASS",
+                            null
+                    );
                     model.UserDAO dao = new model.UserDAO();
                     String hashedNewPass = utils.SecurityUtils.hashPassword(newPass);
 
                     if (dao.changePassword(currentUser.getUserID(), hashedNewPass)) {
                         // Đổi thành công -> Tiêu hủy OTP để không dùng lại được nữa
                         session.removeAttribute("change_pass_otp");
-                        
+
                         currentUser.setPassword(hashedNewPass);
                         session.setAttribute("user", currentUser);
-                        
+
                         request.setAttribute("message", "Xác thực 2 lớp thành công! Đã cập nhật mật khẩu mới.");
                     } else {
                         request.setAttribute("error", "Đổi mật khẩu thất bại do lỗi hệ thống Database!");
@@ -216,25 +231,26 @@ public class UserController extends HttpServlet {
             response.sendRedirect("login.jsp");
         }
     }
+
     // =========================================================================
     // HÀM MỚI: XỬ LÝ GỬI OTP VỀ EMAIL KHI ĐANG ĐĂNG NHẬP
     // =========================================================================
-   protected void doSendChangePassOTP(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doSendChangePassOTP(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         UserDTO currentUser = (UserDTO) session.getAttribute("user");
-        
+
         if (currentUser != null && currentUser.getEmail() != null) {
             // 1. Random mã OTP
             String otp = String.format("%06d", new java.util.Random().nextInt(999999));
             session.setAttribute("change_pass_otp", otp);
-            
+
             // 2. Nhờ EmailUtils lấy cái giao diện HTML đã vẽ sẵn
             String subject = "[F-AUTO] MÃ XÁC THỰC BẢO MẬT TÀI KHOẢN";
             String bodyHtml = utils.EmailUtils.getOtpEmailTemplate(currentUser.getFullName(), otp);
-            
+
             // 3. Tiến hành gửi mail
             utils.EmailUtils.sendEmail(currentUser.getEmail(), subject, bodyHtml);
-            
+
             response.getWriter().write("success");
         } else {
             response.getWriter().write("error");
@@ -267,8 +283,47 @@ public class UserController extends HttpServlet {
             doChangePassword(request, response);
         } else if (action.equals("sendChangePassOTP")) {
             doSendChangePassOTP(request, response);
-    }
-    
+
+            // =========================================================================
+            // HÀM MỚI: XỬ LÝ UPLOAD ẢNH ĐẠI DIỆN TỪ FORM MULTIPART
+            // =========================================================================
+        } else if (action.equals("uploadAvatar")) {
+            HttpSession session = request.getSession();
+            UserDTO currentUser = (UserDTO) session.getAttribute("user");
+            if (currentUser != null) {
+                try {
+                    // Lấy file từ request gửi lên
+                    Part filePart = request.getPart("avatarFile");
+                    if (filePart != null && filePart.getSize() > 0) {
+                        // Tên file lưu sẽ theo định dạng: avatar_ID.jpg (Ví dụ: avatar_1.jpg)
+                        // Như vậy 1 user luôn chỉ lưu đè 1 file, không làm nặng máy chủ
+                        String fileName = "avatar_" + currentUser.getUserID() + ".jpg";
+
+                        // Lấy đường dẫn tuyệt đối đến thư mục chứa ảnh trên máy chủ
+                        String uploadPath = request.getServletContext().getRealPath("") + File.separator + "IMG" + File.separator + "avatars";
+
+                        // Nếu chưa có thư mục avatars, tự động tạo mới
+                        File uploadDir = new File(uploadPath);
+                        if (!uploadDir.exists()) {
+                            uploadDir.mkdir();
+                        }
+
+                        // Ghi file vật lý xuống ổ cứng
+                        filePart.write(uploadPath + File.separator + fileName);
+
+                        request.setAttribute("message", "Đã cập nhật ảnh đại diện thành công!");
+                    } else {
+                        request.setAttribute("error", "Vui lòng chọn một ảnh hợp lệ.");
+                    }
+                } catch (Exception e) {
+                    request.setAttribute("error", "Hệ thống xảy ra lỗi khi lưu ảnh: " + e.getMessage());
+                }
+            } else {
+                response.sendRedirect("login.jsp");
+                return;
+            }
+            request.getRequestDispatcher("profile.jsp").forward(request, response);
+        }
     }
 
     @Override

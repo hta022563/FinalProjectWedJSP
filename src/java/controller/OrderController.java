@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import java.io.IOException;
@@ -27,6 +23,8 @@ import model.PaymentMethodDTO; // Đã thêm Import
  *
  * @author AngDeng
  */
+import model.ActivityDAO; // Thêm import ActivityDAO
+
 @WebServlet(name = "OrderController", urlPatterns = {"/OrderController"})
 public class OrderController extends HttpServlet {
 
@@ -50,9 +48,36 @@ public class OrderController extends HttpServlet {
                 boolean isSuccess = orderDAO.checkout(userId, 1, null, "Giao xe tại Showroom F-Auto");
                 if (isSuccess) {
                     request.setAttribute("msg", "Ting ting! Chốt đơn siêu xe thành công!");
+
+                    // =========================================================
+                    // [THÊM MỚI] GHI LOG HOẠT ĐỘNG LÊN DASHBOARD KHI CHỐT ĐƠN
+                    // =========================================================
+                    try {
+                        // 1. Lấy đơn hàng mới nhất vừa tạo của khách này để lấy OrderID và Tổng tiền
+                        List<OrderDTO> recentOrders = orderDAO.getOrdersByUserId(userId);
+                        if (recentOrders != null && !recentOrders.isEmpty()) {
+                            OrderDTO newestOrder = recentOrders.get(0); // Lấy đơn đầu tiên (mới nhất)
+                            
+                           // 2. Gọi Thư ký ghi sổ
+                            ActivityDAO actDao = new ActivityDAO();
+                            actDao.logActivity(
+                                "ORDER", // Loại Log
+                                "Đơn hàng VIP mới từ khách " + user.getUsername(), // Tiêu đề
+                                user.getUsername(), // Người tạo
+                                "FA-" + newestOrder.getOrderID(), // Mã tham chiếu 
+                                Double.valueOf(String.valueOf(newestOrder.getTotalAmount())) // <--- ĐÃ ÉP KIỂU CHUẨN DOUBLE Ở ĐÂY
+                            );
+                        }
+                    } catch (Exception ex) {
+                        System.out.println("Lỗi khi ghi Log đơn hàng: " + ex.getMessage());
+                        // Không return ở đây để không làm đứt luồng chốt đơn của khách
+                    }
+                    // =========================================================
+
                 } else {
                     request.setAttribute("error", "Lỗi: Giỏ hàng trống hoặc hệ thống đang bận!");
                 }
+                
             } else if ("detail".equals(action)) {
                 String orderIdStr = request.getParameter("id");
                 if (orderIdStr != null && !orderIdStr.isEmpty()) {
@@ -69,20 +94,23 @@ public class OrderController extends HttpServlet {
                     request.getRequestDispatcher("order-detail.jsp").forward(request, response);
                     return; 
                 } 
+                
             } else if ("delete".equals(action)) {
                 String orderIdStr = request.getParameter("id");
                 if (orderIdStr != null && !orderIdStr.isEmpty()) {
                     boolean isDeleted = orderDAO.deleteOrder(Integer.parseInt(orderIdStr));
                     if (isDeleted) { request.setAttribute("msg", "Đã xóa đơn hàng thành công!"); }
                 }
+                
             } else if ("updateStatus".equals(action)) {
+                // Sửa lại để điều hướng bằng MainController
                 if (user != null && user.getRole() == 1) {
                     String orderIdStr = request.getParameter("orderId");
                     String newStatus = request.getParameter("status"); 
                     if (orderIdStr != null && newStatus != null) {
                         orderDAO.updateOrderStatus(Integer.parseInt(orderIdStr), newStatus);
                     }
-                    response.sendRedirect("DashboardController"); 
+                    response.sendRedirect("MainController?target=Dashboard"); 
                     return;
                 } else {
                     response.sendRedirect("home.jsp");
@@ -148,8 +176,32 @@ public class OrderController extends HttpServlet {
                     response.sendRedirect("OrderController");
                     return;
                 }
+                
+            } else if ("exportContract".equals(action)) {
+                String orderIdStr = request.getParameter("id");
+                if (orderIdStr != null && !orderIdStr.isEmpty()) {
+                    int orderId = Integer.parseInt(orderIdStr);
+                    OrderDetailDAO detailDAO = new OrderDetailDAO();
+                    List<OrderDetailDTO> listDetails = detailDAO.getDetailsByOrderId(orderId);
+                    Map<Integer, String> productNames = new HashMap<>();
+                    for(OrderDetailDTO item : listDetails) {
+                        productNames.put(item.getProductID(), detailDAO.getProductName(item.getProductID()));
+                    }                   
+                    request.setAttribute("listDetails", listDetails);
+                    request.setAttribute("productNames", productNames);
+                    
+                    OrderDTO contractOrder = null;
+                    List<OrderDTO> allOrders = orderDAO.getOrdersByUserId(userId);
+                    for(OrderDTO o : allOrders) {
+                        if(o.getOrderID() == orderId) { contractOrder = o; break; }
+                    }
+                    request.setAttribute("contractOrder", contractOrder);
+                    request.getRequestDispatcher("contract-pdf.jsp").forward(request, response);
+                    return; 
+                } 
             }
             
+            // Xử lý mặc định: Hiển thị danh sách lịch sử đơn hàng
             List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
             request.setAttribute("listOrders", listOrders);
             request.getRequestDispatcher("order-history.jsp").forward(request, response);
@@ -176,5 +228,6 @@ public class OrderController extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
+        return "Order Controller";
     }
 }
