@@ -54,8 +54,9 @@
                 <div class="card-body text-center p-4">
                     <p class="text-secondary small mb-1" style="font-size: 0.8rem;">SUV | 2024</p>
                     <h5 class="card-title text-white fw-bold mb-3">Mercedes-Benz G63</h5>
-                    <h5 class="text-gold fw-bold mb-4">5,000,000,000 VNĐ</h5>
-                    <a href="detail.jsp?id=1" class="btn btn-outline-luxury rounded-pill w-75">XEM CHI TIẾT</a>
+                    <h5 class="text-gold fw-bold mb-4">11,950,000,000 VNĐ</h5>
+                    <%-- Đã sửa link chuẩn MVC và ID = 15 cho G63 --%>
+                    <a href="MainController?target=Detail&id=15" class="btn btn-outline-luxury rounded-pill w-75">XEM CHI TIẾT</a>
                 </div>
             </div>
         </div>
@@ -66,7 +67,8 @@
                     <p class="text-secondary small mb-1" style="font-size: 0.8rem;">Sport | 2023</p>
                     <h5 class="card-title text-white fw-bold mb-3">Audi R8 V10</h5>
                     <h5 class="text-gold fw-bold mb-4">4,500,000,000 VNĐ</h5>
-                    <a href="detail.jsp?id=2" class="btn btn-outline-luxury rounded-pill w-75">XEM CHI TIẾT</a>
+                    <%-- Đã sửa link chuẩn MVC và ID = 8 cho Audi R8 --%>
+                    <a href="MainController?target=Detail&id=8" class="btn btn-outline-luxury rounded-pill w-75">XEM CHI TIẾT</a>
                 </div>
             </div>
         </div>
@@ -77,7 +79,8 @@
                     <p class="text-secondary small mb-1" style="font-size: 0.8rem;">Sedan | 2025</p>
                     <h5 class="card-title text-white fw-bold mb-3">Mercedes C300</h5>
                     <h5 class="text-gold fw-bold mb-4">1,500,000,000 VNĐ</h5>
-                    <a href="detail.jsp?id=3" class="btn btn-outline-luxury rounded-pill w-75">XEM CHI TIẾT</a>
+                    <%-- Đã sửa link chuẩn MVC và ID = 5 cho Mercedes C300 --%>
+                    <a href="MainController?target=Detail&id=5" class="btn btn-outline-luxury rounded-pill w-75">XEM CHI TIẾT</a>
                 </div>
             </div>
         </div>

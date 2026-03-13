@@ -146,6 +146,12 @@
                                         <span class="badge cart-badge rounded-pill ms-1">${cartBadge}</span>
                                     </c:if>
                                 </a>
+                                <a href="MainController?target=Wishlist&action=view" class="btn btn-outline-danger rounded-pill me-2" style="border-width: 2px;" title="Danh sách Yêu thích">
+                                    <i class="fa-solid fa-heart"></i>
+                                    <c:if test="${not empty sessionScope.wishlist && sessionScope.wishlist.size() > 0}">
+                                        <span class="badge bg-danger rounded-pill ms-1">${sessionScope.wishlist.size()}</span>
+                                    </c:if>
+                                </a>
 
                                 <a href="MainController?target=Order&action=history" class="btn btn-history-gold rounded-pill me-3">
                                     <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn

@@ -39,14 +39,14 @@
         .swal-cyber-popup { border: 1px solid var(--m-cyan) !important; border-radius: 15px !important; box-shadow: 0 0 30px rgba(6, 182, 212, 0.2) !important; }
     </style>
 
-<script>
+    <script>
         function dieuPhoiDon(event, url, actionType, orderId) {
             event.preventDefault();
             let titleText = ''; let htmlText = ''; let confirmColor = ''; let btnClass = '';
             if(actionType === 'duyet') { titleText = 'XÁC NHẬN DUYỆT ĐƠN'; htmlText = 'Kích hoạt hợp đồng mã <b style="color: #06b6d4;">#' + orderId + '</b>?'; confirmColor = '#06b6d4'; btnClass = 'btn-outline-info'; } 
             else if(actionType === 'giao') { titleText = 'BÀN GIAO XE'; htmlText = 'Chuyển hợp đồng mã <b style="color: #6366f1;">#' + orderId + '</b> sang trạng thái ĐANG GIAO?'; confirmColor = '#6366f1'; btnClass = 'btn-outline-primary'; } 
             else if(actionType === 'chot') { titleText = 'HOÀN TẤT GIAO DỊCH'; htmlText = 'Xác nhận hợp đồng mã <b style="color: #10b981;">#' + orderId + '</b> đã giao thành công?'; confirmColor = '#10b981'; btnClass = 'btn-outline-success'; }
-            // THÊM NHÁNH TỪ CHỐI
+            // NHÁNH TỪ CHỐI
             else if(actionType === 'tuchoi') { titleText = 'TỪ CHỐI HỢP ĐỒNG'; htmlText = 'Từ chối và hủy bỏ hợp đồng mã <b style="color: #ef4444;">#' + orderId + '</b>?'; confirmColor = '#ef4444'; btnClass = 'btn-outline-danger'; }
 
             Swal.fire({
@@ -67,6 +67,7 @@
             });
         }
     </script>
+
     <div class="grand-wrapper">
         <div class="main-viewport">
             <div class="terminal-hero">
@@ -257,32 +258,30 @@
                                                 <span class="fw-bold text-white fs-6">#${order.orderID}</span><br>
                                                 <span class="id-mono" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #94a3b8;">UID Khách: ${order.userID}</span>
                                             </td>
-                                            <td class="text-center text-light opacity-75"><fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy HH:mm" /></td>
-                                            <td class="text-end fw-bold" style="color: var(--m-cyan);"><fmt:formatNumber value="${order.totalAmount}" type="number" pattern="#,###"/> đ</td>
-                                            <td class="text-center">
-                                                <c:choose>
-                                                    <c:when test="${order.status == 'Đang xử lý'}"><span class="badge bg-warning bg-opacity-10 text-warning border border-warning px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-notch fa-spin me-1"></i>CHỜ DUYỆT</span></c:when>
-                                                    <c:when test="${order.status == 'Đã duyệt'}"><span class="badge bg-info bg-opacity-10 text-info border border-info px-3 py-2 rounded-pill"><i class="fa-solid fa-check-double me-1"></i>ĐÃ DUYỆT</span></c:when>
-                                                    <c:when test="${order.status == 'Đang giao'}"><span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill"><i class="fa-solid fa-truck-fast me-1"></i>ĐANG GIAO</span></c:when>
-                                                    <c:otherwise><span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill"><i class="fa-solid fa-shield-check me-1"></i>HOÀN TẤT</span></c:otherwise>
-                                                </c:choose>
+                                            
+                                            <td class="text-center text-light opacity-75">
+                                                <fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy HH:mm" />
                                             </td>
+                                            
+                                            <td class="text-end fw-bold" style="color: var(--m-cyan);">
+                                                <fmt:formatNumber value="${order.totalAmount}" type="number" pattern="#,###"/> đ
+                                            </td>
+                                            
                                             <td class="text-center">
                                                 <c:choose>
                                                     <c:when test="${order.status == 'Đang xử lý'}"><span class="badge bg-warning bg-opacity-10 text-warning border border-warning px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-notch fa-spin me-1"></i>CHỜ DUYỆT</span></c:when>
                                                     <c:when test="${order.status == 'Đã duyệt'}"><span class="badge bg-info bg-opacity-10 text-info border border-info px-3 py-2 rounded-pill"><i class="fa-solid fa-check-double me-1"></i>ĐÃ DUYỆT</span></c:when>
                                                     <c:when test="${order.status == 'Đang giao'}"><span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill"><i class="fa-solid fa-truck-fast me-1"></i>ĐANG GIAO</span></c:when>
-                                                    <%-- THÊM TRẠNG THÁI TỪ CHỐI MÀU ĐỎ --%>
                                                     <c:when test="${order.status == 'Đã từ chối'}"><span class="badge bg-danger bg-opacity-10 text-danger border border-danger px-3 py-2 rounded-pill"><i class="fa-solid fa-ban me-1"></i>ĐÃ TỪ CHỐI</span></c:when>
                                                     <c:otherwise><span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill"><i class="fa-solid fa-shield-check me-1"></i>HOÀN TẤT</span></c:otherwise>
                                                 </c:choose>
                                             </td>
+                                            
                                             <td class="text-center">
                                                 <c:choose>
                                                     <c:when test="${order.status == 'Đang xử lý'}">
                                                         <div class="d-flex justify-content-center gap-2">
                                                             <a href="MainController?target=Order&action=updateStatus&orderId=${order.orderID}&status=Đã duyệt" class="btn btn-sm btn-outline-info rounded-pill px-3 fw-bold" onclick="dieuPhoiDon(event, this.href, 'duyet', '${order.orderID}')">DUYỆT</a>
-                                                            <%-- THÊM NÚT TỪ CHỐI BÊN CẠNH NÚT DUYỆT --%>
                                                             <a href="MainController?target=Order&action=updateStatus&orderId=${order.orderID}&status=Đã từ chối" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" onclick="dieuPhoiDon(event, this.href, 'tuchoi', '${order.orderID}')">TỪ CHỐI</a>
                                                         </div>
                                                     </c:when>
