@@ -10,10 +10,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.annotation.MultipartConfig;
 /**
  *
  * @author AngDeng
  */
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 1,  // 1 MB
+    maxFileSize = 1024 * 1024 * 5,        // 5 MB
+    maxRequestSize = 1024 * 1024 * 10     // 10 MB
+)
 @WebServlet(name = "MainController", urlPatterns = {"/MainController"})
 public class MainController extends HttpServlet {
 

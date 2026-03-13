@@ -151,9 +151,15 @@
                                     <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn
                                 </a>
 
-                                <div class="user-greeting d-flex align-items-center">
+                               <div class="user-greeting d-flex align-items-center">
                                     <a href="MainController?target=User&action=profile" class="text-decoration-none me-2" title="Xem thông tin cá nhân">
-                                        <i class="fa-solid fa-user-circle profile-icon"></i> 
+                                        <%-- Lấy đúng ảnh đại diện vừa upload, nếu lỗi thì tự động tạo ảnh chữ cái đầu --%>
+                                        <img src="IMG/avatars/avatar_${sessionScope.user.userID}.jpg?v=<%= System.currentTimeMillis() %>" 
+                                             onerror="this.src='https://ui-avatars.com/api/?name=${sessionScope.user.username}&background=222&color=d4af37&size=40'" 
+                                             alt="Avatar" 
+                                             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #D4AF37; transition: 0.3s;"
+                                             onmouseover="this.style.transform='scale(1.1)'; this.style.borderColor='#FFDF00';" 
+                                             onmouseout="this.style.transform='scale(1)'; this.style.borderColor='#D4AF37';">
                                     </a>
                                     <span style="color: #a0a0a0;">Xin chào, <span class="fw-bold" style="color: #D4AF37;">${sessionScope.user.fullName}</span></span>
                                 </div>
