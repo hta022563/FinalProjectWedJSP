@@ -319,7 +319,6 @@
                                         <c:when test="${catId == 0}">THÊM MỚI SẢN PHẨM</c:when>
                                         <c:otherwise>THÊM ${catNames[catId]}</c:otherwise>
                                     </c:choose>
-
                                 </h5>
                             </a>
                         </div>
