@@ -117,7 +117,7 @@
     <script>
         Swal.fire({ title: '<span style="font-family: Playfair Display; color: #D4AF37;">THÀNH CÔNG!</span>', html: '<span style="color: #e0e0e0;">${msg}</span>', icon: 'success', background: '#121212', border: '1px solid #D4AF37', confirmButtonText: '<span style="color: #000; font-weight: bold;">Tuyệt vời</span>', confirmButtonColor: '#D4AF37' });
     </script>
-    <c:remove var="msg" />
+    <c:remove var="msg" />  
 </c:if>
     
 <div class="container my-5 py-5">

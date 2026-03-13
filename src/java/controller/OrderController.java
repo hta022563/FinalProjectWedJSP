@@ -92,7 +92,28 @@ public class OrderController extends HttpServlet {
                 } else {
                     response.sendRedirect("home.jsp");
                     return;
-                }
+                }} else if ("exportContract".equals(action)) {
+                String orderIdStr = request.getParameter("id");
+                if (orderIdStr != null && !orderIdStr.isEmpty()) {
+                    int orderId = Integer.parseInt(orderIdStr);
+                    OrderDetailDAO detailDAO = new OrderDetailDAO();
+                    List<OrderDetailDTO> listDetails = detailDAO.getDetailsByOrderId(orderId);
+                    Map<Integer, String> productNames = new HashMap<>();
+                    for(OrderDetailDTO item : listDetails) {
+                        productNames.put(item.getProductID(), detailDAO.getProductName(item.getProductID()));
+                    }                   
+                    request.setAttribute("listDetails", listDetails);
+                    request.setAttribute("productNames", productNames);
+                    OrderDTO contractOrder = null;
+                    List<OrderDTO> allOrders = orderDAO.getOrdersByUserId(userId);
+                    for(OrderDTO o : allOrders) {
+                        if(o.getOrderID() == orderId) { contractOrder = o; break; }
+                    }
+                    request.setAttribute("contractOrder", contractOrder);
+                    request.getRequestDispatcher("contract-pdf.jsp").forward(request, response);
+                    return; 
+                } 
+            
             }
             
             List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);

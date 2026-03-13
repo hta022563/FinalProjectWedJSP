@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import java.io.IOException;
@@ -13,7 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.UserDAO;
-import model.UserDTO;
+import model.UserDTO; 
+import javax.servlet.http.Part;
+import java.io.File;
 
 @WebServlet(name = "UserController", urlPatterns = {"/UserController"})
 public class UserController extends HttpServlet {
@@ -267,8 +265,47 @@ public class UserController extends HttpServlet {
             doChangePassword(request, response);
         } else if (action.equals("sendChangePassOTP")) {
             doSendChangePassOTP(request, response);
-    }
-    
+            
+        // =========================================================================
+        // HÀM MỚI: XỬ LÝ UPLOAD ẢNH ĐẠI DIỆN TỪ FORM MULTIPART
+        // =========================================================================
+        } else if (action.equals("uploadAvatar")) {
+            HttpSession session = request.getSession();
+            UserDTO currentUser = (UserDTO) session.getAttribute("user");
+            if (currentUser != null) {
+                try {
+                    // Lấy file từ request gửi lên
+                    Part filePart = request.getPart("avatarFile");
+                    if (filePart != null && filePart.getSize() > 0) {
+                        // Tên file lưu sẽ theo định dạng: avatar_ID.jpg (Ví dụ: avatar_1.jpg)
+                        // Như vậy 1 user luôn chỉ lưu đè 1 file, không làm nặng máy chủ
+                        String fileName = "avatar_" + currentUser.getUserID() + ".jpg";
+
+                        // Lấy đường dẫn tuyệt đối đến thư mục chứa ảnh trên máy chủ
+                        String uploadPath = request.getServletContext().getRealPath("") + File.separator + "IMG" + File.separator + "avatars";
+
+                        // Nếu chưa có thư mục avatars, tự động tạo mới
+                        File uploadDir = new File(uploadPath);
+                        if (!uploadDir.exists()) {
+                            uploadDir.mkdir();
+                        }
+
+                        // Ghi file vật lý xuống ổ cứng
+                        filePart.write(uploadPath + File.separator + fileName);
+
+                        request.setAttribute("message", "Đã cập nhật ảnh đại diện thành công!");
+                    } else {
+                        request.setAttribute("error", "Vui lòng chọn một ảnh hợp lệ.");
+                    }
+                } catch (Exception e) {
+                    request.setAttribute("error", "Hệ thống xảy ra lỗi khi lưu ảnh: " + e.getMessage());
+                }
+            } else {
+                response.sendRedirect("login.jsp");
+                return;
+            }
+            request.getRequestDispatcher("profile.jsp").forward(request, response);
+        }
     }
 
     @Override
