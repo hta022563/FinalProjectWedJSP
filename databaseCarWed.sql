@@ -1,9 +1,3 @@
-USE master;
-GO
-
--- ==============================================================================
--- 1. KHỞI TẠO DATABASE (Xóa DB cũ nếu đã tồn tại để làm lại từ đầu)
--- ==============================================================================
 IF EXISTS (SELECT * FROM sys.databases WHERE name = 'CarStore_FinalWeb')
 BEGIN
     ALTER DATABASE CarStore_FinalWeb SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
@@ -18,8 +12,9 @@ USE CarStore_FinalWeb;
 GO
 
 -- ==============================================================================
--- 2. TẠO CẤU TRÚC BẢNG (TABLES)
+-- 2. TẠO CẤU TRÚC BẢNG (ĐÃ TỐI ƯU GỘP CHUNG PAYMENT METHOD)
 -- ==============================================================================
+
 CREATE TABLE Category (
     CategoryID INT PRIMARY KEY IDENTITY(1,1),
     CategoryName NVARCHAR(255) NOT NULL,
@@ -34,15 +29,23 @@ CREATE TABLE Supplier (
     IsActive INT DEFAULT 1 
 );
 
+-- Đã gộp các cột thêm mới vào thẳng bảng lúc tạo
 CREATE TABLE PaymentMethod (
     MethodID INT PRIMARY KEY IDENTITY(1,1),
     MethodName NVARCHAR(100) NOT NULL,
+    MethodCode VARCHAR(20),      -- VD: QR, CARD, CASH
+    IconClass VARCHAR(50),       -- VD: fa-solid fa-qrcode
+    [Description] NVARCHAR(255), 
+    BankName NVARCHAR(100),      
+    AccountNo VARCHAR(50),       
+    AccountName NVARCHAR(100),   
+    QRCodeURL VARCHAR(255),      
     IsActive INT DEFAULT 1 
 );
 
 CREATE TABLE Promotion (
     PromotionID INT PRIMARY KEY IDENTITY(1,1),
-    PromoCode VARCHAR(50) NOT NULL,
+    PromoCode VARCHAR(50) NOT NULL UNIQUE,
     DiscountPercent INT,
     StartDate DATETIME,
     EndDate DATETIME,
@@ -62,9 +65,9 @@ CREATE TABLE [User] (
     Username VARCHAR(100) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
     FullName NVARCHAR(255),
-    Email VARCHAR(100),
+    Email VARCHAR(100) UNIQUE,
     Phone VARCHAR(20),
-    Role INT -- 1: Admin, 0: Customer
+    Role INT DEFAULT 0 -- 1: Admin, 0: Customer (Set mặc định là 0)
 );
 
 CREATE TABLE Product (
@@ -73,22 +76,28 @@ CREATE TABLE Product (
     SupplierID INT FOREIGN KEY REFERENCES Supplier(SupplierID),
     ProductName NVARCHAR(255) NOT NULL,
     Price DECIMAL(18,2),
-    StockQuantity INT,
+    StockQuantity INT DEFAULT 0,
     Description NVARCHAR(MAX),
     ImageURL VARCHAR(500),
-    [Status] BIT DEFAULT 1 -- 1: Đang bán (True), 0: Đã ẩn (False)
+    [Status] BIT DEFAULT 1 -- 1: Đang bán, 0: Đã ẩn
 );
 
 CREATE TABLE Cart (
     CartID INT PRIMARY KEY IDENTITY(1,1),
-    UserID INT FOREIGN KEY REFERENCES [User](UserID)
+    UserID INT FOREIGN KEY REFERENCES [User](UserID) ON DELETE CASCADE
 );
 
 CREATE TABLE CartItem (
     CartItemID INT PRIMARY KEY IDENTITY(1,1),
-    CartID INT FOREIGN KEY REFERENCES Cart(CartID),
-    ProductID INT FOREIGN KEY REFERENCES Product(ProductID),
-    Quantity INT
+    CartID INT FOREIGN KEY REFERENCES Cart(CartID) ON DELETE CASCADE,
+    ProductID INT FOREIGN KEY REFERENCES Product(ProductID) ON DELETE CASCADE,
+    Quantity INT DEFAULT 1
+);
+
+CREATE TABLE Wishlist (
+    WishlistID INT IDENTITY(1,1) PRIMARY KEY,
+    UserID INT FOREIGN KEY REFERENCES [User](UserID) ON DELETE CASCADE,
+    ProductID INT FOREIGN KEY REFERENCES Product(ProductID) ON DELETE CASCADE
 );
 
 CREATE TABLE [Order] (
@@ -98,13 +107,13 @@ CREATE TABLE [Order] (
     PromotionID INT FOREIGN KEY REFERENCES Promotion(PromotionID),
     OrderDate DATETIME DEFAULT GETDATE(),
     TotalAmount DECIMAL(18,2),
-    Status NVARCHAR(50),
+    Status NVARCHAR(50) DEFAULT N'Đang xử lý', -- Mặc định khi vừa đặt hàng
     ShippingAddress NVARCHAR(500)
 );
 
 CREATE TABLE OrderDetail (
     OrderDetailID INT PRIMARY KEY IDENTITY(1,1),
-    OrderID INT FOREIGN KEY REFERENCES [Order](OrderID),
+    OrderID INT FOREIGN KEY REFERENCES [Order](OrderID) ON DELETE CASCADE,
     ProductID INT FOREIGN KEY REFERENCES Product(ProductID),
     Quantity INT,
     UnitPrice DECIMAL(18,2)
@@ -113,7 +122,7 @@ CREATE TABLE OrderDetail (
 CREATE TABLE Review (
     ReviewID INT PRIMARY KEY IDENTITY(1,1),
     UserID INT FOREIGN KEY REFERENCES [User](UserID),
-    ProductID INT FOREIGN KEY REFERENCES Product(ProductID),
+    ProductID INT FOREIGN KEY REFERENCES Product(ProductID) ON DELETE CASCADE,
     Rating INT CHECK (Rating BETWEEN 1 AND 5),
     Comment NVARCHAR(MAX),
     ReviewDate DATETIME DEFAULT GETDATE()
@@ -144,5 +153,3 @@ CREATE TABLE Activity_Logs (
     amount DECIMAL(18, 2) NULL            
 );
 GO
-
-

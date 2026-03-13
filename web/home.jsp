@@ -153,7 +153,7 @@
     <div class="row g-4">
         <div class="col-md-4">
             <div class="card luxury-card h-100 pb-3">
-                <div class="car-img-wrapper"><img src="IMG/OIP (2).webp" class="card-img-top" alt="Mercedes-Benz G63" style="height:250px; object-fit:cover"></div>
+                <div class="car-img-wrapper"><img src="IMG/G63.jpg" class="card-img-top" alt="Mercedes-Benz G63" style="height:250px; object-fit:cover"></div>
                 <div class="card-body text-center p-4">
                     <p class="text-secondary small mb-1" style="font-size: 0.8rem;">SUV | 2024</p>
                     <h5 class="card-title text-white fw-bold mb-3">Mercedes-Benz G63</h5>

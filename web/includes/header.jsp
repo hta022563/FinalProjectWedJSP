@@ -49,17 +49,14 @@
                 font-size: 2.2rem;
                 font-weight: 900;
                 letter-spacing: 3px;
-                /* Cấu hình dải màu Vàng -> Trắng -> Vàng */
                 background: linear-gradient(to right, #D4AF37 20%, #ffffff 40%, #ffffff 60%, #D4AF37 80%);
                 background-size: 200% auto;
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 text-shadow: 0px 4px 15px rgba(212, 175, 55, 0.3);
-                /* Gắn bộ đếm thời gian chạy hiệu ứng */
                 animation: shineLogo 3s linear infinite; 
             }
             
-            /* Khai báo chuyển động cho logo */
             @keyframes shineLogo {
                 to { background-position: 200% center; }
             }
@@ -109,6 +106,14 @@
             }
             .profile-icon { color: #D4AF37; font-size: 1.4rem; transition: 0.3s; cursor: pointer; }
             .profile-icon:hover { transform: scale(1.1); color: #FFDF00; }
+
+            /* Icon Bánh răng xoay */
+            .gear-spin { 
+                transition: transform 0.4s ease-in-out; 
+            }
+            .gear-spin:hover { 
+                transform: rotate(90deg) scale(1.1); 
+            }
         </style>
     </head>
     <body class="d-flex flex-column min-vh-100">
@@ -125,15 +130,7 @@
                         <li class="nav-item"><a class="nav-link nav-link-custom" href="home.jsp">Trang chủ</a></li>
                         <li class="nav-item"><a class="nav-link nav-link-custom" href="MainController?target=Product">Sản phẩm</a></li>
                         <li class="nav-item"><a class="nav-link nav-link-custom" href="MainController?target=News">Tin tức</a></li>
-
-                        <%-- MỤC TRANG QUẢN TRỊ --%>
-                        <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
-                            <li class="nav-item ms-3 d-flex align-items-center">
-                                <a class="btn btn-gold-nav rounded-pill px-3 py-1" href="MainController?target=Dashboard">
-                                     <i class="fa-solid fa-user-shield"></i> QUẢN TRỊ
-                                </a>
-                            </li>
-                        </c:if>
+                        <%-- Đã XÓA Nút QUẢN TRỊ to tướng ở đây --%>
                     </ul>
 
                     <div class="d-flex align-items-center">
@@ -157,9 +154,8 @@
                                     <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn
                                 </a>
 
-                               <div class="user-greeting d-flex align-items-center">
+                                <div class="user-greeting d-flex align-items-center">
                                     <a href="MainController?target=User&action=profile" class="text-decoration-none me-2" title="Xem thông tin cá nhân">
-                                        <%-- Lấy đúng ảnh đại diện vừa upload, nếu lỗi thì tự động tạo ảnh chữ cái đầu --%>
                                         <img src="IMG/avatars/avatar_${sessionScope.user.userID}.jpg?v=<%= System.currentTimeMillis() %>" 
                                              onerror="this.src='https://ui-avatars.com/api/?name=${sessionScope.user.username}&background=222&color=d4af37&size=40'" 
                                              alt="Avatar" 
@@ -167,7 +163,18 @@
                                              onmouseover="this.style.transform='scale(1.1)'; this.style.borderColor='#FFDF00';" 
                                              onmouseout="this.style.transform='scale(1)'; this.style.borderColor='#D4AF37';">
                                     </a>
-                                    <span style="color: #a0a0a0;">Xin chào, <span class="fw-bold" style="color: #D4AF37;">${sessionScope.user.fullName}</span></span>
+                                    
+                                    <div class="text-start lh-sm">
+                                        <span style="color: #a0a0a0; font-size: 0.75rem;">Xin chào,</span><br>
+                                        <span class="fw-bold" style="color: #D4AF37; font-size: 0.85rem;">${sessionScope.user.fullName}</span>
+                                    </div>
+                                    
+                                    <%-- NÚT ICON QUẢN TRỊ CHỈ HIỆN KHI LÀ ADMIN --%>
+                                    <c:if test="${sessionScope.user.role == 1}">
+                                        <a href="MainController?target=Dashboard" class="btn btn-link text-warning p-0 ms-3 gear-spin" title="Vào Bảng Điều Khiển Quản Trị">
+                                            <i class="fa-solid fa-gear fs-4" style="filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.5));"></i>
+                                        </a>
+                                    </c:if>
                                 </div>
 
                                 <a href="MainController?target=User&action=logout" class="btn btn-outline-danger btn-sm fw-bold rounded-pill px-3">
