@@ -32,10 +32,11 @@ public class MainController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");       
+        
         // Nhận tham số "target" để biết cần điều phối đi đâu
         String target = request.getParameter("target");
         String url = "home.jsp"; // Nếu không có target, mặc định về trang chủ
@@ -71,7 +72,12 @@ public class MainController extends HttpServlet {
                 url = "PaymentMethodController";
             } else if (target.equals("ForgotPassword")) {
                 url = "ForgotPasswordController";
+                
+            // SỬA LẠI ĐOẠN WISHLIST ĐỂ ĐỒNG BỘ VỚI TOÀN BỘ CONTROLLER
+            } else if (target.equals("Wishlist")) {
+                url = "WishlistController"; 
             }
+            
         } catch (Exception e) {
             log("Lỗi tại MainController: " + e.getMessage());
         } finally {

@@ -186,33 +186,13 @@
     <script>
         function dieuPhoiDon(event, url, actionType, orderId) {
             event.preventDefault();
-            let titleText = '';
-            let htmlText = '';
-            let confirmColor = '';
-            let btnClass = '';
-            if (actionType === 'duyet') {
-                titleText = 'XÁC NHẬN DUYỆT ĐƠN';
-                htmlText = 'Kích hoạt hợp đồng mã <b style="color: #06b6d4;">#' + orderId + '</b>?';
-                confirmColor = '#06b6d4';
-                btnClass = 'btn-outline-info';
-            } else if (actionType === 'giao') {
-                titleText = 'BÀN GIAO XE';
-                htmlText = 'Chuyển hợp đồng mã <b style="color: #6366f1;">#' + orderId + '</b> sang trạng thái ĐANG GIAO?';
-                confirmColor = '#6366f1';
-                btnClass = 'btn-outline-primary';
-            } else if (actionType === 'chot') {
-                titleText = 'HOÀN TẤT GIAO DỊCH';
-                htmlText = 'Xác nhận hợp đồng mã <b style="color: #10b981;">#' + orderId + '</b> đã giao thành công?';
-                confirmColor = '#10b981';
-                btnClass = 'btn-outline-success';
-            }
-            // THÊM NHÁNH TỪ CHỐI
-            else if (actionType === 'tuchoi') {
-                titleText = 'TỪ CHỐI HỢP ĐỒNG';
-                htmlText = 'Từ chối và hủy bỏ hợp đồng mã <b style="color: #ef4444;">#' + orderId + '</b>?';
-                confirmColor = '#ef4444';
-                btnClass = 'btn-outline-danger';
-            }
+
+            let titleText = ''; let htmlText = ''; let confirmColor = ''; let btnClass = '';
+            if(actionType === 'duyet') { titleText = 'XÁC NHẬN DUYỆT ĐƠN'; htmlText = 'Kích hoạt hợp đồng mã <b style="color: #06b6d4;">#' + orderId + '</b>?'; confirmColor = '#06b6d4'; btnClass = 'btn-outline-info'; } 
+            else if(actionType === 'giao') { titleText = 'BÀN GIAO XE'; htmlText = 'Chuyển hợp đồng mã <b style="color: #6366f1;">#' + orderId + '</b> sang trạng thái ĐANG GIAO?'; confirmColor = '#6366f1'; btnClass = 'btn-outline-primary'; } 
+            else if(actionType === 'chot') { titleText = 'HOÀN TẤT GIAO DỊCH'; htmlText = 'Xác nhận hợp đồng mã <b style="color: #10b981;">#' + orderId + '</b> đã giao thành công?'; confirmColor = '#10b981'; btnClass = 'btn-outline-success'; }
+            // NHÁNH TỪ CHỐI
+            else if(actionType === 'tuchoi') { titleText = 'TỪ CHỐI HỢP ĐỒNG'; htmlText = 'Từ chối và hủy bỏ hợp đồng mã <b style="color: #ef4444;">#' + orderId + '</b>?'; confirmColor = '#ef4444'; btnClass = 'btn-outline-danger'; }
 
             Swal.fire({
                 title: '<span style="font-family: \'JetBrains Mono\', monospace; color: ' + confirmColor + ';">' + titleText + '</span>',
@@ -237,6 +217,7 @@
             });
         }
     </script>
+
     <div class="grand-wrapper">
         <div class="main-viewport">
             <div class="terminal-hero">
@@ -364,11 +345,76 @@
                     </div>
                 </div>
             </div>
+            <div class="module-panel mb-5" style="border-top: 4px solid var(--m-indigo);">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-25 pb-3">
+                    <h4 class="fw-bold m-0 text-white" style="letter-spacing: 1px;"><i class="fa-solid fa-file-contract text-info me-3" style="text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);"></i> TRẠM ĐIỀU PHỐI HỢP ĐỒNG</h4>
+                    <span class="badge bg-dark border border-info text-info px-3 py-2 rounded-pill shadow-sm">ĐƠN HÀNG LIVE</span>
+                </div>
 
-        <div class="module-panel mb-5" style="border-top: 4px solid var(--m-indigo);">
-            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-25 pb-3">
-                <h4 class="fw-bold m-0 text-white" style="letter-spacing: 1px;"><i class="fa-solid fa-file-contract text-info me-3" style="text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);"></i> TRẠM ĐIỀU PHỐI HỢP ĐỒNG</h4>
-                <span class="badge bg-dark border border-info text-info px-3 py-2 rounded-pill shadow-sm">ĐƠN HÀNG LIVE</span>
+                <div class="table-responsive cyber-feed pe-2" style="max-height: 450px; overflow-y: auto;">
+                    <table class="table matrix-table mb-0">
+                        <thead style="position: sticky; top: 0; z-index: 10; background: var(--dark-void); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);">
+                            <tr>
+                                <th class="text-start">MÃ HỢP ĐỒNG</th> <th class="text-center">NGÀY THIẾT LẬP</th> <th class="text-end">GIÁ TRỊ (VND)</th> <th class="text-center">TÌNH TRẠNG</th> <th class="text-center">TÁC VỤ ĐIỀU PHỐI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:choose>
+                                <c:when test="${empty listAllOrders}">
+                                    <tr><td colspan="5" class="text-center py-5 text-muted"><i class="fa-solid fa-satellite fa-spin fs-1 mb-3 opacity-50 text-warning"></i><br>Đang chờ tín hiệu giao dịch mới từ Radar...</td></tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="order" items="${listAllOrders}">
+                                        <tr>
+                                            <td class="text-start">
+                                                <span class="fw-bold text-white fs-6">#${order.orderID}</span><br>
+                                                <span class="id-mono" style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #94a3b8;">UID Khách: ${order.userID}</span>
+                                            </td>
+                                            
+                                            <td class="text-center text-light opacity-75">
+                                                <fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy HH:mm" />
+                                            </td>
+                                            
+                                            <td class="text-end fw-bold" style="color: var(--m-cyan);">
+                                                <fmt:formatNumber value="${order.totalAmount}" type="number" pattern="#,###"/> đ
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <c:choose>
+                                                    <c:when test="${order.status == 'Đang xử lý'}"><span class="badge bg-warning bg-opacity-10 text-warning border border-warning px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-notch fa-spin me-1"></i>CHỜ DUYỆT</span></c:when>
+                                                    <c:when test="${order.status == 'Đã duyệt'}"><span class="badge bg-info bg-opacity-10 text-info border border-info px-3 py-2 rounded-pill"><i class="fa-solid fa-check-double me-1"></i>ĐÃ DUYỆT</span></c:when>
+                                                    <c:when test="${order.status == 'Đang giao'}"><span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill"><i class="fa-solid fa-truck-fast me-1"></i>ĐANG GIAO</span></c:when>
+                                                    <c:when test="${order.status == 'Đã từ chối'}"><span class="badge bg-danger bg-opacity-10 text-danger border border-danger px-3 py-2 rounded-pill"><i class="fa-solid fa-ban me-1"></i>ĐÃ TỪ CHỐI</span></c:when>
+                                                    <c:otherwise><span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill"><i class="fa-solid fa-shield-check me-1"></i>HOÀN TẤT</span></c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <c:choose>
+                                                    <c:when test="${order.status == 'Đang xử lý'}">
+                                                        <div class="d-flex justify-content-center gap-2">
+                                                            <a href="MainController?target=Order&action=updateStatus&orderId=${order.orderID}&status=Đã duyệt" class="btn btn-sm btn-outline-info rounded-pill px-3 fw-bold" onclick="dieuPhoiDon(event, this.href, 'duyet', '${order.orderID}')">DUYỆT</a>
+                                                            <a href="MainController?target=Order&action=updateStatus&orderId=${order.orderID}&status=Đã từ chối" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold" onclick="dieuPhoiDon(event, this.href, 'tuchoi', '${order.orderID}')">TỪ CHỐI</a>
+                                                        </div>
+                                                    </c:when>
+                                                    <c:when test="${order.status == 'Đã duyệt'}">
+                                                        <a href="MainController?target=Order&action=updateStatus&orderId=${order.orderID}&status=Đang giao" class="btn btn-sm btn-outline-primary rounded-pill px-4 fw-bold" style="letter-spacing: 1px;" onclick="dieuPhoiDon(event, this.href, 'giao', '${order.orderID}')">GIAO XE</a>
+                                                    </c:when>
+                                                    <c:when test="${order.status == 'Đang giao'}">
+                                                        <a href="MainController?target=Order&action=updateStatus&orderId=${order.orderID}&status=Hoàn thành" class="btn btn-sm btn-outline-success rounded-pill px-4 fw-bold" style="letter-spacing: 1px;" onclick="dieuPhoiDon(event, this.href, 'chot', '${order.orderID}')">CHỐT</a>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <button class="btn btn-sm btn-outline-secondary rounded-pill px-4" disabled style="opacity: 0.5;"><i class="fa-solid fa-lock"></i> ĐÓNG LẠI</button>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="table-responsive cyber-feed pe-2" style="max-height: 450px; overflow-y: auto;">
