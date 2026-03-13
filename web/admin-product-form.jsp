@@ -4,7 +4,6 @@
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
 
 <style>
-    /* Đổi màu viền khi click vào ô nhập liệu (Input, Select, Textarea) sang màu Vàng F-AUTO */
     .form-control:focus, .form-select:focus {
         border-color: #d4af37 !important;
         box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
@@ -18,7 +17,9 @@
                 <i class="fa-solid fa-car"></i> ${product != null ? 'CẬP NHẬT THÔNG TIN XE' : 'THÊM XE MỚI'}
             </div>
             <div class="card-body bg-light">
-                <form action="ProductController?action=save" method="POST">
+                <form action="MainController" method="POST">
+                    <input type="hidden" name="target" value="Product">
+                    <input type="hidden" name="action" value="save">
                     
                     <input type="hidden" name="productID" value="${product.productID}">
                     <input type="hidden" name="status" value="${product != null ? product.status : 'true'}">
@@ -62,7 +63,6 @@
                             <label class="form-label fw-bold">Nhà Cung Cấp (Thương hiệu)</label>
                             <select name="supplierID" class="form-select border-secondary" required>
                                 <option value="" disabled ${empty product ? 'selected' : ''}>-- Chọn thương hiệu --</option>
-                                
                                 <optgroup label="🚗 CÁC HÃNG XE">
                                     <option value="1" ${product.supplierID == 1 ? 'selected' : ''}>Toyota</option>
                                     <option value="2" ${product.supplierID == 2 ? 'selected' : ''}>Honda</option>
@@ -102,7 +102,7 @@
                     </div>
 
                     <div class="text-end">
-                        <a href="ProductController" class="btn btn-secondary me-2 fw-bold">Hủy bỏ</a>
+                        <a href="MainController?target=Product" class="btn btn-secondary me-2 fw-bold">Hủy bỏ</a>
                         <button type="submit" class="btn btn-warning fw-bold text-dark">
                             <i class="fa-solid fa-floppy-disk"></i> Lưu Thông Tin
                         </button>

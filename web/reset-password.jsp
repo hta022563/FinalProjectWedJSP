@@ -16,7 +16,9 @@
                     <div class="alert alert-danger text-center py-2">${error}</div>
                 </c:if>
 
-                <form action="ForgotPasswordController?action=resetPassword" method="POST">
+                <form action="MainController" method="POST">
+                    <input type="hidden" name="target" value="ForgotPassword">
+                    <input type="hidden" name="action" value="resetPassword">
                     <div class="mb-3">
                         <label class="text-white small mb-1">Mật khẩu mới</label>
                         <input type="password" name="newPassword" class="form-control bg-dark text-light border-secondary" required minlength="6">

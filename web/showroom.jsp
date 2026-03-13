@@ -4,123 +4,20 @@
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
 
     <style>
-        /* Nền tổng thể: Vân gỗ Walnut sâu thẳm phối màu tối cao cấp */
-        body {
-            background: radial-gradient(circle at center, #3d2b1f 0%, #1a120b 100%);
-            color: #dcdde1;
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* BANNER CINEMATIC - Không gian trưng bày xe sang */
-        .banner-container {
-            height: 280px;
-            border-radius: 24px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        }
-        .banner-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            /* Dán link ảnh mới bạn chọn vào đây */
-            background-image: url('IMG/audi.jpg');
-            background-size: cover;
-            background-position: center;
-            filter: brightness(0.4) sepia(0.3); /* Giữ filter này để màu ảnh tệp với màu gỗ */
-        }
-        .banner-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(26, 18, 11, 0.9) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .showroom-title {
-            color: #d4af37;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            font-size: 3.2rem;
-            font-family: 'Be Vietnam Pro', sans-serif !important;
-            margin-bottom: 5px;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-        }
-
-        /* Thẻ Card Gỗ - Glassmorphism ấm áp */
-        .wood-card {
-            background: rgba(44, 30, 20, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(212, 175, 55, 0.15);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-
-        }
-
-        /* Ô nhập liệu Bespoke */
-        .wood-input {
-
-            border: 1px solid #5d4037 !important;
-            border-radius: 12px !important;
-            padding: 14px 18px;
-            color:black !important; /* Ép chữ nhập vào phải là màu trắng */
-            transition: all 0.3s ease;
-        }
-        .wood-input:focus {
-
-            border-color: #d4af37 !important;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1) !important;
-        }
-
-        /* Nút bấm Vàng Đồng (Brass) */
-        .btn-brass {
-            background: linear-gradient(135deg, #d4af37 0%, #aa8928 100%);
-            border: none;
-            color: #1a120b;
-            font-weight: 800;
-            border-radius: 12px;
-            padding: 12px 25px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-        }
-        .btn-brass:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
-        }
-
-        /* Bảng dữ liệu Showroom */
-        .aero-table thead th {
-            background: rgba(0, 0, 0, 0.4);
-            color: #d4af37;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 22px;
-            border: none;
-        }
-        .aero-table td {
-            padding: 25px 22px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.05);
-            vertical-align: middle;
-        }
-        .aero-table tr:hover {
-            background-color: rgba(212, 175, 55, 0.03);
-        }
-
-        .id-tag {
-            background: rgba(212, 175, 55, 0.1);
-            color: #d4af37;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-        }
+        body { background: radial-gradient(circle at center, #3d2b1f 0%, #1a120b 100%); color: #dcdde1; font-family: 'Inter', sans-serif; }
+        .banner-container { height: 280px; border-radius: 24px; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); }
+        .banner-img { width: 100%; height: 100%; object-fit: cover; background-image: url('IMG/audi.jpg'); background-size: cover; background-position: center; filter: brightness(0.4) sepia(0.3); }
+        .banner-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(26, 18, 11, 0.9) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .showroom-title { color: #d4af37; font-weight: 900; text-transform: uppercase; letter-spacing: 5px; font-size: 3.2rem; font-family: 'Be Vietnam Pro', sans-serif !important; margin-bottom: 5px; text-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+        .wood-card { background: rgba(44, 30, 20, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); }
+        .wood-input { border: 1px solid #5d4037 !important; border-radius: 12px !important; padding: 14px 18px; color:black !important; transition: all 0.3s ease; }
+        .wood-input:focus { border-color: #d4af37 !important; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1) !important; }
+        .btn-brass { background: linear-gradient(135deg, #d4af37 0%, #aa8928 100%); border: none; color: #1a120b; font-weight: 800; border-radius: 12px; padding: 12px 25px; transition: all 0.3s ease; text-transform: uppercase; }
+        .btn-brass:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3); }
+        .aero-table thead th { background: rgba(0, 0, 0, 0.4); color: #d4af37; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; padding: 22px; border: none; }
+        .aero-table td { padding: 25px 22px; border-bottom: 1px solid rgba(212, 175, 55, 0.05); vertical-align: middle; }
+        .aero-table tr:hover { background-color: rgba(212, 175, 55, 0.03); }
+        .id-tag { background: rgba(212, 175, 55, 0.1); color: #d4af37; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-family: 'JetBrains Mono', monospace; border: 1px solid rgba(212, 175, 55, 0.2); }
     </style>
 
     <div class="container-fluid py-5 px-5">
@@ -131,18 +28,9 @@
                 <h1 class="showroom-title">Hệ Thống Showroom</h1>
                 <p class="text-white-50 fs-5 fw-light m-0">F-AUTO | Không gian nghệ thuật trưng bày đẳng cấp</p>
                 <div class="mt-3 badge rounded-pill px-4 py-2 border border-warning border-opacity-25 shadow-lg" 
-                     style="background: rgba(255, 193, 7, 0.12) !important;
-                     backdrop-filter: blur(15px);
-                     border: 1px solid rgba(255, 193, 7, 0.3) !important;
-                     box-shadow: 0 8px 32px 0 rgba(255, 193, 7, 0.2);">
-
+                     style="background: rgba(255, 193, 7, 0.12) !important; backdrop-filter: blur(15px); border: 1px solid rgba(255, 193, 7, 0.3) !important; box-shadow: 0 8px 32px 0 rgba(255, 193, 7, 0.2);">
                     <i class="fa-solid fa-store me-2" style="color: #ffc107;"></i> 
-
-                    <span id="digital-clock" class="fw-bold" 
-                          style="color: #ffffff;
-                          text-shadow: 0 0 12px rgba(255, 193, 7, 0.8);
-                          letter-spacing: 2px;
-                          font-family: 'JetBrains Mono', monospace;">
+                    <span id="digital-clock" class="fw-bold" style="color: #ffffff; text-shadow: 0 0 12px rgba(255, 193, 7, 0.8); letter-spacing: 2px; font-family: 'JetBrains Mono', monospace;">
                         00:00:00
                     </span>
                 </div>
@@ -151,10 +39,10 @@
 
         <div class="wood-card p-4 mb-5 border-start border-warning border-5">
             <h5 class="fw-bold mb-4 d-flex align-items-center" style="color: #d4af37;">
-                <span class="bg-warning bg-opacity-10 p-2 rounded-3 me-3"><i class="fa-solid fa-location-dot"></i></span>
-                Thiết lập điểm trưng bày mới
+                <span class="bg-warning bg-opacity-10 p-2 rounded-3 me-3"><i class="fa-solid fa-location-dot"></i></span> Thiết lập điểm trưng bày mới
             </h5>
-            <form action="ShowroomController" method="POST">
+            <form action="MainController" method="POST">
+                <input type="hidden" name="target" value="Showroom">
                 <input type="hidden" name="action" value="add"> 
                 <div class="row g-4 align-items-end">
                     <div class="col-md-3">
@@ -202,11 +90,8 @@
                             <td class="text-warning fw-bold">${s.hotline}</td>
                             <td>
                                 <div class="d-flex gap-2 justify-content-center">
-                                    <button class="btn btn-outline-warning btn-sm rounded-pill border-0 fw-bold px-3" 
-                                            data-bs-toggle="modal" data-bs-target="#editModalSR${s.showroomID}">SỬA</button>
-                                    <a href="ShowroomController?action=delete&id=${s.showroomID}" 
-                                       class="btn btn-outline-danger btn-sm rounded-pill border-0 fw-bold px-3" 
-                                       onclick="return confirm('Gỡ bỏ chi nhánh này?')">XÓA</a>
+                                    <button class="btn btn-outline-warning btn-sm rounded-pill border-0 fw-bold px-3" data-bs-toggle="modal" data-bs-target="#editModalSR${s.showroomID}">SỬA</button>
+                                    <a href="MainController?target=Showroom&action=delete&id=${s.showroomID}" class="btn btn-outline-danger btn-sm rounded-pill border-0 fw-bold px-3" onclick="return confirm('Gỡ bỏ chi nhánh này?')">XÓA</a>
                                 </div>
                             </td>
                         </tr>
@@ -240,8 +125,7 @@
                             <td><span class="id-tag bg-secondary bg-opacity-10 text-muted">#${delShowroom.showroomID}</span></td>
                             <td class="text-start text-muted fw-light"><del class="fw-bold">${delShowroom.showroomName}</del></td>
                             <td>
-                                <a href="ShowroomController?action=restore&id=${delShowroom.showroomID}" 
-                                   class="btn btn-outline-success btn-sm rounded-pill px-4 border-0 fw-bold">
+                                <a href="MainController?target=Showroom&action=restore&id=${delShowroom.showroomID}" class="btn btn-outline-success btn-sm rounded-pill px-4 border-0 fw-bold">
                                     <i class="fa-solid fa-rotate-left me-2"></i> KHÔI PHỤC
                                 </a>
                             </td>
@@ -260,12 +144,13 @@
     <div class="modal fade" id="editModalSR${s.showroomID}" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content wood-card border-0 p-4" style="background: rgba(26, 18, 11, 0.98);">
-                <form action="ShowroomController" method="POST">
+                <form action="MainController" method="POST">
                     <div class="modal-header border-0 pb-0">
                         <h5 class="fw-bold fs-4 text-warning">Hiệu chỉnh chi nhánh</h5>
                         <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body text-start">
+                        <input type="hidden" name="target" value="Showroom">
                         <input type="hidden" name="action" value="update">
                         <input type="hidden" name="id" value="${s.showroomID}">
                         <div class="mb-4">

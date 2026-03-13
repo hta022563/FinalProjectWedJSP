@@ -19,7 +19,9 @@
                     <div class="alert alert-danger text-center py-2">${error}</div>
                 </c:if>
 
-                <form action="ForgotPasswordController?action=verifyOTP" method="POST">
+                <form action="MainController" method="POST">
+                    <input type="hidden" name="target" value="ForgotPassword">
+                    <input type="hidden" name="action" value="verifyOTP">
                     <div class="mb-4 text-center">
                         <input type="text" name="otp" class="form-control form-control-lg bg-dark text-warning border-secondary text-center fw-bold" style="letter-spacing: 10px; font-size: 1.5rem;" maxlength="6" placeholder="------" required autocomplete="off">
                     </div>

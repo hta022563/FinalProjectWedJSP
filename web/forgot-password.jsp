@@ -12,12 +12,13 @@
                     <p class="text-light small">Nhập Email đã đăng ký để nhận mã OTP</p>
                 </div>
 
-                <%-- Hiển thị lỗi nếu nhập sai Email hoặc lỗi mạng --%>
                 <c:if test="${not empty error}">
                     <div class="alert alert-danger text-center py-2">${error}</div>
                 </c:if>
 
-                <form action="ForgotPasswordController?action=sendOTP" method="POST">
+                <form action="MainController" method="POST">
+                    <input type="hidden" name="target" value="ForgotPassword">
+                    <input type="hidden" name="action" value="sendOTP">
                     <div class="mb-4">
                         <input type="email" name="email" class="form-control form-control-lg bg-dark text-light border-secondary" placeholder="Nhập Email của bạn..." required>
                     </div>

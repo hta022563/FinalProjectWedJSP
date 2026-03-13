@@ -4,9 +4,7 @@
 <jsp:include page="includes/header.jsp"></jsp:include>
 
 <style>
-    /* -- THAY ĐỔI QUAN TRỌNG: Đặt hình nền siêu xe và phủ lớp mờ sang trọng -- */
     body {
-        /* Đường dẫn đến hình siêu xe của Duy */
         background-image: url('IMG/bg_login.jpg') !important;
         background-size: cover !important; 
         background-position: center !important; 
@@ -14,78 +12,31 @@
         background-attachment: fixed !important; 
         position: relative;
     }
-
-    /* Tạo lớp phủ đen mờ (Overlay) để làm nổi bật Form */
     body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.7) !important; 
-        z-index: -1; 
+        content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.7) !important; z-index: -1;
     }
-
-    /* CSS Tùy chỉnh riêng cho Form Đăng Nhập F-AUTO */
     .login-card-premium {
-        background: rgba(22, 22, 22, 0.85); 
-        border: 1px solid #2a2a2a;
-        border-radius: 16px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
-        backdrop-filter: blur(10px); 
+        background: rgba(22, 22, 22, 0.85); border: 1px solid #2a2a2a; border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
     }
-    .login-card-premium .form-label {
-        color: #d4af37 !important; 
-        font-weight: 600;
-        font-size: 0.95rem;
-    }
+    .login-card-premium .form-label { color: #d4af37 !important; font-weight: 600; font-size: 0.95rem; }
     .login-card-premium .form-control {
-        background-color: rgba(34, 34, 34, 0.8);
-        border: 1px solid #444;
-        color: #fff !important;
-        padding: 12px 15px;
-        border-radius: 8px;
-        transition: all 0.3s;
+        background-color: rgba(34, 34, 34, 0.8); border: 1px solid #444; color: #fff !important;
+        padding: 12px 15px; border-radius: 8px; transition: all 0.3s;
     }
-    .login-card-premium .form-control::placeholder {
-        color: #888;
-    }
+    .login-card-premium .form-control::placeholder { color: #888; }
     .login-card-premium .form-control:focus {
-        background-color: rgba(34, 34, 34, 1);
-        border-color: #d4af37;
-        box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+        background-color: rgba(34, 34, 34, 1); border-color: #d4af37; box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
     }
     .btn-gold {
-        background-color: #d4af37;
-        color: #111;
-        font-weight: 800;
-        letter-spacing: 1px;
-        padding: 12px;
-        border-radius: 8px;
-        transition: all 0.3s;
+        background-color: #d4af37; color: #111; font-weight: 800; letter-spacing: 1px;
+        padding: 12px; border-radius: 8px; transition: all 0.3s;
     }
-    .btn-gold:hover {
-        background-color: #f1c40f;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
-    }
-    .text-gold-link {
-        color: #d4af37;
-        font-weight: bold;
-        text-decoration: none;
-    }
-    .text-gold-link:hover {
-        color: #f1c40f;
-        text-decoration: underline;
-    }
-    
-    .login-container {
-        min-height: calc(100vh - 200px); 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+    .btn-gold:hover { background-color: #f1c40f; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
+    .text-gold-link { color: #d4af37; font-weight: bold; text-decoration: none; }
+    .text-gold-link:hover { color: #f1c40f; text-decoration: underline; }
+    .login-container { min-height: calc(100vh - 200px); display: flex; align-items: center; justify-content: center; }
 </style>
 
 <div class="container my-5 login-container">
@@ -103,13 +54,14 @@
                         </div>
                     </c:if>
                     
-                    <form action="UserController" method="POST">
+                    <form action="MainController" method="POST">
                         <div class="text-center mb-3">
                             <span style="color:green">TỰ TẠO USER Nhé</span><br>
                             <span style="color: #ff4d4d; font-size: 0.85rem;">(Gợi ý Admin: Tk: admin_hao | MK: 123456)</span> <br>
                             <span style="color:#ffffff; font-size: 0.85rem;">(Gợi ý customer: Tk: hao | MK: 1)</span>
                         </div>
-                        
+
+                        <input type="hidden" name="target" value="User"> 
                         <input type="hidden" name="action" value="login">
                         
                         <div class="mb-3">
@@ -139,7 +91,6 @@
                         <span style="color: #8a939b;">Chưa có tài khoản?</span> 
                         <a href="register.jsp" class="text-gold-link ms-1">Đăng ký ngay</a>
                     </div>
-                    
                 </div>
             </div>
         </div>

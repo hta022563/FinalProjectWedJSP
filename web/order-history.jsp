@@ -176,6 +176,7 @@
                 confirmButtonText: 'Đóng'
             });
         </script>
+        <c:remove var="msg" />
     </c:if>
 
     <div class="luxury-container p-0 overflow-hidden">
