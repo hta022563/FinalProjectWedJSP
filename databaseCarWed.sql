@@ -144,3 +144,5 @@ CREATE TABLE Activity_Logs (
     amount DECIMAL(18, 2) NULL            
 );
 GO
+
+
