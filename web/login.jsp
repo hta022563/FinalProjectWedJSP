@@ -113,19 +113,19 @@
                         <h2 class="text-center fw-bold mb-1" style="color: #d4af37; letter-spacing: 2px;">F-AUTO</h2>
                         <p class="text-center mb-4" style="color: #adb5bd;">Đăng nhập hệ thống</p>
 
-                    <%-- HIỂN THỊ THÔNG BÁO LỖI (MÀU ĐỎ) --%>
-                    <c:if test="${not empty error}">
-                        <div class="alert text-center fw-bold mb-4" role="alert" style="background-color: rgba(255, 77, 77, 0.1); color: #ff4d4d; border: 1px solid #ff4d4d; border-radius: 8px;">
-                            <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
-                        </div>
-                    </c:if>
+                        <%-- 1. HIỂN THỊ THÔNG BÁO LỖI (MÀU ĐỎ) --%>
+                        <c:if test="${not empty error}">
+                            <div class="alert text-center fw-bold mb-4" role="alert" style="background-color: rgba(255, 77, 77, 0.1); color: #ff4d4d; border: 1px solid #ff4d4d; border-radius: 8px;">
+                                <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
+                            </div>
+                        </c:if>
 
-                    <%-- HIỂN THỊ THÔNG BÁO THÀNH CÔNG (MÀU XANH) --%>
-                    <c:if test="${not empty message}">
-                        <div class="alert text-center fw-bold mb-4" role="alert" style="background-color: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid #2ecc71; border-radius: 8px;">
-                            <i class="fa-solid fa-circle-check me-1"></i> ${message}
-                        </div>
-                    </c:if>
+                        <%-- 2. HIỂN THỊ THÔNG BÁO THÀNH CÔNG (MÀU XANH LỤC) --%>
+                        <c:if test="${not empty message}">
+                            <div class="alert text-center fw-bold mb-4" role="alert" style="background-color: rgba(56, 239, 125, 0.1); color: #38ef7d; border: 1px solid #38ef7d; border-radius: 8px;">
+                                <i class="fa-solid fa-circle-check me-1"></i> ${message}
+                            </div>
+                        </c:if>
 
                         <form action="MainController" method="POST">
                             <div class="text-center mb-3">
@@ -169,6 +169,5 @@
             </div>
         </div>
     </div>
-</div>
 
 <jsp:include page="includes/footer.jsp"></jsp:include>
