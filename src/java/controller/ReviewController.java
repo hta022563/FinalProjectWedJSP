@@ -30,16 +30,18 @@ public class ReviewController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        
         String action = request.getParameter("action");
         ReviewDAO dao = new ReviewDAO();
         UserDTO user = (UserDTO) request.getSession().getAttribute("user");
         
         String productIdStr = request.getParameter("productId");
-        String returnUrl = "detail.jsp?id=" + productIdStr;
+
+        String returnUrl = "MainController?target=Detail&id=" + productIdStr;
 
         try {
             if ("add".equals(action)) {
@@ -55,9 +57,13 @@ public class ReviewController extends HttpServlet {
                 r.setComment(request.getParameter("comment"));
                 dao.addReview(r);
                 
+
+                request.getSession().setAttribute("msg", "Cảm ơn sếp đã đánh giá siêu phẩm này!");
+                
             } else if ("delete".equals(action)) {
                 if (user != null) {
                     dao.deleteReview(Integer.parseInt(request.getParameter("reviewId")));
+                    request.getSession().setAttribute("msg", "Đã xóa đánh giá thành công!");
                 }
                 
             } else if ("update".equals(action)) {
@@ -66,11 +72,14 @@ public class ReviewController extends HttpServlet {
                     int rating = Integer.parseInt(request.getParameter("rating"));
                     String comment = request.getParameter("comment");
                     dao.updateReview(reviewId, comment, rating);
+                    request.getSession().setAttribute("msg", "Cập nhật đánh giá thành công!");
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+
         response.sendRedirect(returnUrl);
     }
 
