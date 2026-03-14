@@ -1,14 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
-
-/**
- *
- * @author AngDeng
- */
-
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -18,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
 import utils.JPAUtil;
 
 public class OrderDAO {
@@ -28,14 +17,17 @@ public class OrderDAO {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
+            // 1. Lấy Giỏ Hàng
             String cartJpql = "SELECT c FROM CartDTO c WHERE c.userID = :uid";
             CartDTO cart = em.createQuery(cartJpql, CartDTO.class).setParameter("uid", userId).getSingleResult();
             
+            // 2. Lấy Danh sách item trong Giỏ
             String itemJpql = "SELECT ci FROM CartItemDTO ci WHERE ci.cartID = :cid";
             List<CartItemDTO> cartItems = em.createQuery(itemJpql, CartItemDTO.class).setParameter("cid", cart.getCartID()).getResultList();
             
             if (cartItems.isEmpty()) { return false; }
             
+            // 3. Tạo Đơn Hàng Mới
             OrderDTO newOrder = new OrderDTO();
             newOrder.setUserID(userId);
             newOrder.setMethodID(methodId);
@@ -47,6 +39,7 @@ public class OrderDAO {
             em.persist(newOrder); 
             em.flush(); 
             
+            // 4. Tính toán tiền và chuyển item sang OrderDetail
             BigDecimal total = BigDecimal.ZERO;
             for (CartItemDTO item : cartItems) {
                 BigDecimal currentPrice = BigDecimal.ZERO;
@@ -59,20 +52,48 @@ public class OrderDAO {
                 orderDetail.setOrderID(newOrder.getOrderID()); 
                 orderDetail.setProductID(item.getProductID());
                 orderDetail.setQuantity(item.getQuantity());
-                orderDetail.setUnitPrice(currentPrice);           
+                orderDetail.setUnitPrice(currentPrice);            
                 em.persist(orderDetail); 
                 
                 BigDecimal itemTotal = currentPrice.multiply(new BigDecimal(item.getQuantity()));
                 total = total.add(itemTotal);
-                em.remove(item);
+                em.remove(item); // Xóa khỏi giỏ hàng
             }
             
+            // ====================================================================
+            // 5. [ĐÃ THÊM MỚI] XỬ LÝ TRỪ TIỀN KHUYẾN MÃI TRƯỚC KHI LƯU TỔNG CỘNG
+            // ====================================================================
+            if (promotionId != null) {
+                try {
+                    // Móc xuống DB lấy số % giảm giá của cái mã này
+                    Object discountObj = em.createNativeQuery("SELECT DiscountPercent FROM Promotion WHERE PromotionID = ? AND IsActive = 1")
+                                           .setParameter(1, promotionId)
+                                           .getSingleResult();
+                    
+                    if (discountObj != null) {
+                        int discountPercent = Integer.parseInt(discountObj.toString());
+                        
+                        // Công thức trừ tiền: Total = Total - (Total * (Percent / 100))
+                        BigDecimal discountRate = new BigDecimal(discountPercent).divide(new BigDecimal(100));
+                        BigDecimal discountAmount = total.multiply(discountRate);
+                        
+                        total = total.subtract(discountAmount); // Trừ đi số tiền được giảm
+                    }
+                } catch (Exception ex) {
+                    System.out.println("Lỗi khi áp dụng mã giảm giá lúc chốt đơn: " + ex.getMessage());
+                }
+            }
+            // ====================================================================
+            
+            // 6. Cập nhật lại Tổng tiền cuối cùng và lưu DB
             newOrder.setTotalAmount(total);
             em.merge(newOrder);
             tx.commit(); 
             return true;
+            
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
             return false;
         } finally {
             em.close();
@@ -106,22 +127,24 @@ public class OrderDAO {
             em.close();
         }
     }
-    public Double getTotalRevenue() {
-    Double total = 0.0;
-    String sql = "SELECT SUM(TotalAmount) FROM [Order]";
     
-    try (Connection conn = utils.DbUtils.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
+    public Double getTotalRevenue() {
+        Double total = 0.0;
+        String sql = "SELECT SUM(TotalAmount) FROM [Order] WHERE Status != N'Đã từ chối'"; // Không tính doanh thu đơn bị hủy
         
-        if (rs.next()) {
-            total = rs.getDouble(1);
+        try (Connection conn = utils.DbUtils.getConnection(); // Chỉnh thành DBUtils hoặc class kết nối của sếp
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            if (rs.next()) {
+                total = rs.getDouble(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return total != null ? total : 0.0;
     }
-    return total != null ? total : 0.0;
-}
+    
     public List<OrderDTO> getAllOrders() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -130,6 +153,7 @@ public class OrderDAO {
             em.close();
         }
     }
+    
     public boolean updateOrderStatus(int orderId, String newStatus) {
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -137,7 +161,7 @@ public class OrderDAO {
             tx.begin();
             OrderDTO order = em.find(OrderDTO.class, orderId);
             if (order != null) {
-                order.setStatus(newStatus); // Cập nhật trạng thái mới
+                order.setStatus(newStatus); 
                 em.merge(order);
             }
             tx.commit();

@@ -110,6 +110,16 @@
             border-radius: 12px !important;
             box-shadow: 0 15px 40px rgba(0,0,0,0.8) !important;
         }
+        /* Làm sáng chữ placeholder trong ô nhập mã */
+        .promo-input::placeholder {
+            color: #a0a0a0 !important; 
+            opacity: 1; 
+            font-style: italic; 
+        }
+        .promo-input:focus {
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3) !important;
+            border-color: #D4AF37 !important;
+        }
     </style>
 
     <script>
@@ -131,7 +141,7 @@
                             }, 500);
                         }});
                 }
-            })
+            });
         }
     </script>
 
@@ -140,77 +150,130 @@
             <h2 class="luxury-title mb-0">Gara Của Bạn</h2>
         </div>
 
-    <c:if test="${not empty msg}">
-        <script>
-            Swal.fire({title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37;">Thành Công</span>', html: '<span style="color: #e0e0e0; font-family: \'Montserrat\', sans-serif;">${msg}</span>', icon: 'success', iconColor: '#D4AF37', background: '#121212', customClass: {popup: 'swal-luxury-popup', confirmButton: 'btn btn-outline-luxury px-4 py-2 rounded-pill fw-bold'}, buttonsStyling: false, confirmButtonText: 'Đóng'});
-        </script>
-        <c:remove var="msg" />
-    </c:if>
+        <c:if test="${not empty msg}">
+            <script>
+                Swal.fire({title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37;">Thành Công</span>', html: '<span style="color: #e0e0e0; font-family: \'Montserrat\', sans-serif;">${msg}</span>', icon: 'success', iconColor: '#D4AF37', background: '#121212', customClass: {popup: 'swal-luxury-popup', confirmButton: 'btn btn-outline-luxury px-4 py-2 rounded-pill fw-bold'}, buttonsStyling: false, confirmButtonText: 'Đóng'});
+            </script>
+            <c:remove var="msg" />
+        </c:if>
 
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <div class="luxury-container p-0 overflow-hidden">
-                <div class="table-responsive">
-                    <table class="table table-luxury mb-0 text-center">
-                        <thead>
-                            <tr><th class="text-start ps-4 py-3">Siêu Phẩm</th> <th>Đơn Giá</th> <th>Số Lượng</th> <th>Thành Tiền</th> <th>Thao Tác</th></tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach items="${cartItems}" var="item">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="luxury-container p-0 overflow-hidden">
+                    <div class="table-responsive">
+                        <table class="table table-luxury mb-0 text-center">
+                            <thead>
                                 <tr>
-                                    <td class="text-start ps-4">
-                                        <c:choose>
-                                            <c:when test="${item.productID == 1}"><span class="fw-bold fs-5 text-gold">Mercedes-Benz G63</span></c:when>
-                                            <c:when test="${item.productID == 2}"><span class="fw-bold fs-5 text-gold">Audi R8 V10</span></c:when>
-                                            <c:when test="${item.productID == 3}"><span class="fw-bold fs-5 text-gold">Mercedes C300</span></c:when>
-                                            <c:otherwise><span class="fw-bold fs-5 text-gold">Mã số #${item.productID}</span></c:otherwise>
-                                        </c:choose>
-                                    </td>
-                                    <td class="fw-bold fs-6"><fmt:formatNumber value="${productPrices[item.productID]}" type="number" pattern="#,###"/> VNĐ</td>
-                                    <td>
-                                        <div class="input-group input-group-sm mx-auto" style="width: 120px; border: 1px solid #D4AF37; border-radius: 5px; overflow: hidden;">
-                                            <a href="MainController?target=Cart&action=update&cartItemId=${item.cartItemID}&quantity=${item.quantity - 1}" class="btn btn-qty px-3"> - </a>
-                                            <input type="text" class="form-control text-center fw-bold bg-transparent border-0 input-qty" value="${item.quantity}" readonly>
-                                            <a href="MainController?target=Cart&action=update&cartItemId=${item.cartItemID}&quantity=${item.quantity + 1}" class="btn btn-qty px-3"> + </a>
-                                        </div>
-                                    </td>
-                                    <td class="fw-bold fs-6 text-white"><fmt:formatNumber value="${productPrices[item.productID] * item.quantity}" type="number" pattern="#,###"/> VNĐ</td>
-                                    <td><a href="MainController?target=Cart&action=remove&itemId=${item.cartItemID}" class="btn btn-outline-danger btn-sm px-3 rounded-pill" onclick="xoaKhoiGio(event, this.href)"><i class="fa-solid fa-trash"></i> Bỏ</a></td>
+                                    <th class="text-start ps-4 py-3">Siêu Phẩm</th> 
+                                    <th>Đơn Giá</th> 
+                                    <th>Số Lượng</th> 
+                                    <th>Thành Tiền</th> 
+                                    <th>Thao Tác</th>
                                 </tr>
-                            </c:forEach>
-                            <c:if test="${empty cartItems}">
-                                <tr><td colspan="5" class="text-center py-5"><i class="fa-solid fa-car mb-3" style="font-size: 4rem; color: #333;"></i><br><span class="fs-5 text-light-grey">Gara của bạn đang trống.</span></td></tr>
-                                    </c:if>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <c:forEach items="${cartItems}" var="item">
+                                    <tr>
+                                        <td class="text-start ps-4">
+                                            <c:choose>
+                                                <c:when test="${item.productID == 1}"><span class="fw-bold fs-5 text-gold">Mercedes-Benz G63</span></c:when>
+                                                <c:when test="${item.productID == 2}"><span class="fw-bold fs-5 text-gold">Audi R8 V10</span></c:when>
+                                                <c:when test="${item.productID == 3}"><span class="fw-bold fs-5 text-gold">Mercedes C300</span></c:when>
+                                                <c:otherwise><span class="fw-bold fs-5 text-gold">Mã số #${item.productID}</span></c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td class="fw-bold fs-6"><fmt:formatNumber value="${productPrices[item.productID]}" type="number" pattern="#,###"/> VNĐ</td>
+                                        <td>
+                                            <div class="input-group input-group-sm mx-auto" style="width: 120px; border: 1px solid #D4AF37; border-radius: 5px; overflow: hidden;">
+                                                <a href="MainController?target=Cart&action=update&cartItemId=${item.cartItemID}&quantity=${item.quantity - 1}" class="btn btn-qty px-3"> - </a>
+                                                <input type="text" class="form-control text-center fw-bold bg-transparent border-0 input-qty" value="${item.quantity}" readonly>
+                                                <a href="MainController?target=Cart&action=update&cartItemId=${item.cartItemID}&quantity=${item.quantity + 1}" class="btn btn-qty px-3"> + </a>
+                                            </div>
+                                        </td>
+                                        <td class="fw-bold fs-6 text-white"><fmt:formatNumber value="${productPrices[item.productID] * item.quantity}" type="number" pattern="#,###"/> VNĐ</td>
+                                        <td><a href="MainController?target=Cart&action=remove&itemId=${item.cartItemID}" class="btn btn-outline-danger btn-sm px-3 rounded-pill" onclick="xoaKhoiGio(event, this.href)"><i class="fa-solid fa-trash"></i> Bỏ</a></td>
+                                    </tr>
+                                </c:forEach>
+                                <c:if test="${empty cartItems}">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5">
+                                            <i class="fa-solid fa-car mb-3" style="font-size: 4rem; color: #333;"></i><br>
+                                            <span class="fs-5 text-light-grey">Gara của bạn đang trống.</span>
+                                        </td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-4 d-flex flex-wrap gap-3 justify-content-between">
+                    <a href="home.jsp" class="btn btn-outline-luxury"><i class="fa-solid fa-arrow-left me-2"></i> Tiếp tục chọn xe</a>
+                    <a href="MainController?target=Order&action=history" class="btn btn-outline-secondary text-white rounded-pill px-4"><i class="fa-solid fa-clock-rotate-left me-2"></i> Hồ sơ giao dịch</a>
                 </div>
             </div>
-            <div class="mt-4 d-flex flex-wrap gap-3 justify-content-between">
-                <a href="home.jsp" class="btn btn-outline-luxury"><i class="fa-solid fa-arrow-left me-2"></i> Tiếp tục chọn xe</a>
-                <a href="MainController?target=Order&action=history" class="btn btn-outline-secondary text-white rounded-pill px-4"><i class="fa-solid fa-clock-rotate-left me-2"></i> Hồ sơ giao dịch</a>
-            </div>
-        </div>
 
-        <div class="col-lg-4">
-            <div class="luxury-container position-sticky" style="top: 100px;">
-                <h5 class="luxury-title border-bottom border-warning pb-3 mb-4 fs-4 text-center">TỔNG KẾT</h5>
-                <div class="d-flex justify-content-between mb-2 text-light-grey fs-6">
-                    <span>Tạm tính:</span> <span class="fw-bold text-white"><fmt:formatNumber value="${cartTotal}" type="number" pattern="#,###"/> VNĐ</span>
+            <div class="col-lg-4">
+                <div class="luxury-container position-sticky" style="top: 100px;">
+                    <h5 class="luxury-title border-bottom border-warning pb-3 mb-4 fs-4 text-center">TỔNG KẾT</h5>
+                    
+                    <div class="d-flex justify-content-between mb-2 text-light-grey fs-6">
+                        <span>Tạm tính:</span> <span class="fw-bold text-white"><fmt:formatNumber value="${cartTotal}" type="number" pattern="#,###"/> VNĐ</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-4 text-light-grey fs-6">
+                        <span>Phí vận chuyển:</span> <span class="fst-italic">Liên hệ</span>
+                    </div>
+
+                    <%-- KHU VỰC NHẬP MÃ GIẢM GIÁ --%>
+                    <div class="p-3 mb-4 rounded-3" style="background: rgba(212, 175, 55, 0.05); border: 1px dashed #D4AF37;">
+                        <h6 class="text-warning fw-bold mb-3"><i class="fa-solid fa-ticket-simple me-2"></i>MÃ ĐẶC QUYỀN</h6>
+
+                        <form action="CartController" method="POST" class="d-flex">
+                            <input type="hidden" name="action" value="applyPromo">
+                            <input type="text" name="promoCode" class="form-control border-secondary text-white promo-input" 
+                                   style="background: #111;" placeholder="Nhập mã ưu đãi của bạn..." 
+                                   value="${sessionScope.appliedPromoCode}">
+                            <button type="submit" class="btn btn-warning fw-bold ms-2 px-4">ÁP DỤNG</button>
+                        </form>
+
+                        <c:if test="${not empty sessionScope.promoMsg}">
+                            <div class="text-success small mt-2 fw-bold"><i class="fa-solid fa-check me-1"></i>${sessionScope.promoMsg}</div>
+                            <c:remove var="promoMsg" scope="session"/>
+                        </c:if>
+                        <c:if test="${not empty sessionScope.promoError}">
+                            <div class="text-danger small mt-2 fw-bold"><i class="fa-solid fa-circle-exclamation me-1"></i>${sessionScope.promoError}</div>
+                            <c:remove var="promoError" scope="session"/>
+                        </c:if>
+                    </div>
+
+                    <%-- TÍNH TOÁN GIẢM GIÁ & TỔNG CỘNG --%>
+                    <c:set var="finalTotal" value="${cartTotal}" />
+                    
+                    <c:if test="${not empty sessionScope.discountPercent}">
+                        <%-- Tính số tiền được trừ (Nhớ ép sang 100.0 để ra số thập phân chính xác) --%>
+                        <c:set var="discountAmount" value="${cartTotal * sessionScope.discountPercent / 100.0}" />
+                        <c:set var="finalTotal" value="${cartTotal - discountAmount}" />
+                        
+                        <div class="d-flex justify-content-between text-success fw-bold mb-2">
+                            <span>Chiết khấu (${sessionScope.discountPercent}%):</span>
+                            <span>- <fmt:formatNumber value="${discountAmount}" type="number" pattern="#,###"/> VNĐ</span>
+                        </div>
+                    </c:if>
+                    
+                    <div class="d-flex justify-content-between mb-4 border-top border-secondary pt-3">
+                        <span class="fs-5 fw-bold text-white">Tổng cộng:</span> 
+                        <span class="fs-4 fw-bold text-gold"><fmt:formatNumber value="${finalTotal}" type="number" pattern="#,###"/> VNĐ</span>
+                    </div>
+
+                    <form action="MainController" method="POST">
+                        <input type="hidden" name="target" value="Order">
+                        <input type="hidden" name="action" value="checkout">
+                        <button type="submit" class="btn btn-luxury w-100 fs-6" ${empty cartItems ? 'disabled' : ''}>
+                            <i class="fa-solid fa-file-signature me-2"></i> LÀM HỢP ĐỒNG MUA
+                        </button>
+                    </form>
                 </div>
-                <div class="d-flex justify-content-between mb-4 text-light-grey fs-6"><span>Phí vận chuyển:</span> <span class="fst-italic">Liên hệ</span></div>
-                <div class="d-flex justify-content-between mb-4 border-top border-secondary pt-3">
-                    <span class="fs-5 fw-bold text-white">Tổng cộng:</span> <span class="fs-4 fw-bold text-gold"><fmt:formatNumber value="${cartTotal}" type="number" pattern="#,###"/> VNĐ</span>
-                </div>
-                <form action="MainController" method="POST">
-                    <input type="hidden" name="target" value="Order">
-                    <input type="hidden" name="action" value="checkout">
-                    <button type="submit" class="btn btn-luxury w-100 fs-6" ${empty cartItems ? 'disabled' : ''}>
-                        <i class="fa-solid fa-file-signature me-2"></i> LÀM HỢP ĐỒNG MUA
-                    </button>
-                </form>
             </div>
         </div>
     </div>
-</div>
 
 <jsp:include page="includes/footer.jsp"></jsp:include>

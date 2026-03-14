@@ -96,4 +96,30 @@ public class PromotionDAO {
         } catch (Exception e) { e.printStackTrace(); }
         return false;
     }
+    
+    // Hàm này sẽ làm cái vạch đỏ trong CartController của sếp biến mất
+    public PromotionDTO getPromotionByCode(String code) {
+        String sql = "SELECT * FROM Promotion WHERE PromoCode = ? AND IsActive = 1";
+        try (Connection conn = DbUtils.getConnection(); // <--- Đổi chỗ này nếu file kết nối DB của sếp tên khác
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, code);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new PromotionDTO(
+                        rs.getInt("PromotionID"),
+                        rs.getString("PromoCode"),
+                        rs.getInt("DiscountPercent"),
+                        rs.getDate("StartDate"),
+                        rs.getDate("EndDate"),
+                        rs.getInt("IsActive")
+                    );
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
 }

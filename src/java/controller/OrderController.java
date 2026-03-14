@@ -35,13 +35,23 @@ public class OrderController extends HttpServlet {
             UserDTO user = (UserDTO) session.getAttribute("user");
             int userId = user.getUserID();
             
-            if ("checkout".equals(action)) {
-                boolean isSuccess = orderDAO.checkout(userId, 1, null, "Giao xe tại Showroom F-Auto");
+         if ("checkout".equals(action)) {
+                // Lấy thông tin mã giảm giá từ Session (nếu khách có nhập)
+                Integer promoId = (Integer) session.getAttribute("promotionId");
+                
+                // Truyền promoId vào hàm checkout thay vì để chữ 'null' như cũ
+                boolean isSuccess = orderDAO.checkout(userId, 1, promoId, "Giao xe tại Showroom F-Auto");
+                
                 if (isSuccess) {
                     request.setAttribute("msg", "Ting ting! Chốt đơn siêu xe thành công!");
 
+                    // Xóa mã giảm giá khỏi Session sau khi xài xong để tránh khách "xài chùa" lần sau
+                    session.removeAttribute("appliedPromoCode");
+                    session.removeAttribute("discountPercent");
+                    session.removeAttribute("promotionId");
+
                     // =========================================================
-                    // GHI LOG HOẠT ĐỘNG LÊN DASHBOARD KHI CHỐT ĐƠN
+                    // GHI LOG HOẠT ĐỘNG LÊN DASHBOARD
                     // =========================================================
                     try {
                         List<OrderDTO> recentOrders = orderDAO.getOrdersByUserId(userId);
@@ -65,7 +75,6 @@ public class OrderController extends HttpServlet {
                 } else {
                     request.setAttribute("error", "Lỗi: Giỏ hàng trống hoặc hệ thống đang bận!");
                 }
-                
             } else if ("detail".equals(action)) {
                 String orderIdStr = request.getParameter("id");
                 if (orderIdStr != null && !orderIdStr.isEmpty()) {

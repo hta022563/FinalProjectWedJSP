@@ -228,7 +228,7 @@
 <div class="container my-5 py-5">
     <div class="text-center mb-5 pb-4">
         <h2 class="luxury-title d-inline-block border-bottom border-warning pb-2" style="font-size: 2rem;">QUY TRÌNH MUA XE</h2>
-        <p class="text-muted mt-3">Đơn giản hóa trải nghiệm thượng lưu của bạn</p>
+        <p class="text-white mt-3">Đơn giản hóa trải nghiệm thượng lưu của bạn</p>
     </div>
     <div class="row g-4 position-relative">
         <div class="col-md-4">
