@@ -4,14 +4,11 @@
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
-        /* Nền tổng thể: Trắng sứ pha ánh Indigo nhạt */
         body {
             background: linear-gradient(135deg, #f5f7ff 0%, #e8eaff 100%);
             color: #2d3436;
             font-family: 'Inter', sans-serif;
         }
-
-        /* BANNER CINEMATIC - Nội thất xe hơi hiện đại đại diện cho sự sắp xếp */
         .banner-container {
             height: 280px;
             border-radius: 24px;
@@ -53,8 +50,6 @@
             font-family: 'Be Vietnam Pro', sans-serif !important;
             text-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
         }
-
-        /* Aero Card Glassmorphism */
         .aero-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
@@ -62,8 +57,6 @@
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
         }
-
-        /* Input & Button phong cách "Indigo Logic" */
         .aero-input {
             background: #ffffff !important;
             border: 1px solid #d1d9ff !important;
@@ -75,7 +68,6 @@
             border-color: #6c5ce7 !important;
             box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1) !important;
         }
-
         .btn-cat-gradient {
             background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
             border: none;
@@ -92,8 +84,6 @@
             transform: translateY(-3px);
             box-shadow: 0 12px 25px rgba(108, 92, 231, 0.5);
         }
-
-        /* Bảng dữ liệu Premium */
         .aero-table thead th {
             background: #f0f2ff;
             color: #5f27cd;
@@ -110,7 +100,6 @@
         .aero-table tr:hover {
             background-color: rgba(108, 92, 231, 0.03);
         }
-
         .id-tag {
             background: #f0f2ff;
             color: #6c5ce7;
@@ -119,7 +108,6 @@
             font-weight: 800;
             font-family: 'JetBrains Mono', monospace;
         }
-
         .icon-box {
             width: 45px;
             height: 45px;
@@ -140,21 +128,9 @@
             <div class="banner-overlay">
                 <h1 class="cat-main-title">Phân Loại Hệ Sinh Thái</h1>
                 <p class="text-white-50 fs-5 fw-light m-0">F-AUTO | Quản trị cấu trúc danh mục sản phẩm chiến lược</p>
-                <div class="mt-3 badge rounded-pill px-4 py-2 border border-primary border-opacity-25" 
-                     style="background: rgba(108, 92, 231, 0.15) !important;
-                     backdrop-filter: blur(15px);
-                     border: 1px solid rgba(162, 155, 254, 0.2) !important;
-                     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);">
-
+                <div class="mt-3 badge rounded-pill px-4 py-2 border border-primary border-opacity-25" style="background: rgba(108, 92, 231, 0.15) !important; backdrop-filter: blur(15px); border: 1px solid rgba(162, 155, 254, 0.2) !important; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);">
                     <i class="fa-solid fa-clock-rotate-left me-2" style="color: #a29bfe;"></i> 
-
-                    <span id="digital-clock" class="fw-bold" 
-                          style="color: #ffffff;
-                          text-shadow: 0 0 10px rgba(108, 92, 231, 0.8);
-                          letter-spacing: 2px;
-                          font-family: 'JetBrains Mono', monospace;">
-                        00:00:00
-                    </span>
+                    <span id="digital-clock" class="fw-bold" style="color: #ffffff; text-shadow: 0 0 10px rgba(108, 92, 231, 0.8); letter-spacing: 2px; font-family: 'JetBrains Mono', monospace;">00:00:00</span>
                 </div>
             </div>
         </div>
@@ -165,10 +141,10 @@
 
     <div class="aero-card p-4 mb-5 border-start border-primary border-5">
         <h5 class="fw-bold mb-4 d-flex align-items-center" style="color: #6c5ce7;">
-            <span class="bg-primary bg-opacity-10 p-2 rounded-3 me-3"><i class="fa-solid fa-folder-plus text-primary"></i></span>
-            Khởi tạo phân loại hàng hóa mới
+            <span class="bg-primary bg-opacity-10 p-2 rounded-3 me-3"><i class="fa-solid fa-folder-plus text-primary"></i></span> Khởi tạo phân loại hàng hóa mới
         </h5>
-        <form action="CategoryController" method="POST">
+        <form action="MainController" method="POST">
+            <input type="hidden" name="target" value="Category">
             <input type="hidden" name="action" value="add"> 
             <div class="row g-4 align-items-end">
                 <div class="col-md-9">
@@ -176,9 +152,7 @@
                     <input type="text" name="categoryName" class="form-control aero-input" placeholder="Nhập tên danh mục..." required>
                 </div>
                 <div class="col-md-3">
-                    <button class="btn btn-cat-gradient w-100 py-3 shadow-sm" type="submit">
-                        <i class="fa-solid fa-plus me-2"></i> THIẾT LẬP
-                    </button>
+                    <button class="btn btn-cat-gradient w-100 py-3 shadow-sm" type="submit"><i class="fa-solid fa-plus me-2"></i> THIẾT LẬP</button>
                 </div>
             </div>
         </form>
@@ -188,12 +162,7 @@
         <div class="table-responsive">
             <table class="table aero-table align-middle text-center mb-0">
                 <thead>
-                    <tr>
-                        <th style="width: 15%;">Mã Định Danh</th>
-                        <th class="text-start">Tên Danh Mục Hệ Thống</th>
-                        <th style="width: 25%;">Trạng Thái</th>
-                        <th style="width: 20%;">Thao Tác</th>
-                    </tr>
+                    <tr><th style="width: 15%;">Mã Định Danh</th> <th class="text-start">Tên Danh Mục Hệ Thống</th> <th style="width: 25%;">Trạng Thái</th> <th style="width: 20%;">Thao Tác</th></tr>
                 </thead>
                 <tbody class="bg-white">
                     <c:forEach items="${listCategory}" var="cat">
@@ -211,17 +180,10 @@
                                     <span class="text-dark fs-5">${cat.categoryName}</span>
                                 </div>
                             </td>
+                            <td><span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-bold"><i class="fa-solid fa-check-double me-1"></i> ACTIVE</span></td>
                             <td>
-                                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-bold">
-                                    <i class="fa-solid fa-check-double me-1"></i> ACTIVE
-                                </span>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 me-2 border-0 fw-bold" 
-                                        data-bs-toggle="modal" data-bs-target="#editModalCat${cat.categoryID}">SỬA</button>
-                                <a href="CategoryController?action=delete&id=${cat.categoryID}" 
-                                   class="btn btn-outline-danger btn-sm rounded-pill px-3 border-0 fw-bold" 
-                                   onclick="return confirm('Tạm ẩn danh mục [${cat.categoryName}]?')">XÓA</a>
+                                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 me-2 border-0 fw-bold" data-bs-toggle="modal" data-bs-target="#editModalCat${cat.categoryID}">SỬA</button>
+                                <a href="MainController?target=Category&action=delete&id=${cat.categoryID}" class="btn btn-outline-danger btn-sm rounded-pill px-3 border-0 fw-bold" onclick="return confirm('Tạm ẩn danh mục [${cat.categoryName}]?')">XÓA</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -239,11 +201,7 @@
         <div class="aero-card p-0 overflow-hidden border-danger border-opacity-10 mt-3">
             <table class="table aero-table align-middle text-center mb-0">
                 <thead class="bg-danger bg-opacity-10">
-                    <tr>
-                        <th style="width: 15%;">Mã ID</th>
-                        <th class="text-start">Danh mục đã ẩn</th>
-                        <th style="width: 20%;">Hành động</th>
-                    </tr>
+                    <tr><th style="width: 15%;">Mã ID</th> <th class="text-start">Danh mục đã ẩn</th> <th style="width: 20%;">Hành động</th></tr>
                 </thead>
                 <tbody class="bg-white">
                     <c:forEach items="${listDeleted}" var="delCat">
@@ -251,8 +209,7 @@
                             <td><span class="id-tag bg-secondary bg-opacity-10 text-muted">#${delCat.categoryID}</span></td>
                             <td class="text-start text-muted"><del class="fw-bold">${delCat.categoryName}</del></td>
                             <td>
-                                <a href="CategoryController?action=restore&id=${delCat.categoryID}" 
-                                   class="btn btn-outline-success btn-sm rounded-pill px-4 border-0 fw-bold shadow-sm">
+                                <a href="MainController?target=Category&action=restore&id=${delCat.categoryID}" class="btn btn-outline-success btn-sm rounded-pill px-4 border-0 fw-bold shadow-sm">
                                     <i class="fa-solid fa-rotate-left"></i> KHÔI PHỤC
                                 </a>
                             </td>
@@ -268,12 +225,13 @@
     <div class="modal fade" id="editModalCat${cat.categoryID}" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content aero-card border-0 p-4" style="background: rgba(255,255,255,0.98);">
-                <form action="CategoryController" method="POST">
+                <form action="MainController" method="POST">
                     <div class="modal-header border-0 pb-0">
                         <h5 class="fw-bold fs-4 text-primary">Hiệu chỉnh cấu trúc</h5>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body text-start">
+                        <input type="hidden" name="target" value="Category">
                         <input type="hidden" name="action" value="update">
                         <input type="hidden" name="id" value="${cat.categoryID}">
                         <div class="mb-4">

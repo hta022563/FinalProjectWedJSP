@@ -1,5 +1,4 @@
 <%-- File: web/includes/header.jsp --%>
-<%-- File: web/includes/header.jsp --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="model.CartDAO, model.CartItemDAO, model.CartDTO, model.CartItemDTO, model.UserDTO, java.util.List"%>
@@ -36,7 +35,6 @@
         
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Montserrat:wght@400;500;600&display=swap');
-
             body { font-family: 'Montserrat', sans-serif; }
 
             /* Nền Header Đen Tuyền + Viền Vàng */
@@ -45,48 +43,60 @@
                 border-bottom: 1px solid rgba(212, 175, 55, 0.2);
             }
 
-            /* LOGO F-AUTO */
+            /* LOGO F-AUTO: THÊM HIỆU ỨNG ÁNH SÁNG CHẠY */
             .luxury-logo {
                 font-family: 'Cinzel', serif;
                 font-size: 2.2rem;
-                font-weight: 800;
+                font-weight: 900;
                 letter-spacing: 3px;
-                background: linear-gradient(to right, #FFDF00, #D4AF37, #FFA500);
+                background: linear-gradient(to right, #D4AF37 20%, #ffffff 40%, #ffffff 60%, #D4AF37 80%);
+                background-size: 200% auto;
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
-                text-shadow: 0px 4px 15px rgba(212, 175, 55, 0.2);
-                transition: 0.3s ease;
+                text-shadow: 0px 4px 15px rgba(212, 175, 55, 0.3);
+                animation: shineLogo 3s linear infinite; 
             }
-            .luxury-logo:hover { text-shadow: 0px 4px 20px rgba(212, 175, 55, 0.5); }
+            
+            @keyframes shineLogo {
+                to { background-position: 200% center; }
+            }
+
+            .luxury-logo:hover { text-shadow: 0px 4px 20px rgba(255, 255, 255, 0.5); }
 
             /* Menu Links */
             .nav-link-custom {
-                color: #e0e0e0 !important; text-transform: uppercase; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; transition: 0.3s;
+                color: #e0e0e0 !important;
+                text-transform: uppercase; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; transition: 0.3s;
             }
             .nav-link-custom:hover { color: #D4AF37 !important; }
 
             /* Nút Quản Trị / Đăng Ký (Nền Vàng) */
             .btn-gold-nav {
-                background: linear-gradient(135deg, #D4AF37, #FFD700); color: #000 !important; border: none; transition: all 0.3s ease; font-weight: 700; font-size: 0.85rem;
+                background: linear-gradient(135deg, #D4AF37, #FFD700);
+                color: #000 !important; border: none; transition: all 0.3s ease; font-weight: 700; font-size: 0.85rem;
             }
             .btn-gold-nav:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4); }
 
             /* Nút Đăng Nhập (Viền Vàng) */
             .btn-outline-gold {
-                color: #D4AF37; border: 1px solid #D4AF37; background: transparent; padding: 6px 18px; font-size: 0.85rem; font-weight: 600; transition: 0.3s;
+                color: #D4AF37;
+                border: 1px solid #D4AF37; background: transparent; padding: 6px 18px; font-size: 0.85rem; font-weight: 600; transition: 0.3s;
             }
             .btn-outline-gold:hover { background: rgba(212, 175, 55, 0.1); color: #FFDF00; border-color: #FFDF00; }
 
             /* Nút Giỏ Hàng (Gradient Vàng Cam) */
             .btn-cart-gold {
-                background: linear-gradient(135deg, #D4AF37, #FF8C00); color: #000 !important; border: none; padding: 6px 18px; font-weight: 700; font-size: 0.85rem; transition: 0.3s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+                background: linear-gradient(135deg, #D4AF37, #FF8C00);
+                color: #000 !important; border: none; padding: 6px 18px; font-weight: 700; font-size: 0.85rem; transition: 0.3s;
+                box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
             }
             .btn-cart-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5); color: #000 !important; }
             .cart-badge { background-color: #dc3545; color: #fff; border: 1px solid #fff; font-size: 0.75rem; }
 
             /* Nút Lịch Sử Đơn (Viền Cam) */
             .btn-history-gold {
-                background: transparent; color: #FFA500 !important; border: 1px solid #FFA500; padding: 6px 18px; font-weight: 600; font-size: 0.85rem; transition: 0.3s;
+                background: transparent;
+                color: #FFA500 !important; border: 1px solid #FFA500; padding: 6px 18px; font-weight: 600; font-size: 0.85rem; transition: 0.3s;
             }
             .btn-history-gold:hover { background: rgba(255, 165, 0, 0.1); color: #FFDF00 !important; border-color: #FFDF00; transform: translateY(-2px); }
 
@@ -96,6 +106,14 @@
             }
             .profile-icon { color: #D4AF37; font-size: 1.4rem; transition: 0.3s; cursor: pointer; }
             .profile-icon:hover { transform: scale(1.1); color: #FFDF00; }
+
+            /* Icon Bánh răng xoay */
+            .gear-spin { 
+                transition: transform 0.4s ease-in-out; 
+            }
+            .gear-spin:hover { 
+                transform: rotate(90deg) scale(1.1); 
+            }
         </style>
     </head>
     <body class="d-flex flex-column min-vh-100">
@@ -110,42 +128,56 @@
                 <div class="collapse navbar-collapse" id="navContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
                         <li class="nav-item"><a class="nav-link nav-link-custom" href="home.jsp">Trang chủ</a></li>
-                        <li class="nav-item"><a class="nav-link nav-link-custom" href="ProductController">Sản phẩm</a></li>
-                        <li class="nav-item"><a class="nav-link nav-link-custom" href="NewsController">Tin tức</a></li>
-
-                        <%-- MỤC TRANG QUẢN TRỊ --%>
-                        <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
-                            <li class="nav-item ms-3 d-flex align-items-center">
-                                <a class="btn btn-gold-nav rounded-pill px-3 py-1" href="DashboardController">
-                                     <i class="fa-solid fa-user-shield"></i> QUẢN TRỊ
-                                </a>
-                            </li>
-                        </c:if>
+                        <li class="nav-item"><a class="nav-link nav-link-custom" href="MainController?target=Product">Sản phẩm</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-custom" href="MainController?target=News">Tin tức</a></li>
+                        <%-- Đã XÓA Nút QUẢN TRỊ to tướng ở đây --%>
                     </ul>
 
                     <div class="d-flex align-items-center">
                         <c:choose>
                             <%-- KHI ĐÃ ĐĂNG NHẬP --%>
                             <c:when test="${not empty sessionScope.user}">
-                                <a href="CartController?action=viewCart" class="btn btn-cart-gold rounded-pill me-2">
+                                <a href="MainController?target=Cart&action=viewCart" class="btn btn-cart-gold rounded-pill me-2">
                                     <i class="fa-solid fa-cart-shopping"></i> Giỏ hàng 
                                     <c:if test="${cartBadge > 0}">
                                         <span class="badge cart-badge rounded-pill ms-1">${cartBadge}</span>
                                     </c:if>
                                 </a>
+                                <a href="MainController?target=Wishlist&action=view" class="btn btn-outline-danger rounded-pill me-2" style="border-width: 2px;" title="Danh sách Yêu thích">
+                                    <i class="fa-solid fa-heart"></i>
+                                    <c:if test="${not empty sessionScope.wishlist && sessionScope.wishlist.size() > 0}">
+                                        <span class="badge bg-danger rounded-pill ms-1">${sessionScope.wishlist.size()}</span>
+                                    </c:if>
+                                </a>
 
-                                <a href="OrderController?action=history" class="btn btn-history-gold rounded-pill me-3">
+                                <a href="MainController?target=Order&action=history" class="btn btn-history-gold rounded-pill me-3">
                                     <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn
                                 </a>
 
                                 <div class="user-greeting d-flex align-items-center">
-                                    <a href="UserController?action=profile" class="text-decoration-none me-2" title="Xem thông tin cá nhân">
-                                        <i class="fa-solid fa-user-circle profile-icon"></i> 
+                                    <a href="MainController?target=User&action=profile" class="text-decoration-none me-2" title="Xem thông tin cá nhân">
+                                        <img src="IMG/avatars/avatar_${sessionScope.user.userID}.jpg?v=<%= System.currentTimeMillis() %>" 
+                                             onerror="this.src='https://ui-avatars.com/api/?name=${sessionScope.user.username}&background=222&color=d4af37&size=40'" 
+                                             alt="Avatar" 
+                                             style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid #D4AF37; transition: 0.3s;"
+                                             onmouseover="this.style.transform='scale(1.1)'; this.style.borderColor='#FFDF00';" 
+                                             onmouseout="this.style.transform='scale(1)'; this.style.borderColor='#D4AF37';">
                                     </a>
-                                    <span style="color: #a0a0a0;">Xin chào, <span class="fw-bold" style="color: #D4AF37;">${sessionScope.user.fullName}</span></span>
+                                    
+                                    <div class="text-start lh-sm">
+                                        <span style="color: #a0a0a0; font-size: 0.75rem;">Xin chào,</span><br>
+                                        <span class="fw-bold" style="color: #D4AF37; font-size: 0.85rem;">${sessionScope.user.fullName}</span>
+                                    </div>
+                                    
+                                    <%-- NÚT ICON QUẢN TRỊ CHỈ HIỆN KHI LÀ ADMIN --%>
+                                    <c:if test="${sessionScope.user.role == 1}">
+                                        <a href="MainController?target=Dashboard" class="btn btn-link text-warning p-0 ms-3 gear-spin" title="Vào Bảng Điều Khiển Quản Trị">
+                                            <i class="fa-solid fa-gear fs-4" style="filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.5));"></i>
+                                        </a>
+                                    </c:if>
                                 </div>
 
-                                <a href="UserController?action=logout" class="btn btn-outline-danger btn-sm fw-bold rounded-pill px-3">
+                                <a href="MainController?target=User&action=logout" class="btn btn-outline-danger btn-sm fw-bold rounded-pill px-3">
                                     <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
                                 </a>
                             </c:when>
@@ -163,4 +195,4 @@
                     </div>
                 </div>
             </div>
-        </nav>  
+        </nav>

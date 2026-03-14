@@ -176,6 +176,7 @@
                 confirmButtonText: 'Đóng'
             });
         </script>
+        <c:remove var="msg" />
     </c:if>
 
     <div class="luxury-container p-0 overflow-hidden">
@@ -208,8 +209,8 @@
                                     <td class="text-light-grey small"><fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy HH:mm" /></td>
                                     <td class="text-start text-light-grey small" style="max-width: 250px;">${order.shippingAddress}</td>
                                     <td class="fw-bold text-white"><fmt:formatNumber value="${order.totalAmount}" type="number" pattern="#,###"/> VNĐ</td>
-                                    
-                                    <%-- FIX LỖI ICON Ở ĐÂY SẾP NHÉ --%>
+
+                                    <%-- FIX LỖI ICON VÀ THÊM TỪ CHỐI Ở ĐÂY SẾP NHÉ --%>
                                     <td>
                                         <span class="badge badge-luxury">
                                             <c:choose>
@@ -222,6 +223,10 @@
                                                 <c:when test="${order.status == 'Đang giao'}">
                                                     <i class="fa-solid fa-truck-fast me-1 text-primary" style="font-size: 0.8rem;"></i>
                                                 </c:when>
+                                                <%-- KHÁCH HÀNG THẤY BỊ TỪ CHỐI --%>
+                                                <c:when test="${order.status == 'Đã từ chối'}">
+                                                    <i class="fa-solid fa-ban me-1 text-danger" style="font-size: 0.8rem;"></i>
+                                                </c:when>
                                                 <c:otherwise>
                                                     <i class="fa-solid fa-circle-check me-1 text-success" style="font-size: 0.8rem;"></i>
                                                 </c:otherwise>
@@ -229,22 +234,33 @@
                                             ${order.status}
                                         </span>
                                     </td>
-                                    
+
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            <a href="OrderController?action=detail&id=${order.orderID}" class="btn btn-sm btn-outline-luxury px-3">
+                                            <a href="MainController?target=Order&action=detail&id=${order.orderID}" class="btn btn-sm btn-outline-luxury px-3">
                                                 Xem
                                             </a>
 
-                                            <%-- KIỂM TRA TRẠNG THÁI: CHỈ CHO HỦY KHI CHƯA DUYỆT --%>
+                                            <%-- NẾU BỊ TỪ CHỐI RỒI THÌ KHÓA NÚT HỦY LUÔN --%>
                                             <c:choose>
                                                 <c:when test="${order.status == 'Đang xử lý'}">
-                                                    <a href="OrderController?action=delete&id=${order.orderID}" class="btn btn-sm btn-outline-danger-lux px-3" onclick="xoaDonHang(event, this.href, '${order.orderID}')">
+                                                    <a href="MainController?target=Order&action=delete&id=${order.orderID}" class="btn btn-sm btn-outline-danger-lux px-3" onclick="xoaDonHang(event, this.href, '${order.orderID}')">
                                                         Hủy
                                                     </a>
                                                 </c:when>
+                                                <c:when test="${order.status == 'Đã từ chối'}">
+                                                    <button class="btn btn-sm px-3" disabled style="border: 1px solid #555; background: transparent; color: #888; border-radius: 50px; opacity: 0.5;">
+                                                        <i class="fa-solid fa-xmark"></i> Đã Hủy
+                                                    </button>
+                                                </c:when>
+                                                <%-- THÊM NÚT TẢI HỢP ĐỒNG NẾU ĐÃ HOÀN THÀNH --%>
+                                                <c:when test="${order.status == 'Hoàn thành'}">
+                                                    <a href="MainController?target=Order&action=exportContract&id=${order.orderID}" target="_blank" class="btn btn-sm btn-outline-success px-3 rounded-pill fw-bold" style="border-width: 2px;">
+                                                        <i class="fa-solid fa-file-pdf me-1"></i> Tải Hợp Đồng
+                                                    </a>
+                                                </c:when>
                                                 <c:otherwise>
-                                                    <button class="btn btn-sm btn-outline-secondary px-3" disabled style="opacity: 0.5;" title="Admin đã xử lý đơn này, không thể hủy!">
+                                                    <button class="btn btn-sm btn-outline-secondary px-3" disabled style="opacity: 0.5;" title="Admin đang xử lý, không thể thao tác">
                                                         <i class="fa-solid fa-lock"></i> Khóa
                                                     </button>
                                                 </c:otherwise>

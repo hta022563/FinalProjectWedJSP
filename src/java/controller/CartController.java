@@ -20,6 +20,8 @@ import model.CartDAO;
 import model.CartDTO;
 import model.CartItemDAO;
 import model.CartItemDTO;
+import model.PromotionDAO;
+import model.PromotionDTO;
 import model.UserDTO;
 import utils.JPAUtil;
 
@@ -41,47 +43,49 @@ public class CartController extends HttpServlet {
         try {
             HttpSession session = request.getSession();
             UserDTO user = (UserDTO) session.getAttribute("user");
-            
+
             // CHỐT CHẶN: Nếu chưa đăng nhập -> Ép văng về trang Đăng nhập
             if (user == null) {
                 session.setAttribute("msgError", "Vui lòng đăng nhập để sử dụng tính năng này!");
                 response.sendRedirect("login.jsp");
-                return; 
+                return;
             }
             int userId = user.getUserID();
 
             if ("addToCart".equals(action)) {
                 String productIdStr = request.getParameter("productId");
                 String quantityStr = request.getParameter("quantity");
-                
+
                 if (productIdStr != null) {
                     int productId = Integer.parseInt(productIdStr);
                     int quantity = (quantityStr != null && !quantityStr.isEmpty()) ? Integer.parseInt(quantityStr) : 1;
-                    
+
                     // FIX 1: "Mồi" giỏ hàng trước để tránh lỗi SQL
-                    cartDAO.getCartByUserId(userId); 
-                    
+                    cartDAO.getCartByUserId(userId);
+
                     boolean success = cartItemDAO.addToCart(userId, productId, quantity);
-                    if (success) { 
+                    if (success) {
                         // FIX 2: Lưu thông báo vào session để xài sendRedirect
-                        session.setAttribute("msg", "Đã thêm siêu phẩm vào gara thành công!"); 
-                    } 
+                        session.setAttribute("msg", "Đã thêm siêu phẩm vào gara thành công!");
+                    }
                 }
-                
+
                 String returnUrl = request.getParameter("returnUrl");
-                if (returnUrl == null || returnUrl.isEmpty()) { returnUrl = "home.jsp"; }
-                
+                if (returnUrl == null || returnUrl.isEmpty()) {
+                    returnUrl = "home.jsp";
+                }
+
                 // FIX 3: Dùng sendRedirect thay vì forward để trị dứt điểm bệnh "Trắng trang"
                 response.sendRedirect(returnUrl);
                 return; // Ngắt luồng tại đây
-                
+
             } else if ("viewCart".equals(action)) {
                 CartDTO cart = cartDAO.getCartByUserId(userId);
                 List<CartItemDTO> cartItems = cartItemDAO.getCartItems(cart.getCartID());
 
                 Map<Integer, BigDecimal> productPrices = new HashMap<>();
-                BigDecimal cartTotal = BigDecimal.ZERO; 
-                
+                BigDecimal cartTotal = BigDecimal.ZERO;
+
                 EntityManager em = JPAUtil.getEntityManager();
                 try {
                     for (CartItemDTO item : cartItems) {
@@ -91,20 +95,22 @@ public class CartController extends HttpServlet {
                         cartTotal = cartTotal.add(price.multiply(new BigDecimal(item.getQuantity())));
                     }
                 } catch (Exception ex) {
-                } finally { 
-                    em.close(); 
+                } finally {
+                    em.close();
                 }
-                
+
                 request.setAttribute("productPrices", productPrices);
                 request.setAttribute("cartTotal", cartTotal);
                 request.setAttribute("cartItems", cartItems);
                 request.getRequestDispatcher("cart.jsp").forward(request, response);
-                
+
             } else if ("remove".equals(action)) {
                 String itemIdStr = request.getParameter("itemId");
-                if (itemIdStr != null) { cartItemDAO.removeCartItem(Integer.parseInt(itemIdStr)); }
+                if (itemIdStr != null) {
+                    cartItemDAO.removeCartItem(Integer.parseInt(itemIdStr));
+                }
                 response.sendRedirect("CartController?action=viewCart");
-                
+
             } else if ("update".equals(action)) {
                 String cartItemIdStr = request.getParameter("cartItemId");
                 String quantityStr = request.getParameter("quantity");
@@ -112,9 +118,30 @@ public class CartController extends HttpServlet {
                     cartItemDAO.updateQuantity(Integer.parseInt(cartItemIdStr), Integer.parseInt(quantityStr));
                 }
                 response.sendRedirect("CartController?action=viewCart");
-                
-            } else { 
-                response.sendRedirect("home.jsp"); 
+
+            } else if ("applyPromo".equals(action)) {
+                String promoCode = request.getParameter("promoCode");
+
+                // Gọi DAO để check mã (Sếp cần có hàm lấy Promotion theo Code trong PromotionDAO)
+                PromotionDAO promoDao = new PromotionDAO();
+                PromotionDTO promo = promoDao.getPromotionByCode(promoCode);
+
+                if (promo != null && promo.getIsActive() == 1) {
+                    // Lưu thông tin giảm giá vào Session để mang sang trang Checkout
+                    session.setAttribute("appliedPromoCode", promo.getPromoCode());
+                    session.setAttribute("discountPercent", promo.getDiscountPercent());
+                    session.setAttribute("promotionId", promo.getPromotionID()); // Lưu ID để mốt chốt đơn
+                    session.setAttribute("promoMsg", "Áp dụng mã giảm " + promo.getDiscountPercent() + "% thành công!");
+                } else {
+                    session.removeAttribute("appliedPromoCode");
+                    session.removeAttribute("discountPercent");
+                    session.removeAttribute("promotionId");
+                    session.setAttribute("promoError", "Mã không hợp lệ hoặc đã hết hạn!");
+                }
+                response.sendRedirect("MainController?target=Cart&action=viewCart");
+                return;
+            } else {
+                response.sendRedirect("home.jsp");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,6 +149,7 @@ public class CartController extends HttpServlet {
             request.getSession().setAttribute("msgError", "Hệ thống bận, vui lòng thử lại sau!");
             response.sendRedirect("ProductController");
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

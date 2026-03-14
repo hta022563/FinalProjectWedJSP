@@ -13,15 +13,15 @@
         <style>
             /* CSS tuỳ chỉnh cho thanh Sidebar Sidebar màu đen */
             body {
-                display: flex; /* Sử dụng flexbox để chia layout */
+                display: flex;
                 min-height: 100vh;
             }
             .sidebar {
                 width: 250px;
-                background-color: #212529; /* Màu tối giống ý bạn */
+                background-color: #212529;
                 color: #fff;
                 padding-top: 20px;
-                flex-shrink: 0; /* Ngăn sidebar bị thu nhỏ */
+                flex-shrink: 0;
             }
             .sidebar a {
                 color: #adb5bd;
@@ -35,7 +35,7 @@
                 background-color: #495057;
             }
             .content {
-                flex-grow: 1; /* Phần nội dung chiếm phần còn lại */
+                flex-grow: 1;
                 padding: 0px;
                 background-color: #f8f9fa;
             }
@@ -50,37 +50,28 @@
                 animation: shine 3s linear infinite;
             }
             @keyframes shine {
-                to {
-                    background-position: 200% center;
-                }
+                to { background-position: 200% center; }
             }
         </style>
     </head>
     <body>
 
         <div class="sidebar">
-            <a href="${pageContext.request.contextPath}/DashboardController" class="text-decoration-none">
+            <a href="${pageContext.request.contextPath}/MainController?target=Dashboard" class="text-decoration-none">
                 <h4 class="text-center text-warning fw-bold mb-4 luxury-logo ">
                     F-AUTO ADMIN
                 </h4>
             </a>
-            <a href="${pageContext.request.contextPath}/CategoryController"><i class="fa-solid fa-list me-2"></i> Quản lý Danh mục</a>
-            <a href="${pageContext.request.contextPath}/SupplierController"><i class="fa-solid fa-truck-fast me-2"></i> Nhà Cung Cấp</a>
-            <a href="${pageContext.request.contextPath}/PaymentMethodController"><i class="fa-solid fa-credit-card me-2"></i> PT Thanh Toán</a>
-            <a href="${pageContext.request.contextPath}/PromotionController"><i class="fa-solid fa-tags me-2"></i> Khuyến Mãi</a>
-            <a href="${pageContext.request.contextPath}/ShowroomController"><i class="fa-solid fa-building me-2"></i> Showroom</a>
-            <a href="${pageContext.request.contextPath}/NewsController">
-                <i class="fa-solid fa-newspaper me-2"></i>News
-            </a>
-            <a href="${pageContext.request.contextPath}/ProductController">
-                <i class="fa-solid fa-car-side me-2"></i>Sản Phẩm
-            </a>
+            <a href="${pageContext.request.contextPath}/MainController?target=Category"><i class="fa-solid fa-list me-2"></i> Quản lý Danh mục</a>
+            <a href="${pageContext.request.contextPath}/MainController?target=Supplier"><i class="fa-solid fa-truck-fast me-2"></i> Nhà Cung Cấp</a>
+            <a href="${pageContext.request.contextPath}/MainController?target=Payment"><i class="fa-solid fa-credit-card me-2"></i> PT Thanh Toán</a>
+            <a href="${pageContext.request.contextPath}/MainController?target=Promotion"><i class="fa-solid fa-tags me-2"></i> Khuyến Mãi</a>
+            <a href="${pageContext.request.contextPath}/MainController?target=Showroom"><i class="fa-solid fa-building me-2"></i> Showroom</a>
+            <a href="${pageContext.request.contextPath}/MainController?target=News"><i class="fa-solid fa-newspaper me-2"></i> News</a>
+            <a href="${pageContext.request.contextPath}/MainController?target=Product"><i class="fa-solid fa-car-side me-2"></i> Sản Phẩm</a>
+            
             <a href="${pageContext.request.contextPath}/home.jsp" class="text-warning"><i class="fa-solid fa-globe me-2"></i> Exit Dashboard</a>
-
-            <a href="${pageContext.request.contextPath}/UserController?action=logout" class="text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất</a>
-
-
-
+            <a href="${pageContext.request.contextPath}/MainController?target=User&action=logout" class="text-danger"><i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất</a>
         </div>
 
         <div class="content">

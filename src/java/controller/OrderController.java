@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import java.io.IOException;
@@ -20,36 +16,62 @@ import model.OrderDetailDAO;
 import model.OrderDetailDTO;
 import model.UserDTO;
 import utils.EmailUtils;
-import model.PaymentMethodDAO; // Đã thêm Import
-import model.PaymentMethodDTO; // Đã thêm Import
+import model.PaymentMethodDAO; 
+import model.PaymentMethodDTO; 
+import model.ActivityDAO; 
 
-/**
- *
- * @author AngDeng
- */
 @WebServlet(name = "OrderController", urlPatterns = {"/OrderController"})
 public class OrderController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8");
+        
         String action = request.getParameter("action");
         OrderDAO orderDAO = new OrderDAO();
 
         try {
             HttpSession session = request.getSession();
+            // Lấy thông tin user (Không cần check null nữa vì Filter đã chặn ngoài cửa rồi)
             UserDTO user = (UserDTO) session.getAttribute("user");
-            if (user == null) {
-                response.sendRedirect("login.jsp");
-                return; 
-            }
             int userId = user.getUserID();
             
-            if ("checkout".equals(action)) {
-                boolean isSuccess = orderDAO.checkout(userId, 1, null, "Giao xe tại Showroom F-Auto");
+         if ("checkout".equals(action)) {
+                // Lấy thông tin mã giảm giá từ Session (nếu khách có nhập)
+                Integer promoId = (Integer) session.getAttribute("promotionId");
+                
+                // Truyền promoId vào hàm checkout thay vì để chữ 'null' như cũ
+                boolean isSuccess = orderDAO.checkout(userId, 1, promoId, "Giao xe tại Showroom F-Auto");
+                
                 if (isSuccess) {
                     request.setAttribute("msg", "Ting ting! Chốt đơn siêu xe thành công!");
+
+                    // Xóa mã giảm giá khỏi Session sau khi xài xong để tránh khách "xài chùa" lần sau
+                    session.removeAttribute("appliedPromoCode");
+                    session.removeAttribute("discountPercent");
+                    session.removeAttribute("promotionId");
+
+                    // =========================================================
+                    // GHI LOG HOẠT ĐỘNG LÊN DASHBOARD
+                    // =========================================================
+                    try {
+                        List<OrderDTO> recentOrders = orderDAO.getOrdersByUserId(userId);
+                        if (recentOrders != null && !recentOrders.isEmpty()) {
+                            OrderDTO newestOrder = recentOrders.get(0); 
+                            
+                            ActivityDAO actDao = new ActivityDAO();
+                            actDao.logActivity(
+                                "ORDER", 
+                                "Đơn hàng VIP mới từ khách " + user.getUsername(), 
+                                user.getUsername(), 
+                                "FA-" + newestOrder.getOrderID(), 
+                                Double.valueOf(String.valueOf(newestOrder.getTotalAmount())) 
+                            );
+                        }
+                    } catch (Exception ex) {
+                        System.out.println("Lỗi khi ghi Log đơn hàng: " + ex.getMessage());
+                    }
+                    // =========================================================
+
                 } else {
                     request.setAttribute("error", "Lỗi: Giỏ hàng trống hoặc hệ thống đang bận!");
                 }
@@ -69,20 +91,22 @@ public class OrderController extends HttpServlet {
                     request.getRequestDispatcher("order-detail.jsp").forward(request, response);
                     return; 
                 } 
+                
             } else if ("delete".equals(action)) {
                 String orderIdStr = request.getParameter("id");
                 if (orderIdStr != null && !orderIdStr.isEmpty()) {
                     boolean isDeleted = orderDAO.deleteOrder(Integer.parseInt(orderIdStr));
                     if (isDeleted) { request.setAttribute("msg", "Đã xóa đơn hàng thành công!"); }
                 }
+                
             } else if ("updateStatus".equals(action)) {
-                if (user != null && user.getRole() == 1) {
+                if (user.getRole() == 1) { // Chỉ Admin mới được update
                     String orderIdStr = request.getParameter("orderId");
                     String newStatus = request.getParameter("status"); 
                     if (orderIdStr != null && newStatus != null) {
                         orderDAO.updateOrderStatus(Integer.parseInt(orderIdStr), newStatus);
                     }
-                    response.sendRedirect("DashboardController"); 
+                    response.sendRedirect("MainController?target=Dashboard"); 
                     return;
                 } else {
                     response.sendRedirect("home.jsp");
@@ -93,14 +117,10 @@ public class OrderController extends HttpServlet {
                 String paymentMethodId = request.getParameter("paymentMethod");
 
                 try {
-                    // CẬP NHẬT TRẠNG THÁI VÀO CSDL TẠI ĐÂY NẾU CẦN
-                    // orderDAO.updatePaymentInfo(Integer.parseInt(orderIdStr), Integer.parseInt(paymentMethodId));
-
                     if (user.getEmail() != null && !user.getEmail().isEmpty()) {
                         
-                        // --- BẮT ĐẦU: LẤY TÊN THẬT CỦA PHƯƠNG THỨC THANH TOÁN ---
                         PaymentMethodDAO pmDao = new PaymentMethodDAO();
-                        String methodName = "Cổng số " + paymentMethodId; // Mặc định nếu không tìm thấy trong DB
+                        String methodName = "Cổng số " + paymentMethodId; 
 
                         try {
                             int pmId = Integer.parseInt(paymentMethodId);
@@ -108,26 +128,22 @@ public class OrderController extends HttpServlet {
                             for (PaymentMethodDTO pm : listPM) {
                                 if (pm.getMethodID() == pmId) {
                                     methodName = pm.getMethodName();
-                                    // Kèm theo tên ngân hàng nếu đó là QR Code và có thông tin BankName
                                     if(pm.getBankName() != null && !pm.getBankName().trim().isEmpty()) {
                                         methodName += " (" + pm.getBankName() + ")"; 
                                     }
-                                    break; // Tìm thấy thì dừng vòng lặp
+                                    break; 
                                 }
                             }
                         } catch (Exception e) {
-                            System.out.println("Lỗi khi tìm tên phương thức thanh toán: " + e.getMessage());
+                            System.out.println("Lỗi khi tìm tên phương thức TT: " + e.getMessage());
                         }
-                        // --- KẾT THÚC: LẤY TÊN THẬT CỦA PHƯƠNG THỨC THANH TOÁN ---
 
-                        // Khởi tạo các biến final để dùng trong Background Thread
                         final String customerName = (user.getFullName() != null && !user.getFullName().isEmpty()) 
                                 ? user.getFullName() : user.getUsername();
                         final String customerEmail = user.getEmail();
                         final String fOrderId = orderIdStr;
-                        final String fPaymentMethod = methodName; // Đưa tên thật vừa lấy được vào đây
+                        final String fPaymentMethod = methodName; 
 
-                        // Đẩy tiến trình gửi mail ra Background Thread để web không bị đơ
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -138,7 +154,6 @@ public class OrderController extends HttpServlet {
                         }).start();
                     }
 
-                    // Thông báo và đá về trang lịch sử đơn hàng ngay lập tức
                     session.setAttribute("msg", "Xác nhận thành công! Vui lòng kiểm tra hộp thư Email.");
                     response.sendRedirect("OrderController"); 
                     return;
@@ -148,6 +163,29 @@ public class OrderController extends HttpServlet {
                     response.sendRedirect("OrderController");
                     return;
                 }
+                
+            } else if ("exportContract".equals(action)) {
+                String orderIdStr = request.getParameter("id");
+                if (orderIdStr != null && !orderIdStr.isEmpty()) {
+                    int orderId = Integer.parseInt(orderIdStr);
+                    OrderDetailDAO detailDAO = new OrderDetailDAO();
+                    List<OrderDetailDTO> listDetails = detailDAO.getDetailsByOrderId(orderId);
+                    Map<Integer, String> productNames = new HashMap<>();
+                    for(OrderDetailDTO item : listDetails) {
+                        productNames.put(item.getProductID(), detailDAO.getProductName(item.getProductID()));
+                    }                   
+                    request.setAttribute("listDetails", listDetails);
+                    request.setAttribute("productNames", productNames);
+                    
+                    OrderDTO contractOrder = null;
+                    List<OrderDTO> allOrders = orderDAO.getOrdersByUserId(userId);
+                    for(OrderDTO o : allOrders) {
+                        if(o.getOrderID() == orderId) { contractOrder = o; break; }
+                    }
+                    request.setAttribute("contractOrder", contractOrder);
+                    request.getRequestDispatcher("contract-pdf.jsp").forward(request, response);
+                    return; 
+                } 
             }
             
             List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
@@ -175,6 +213,6 @@ public class OrderController extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Order Controller"; // ĐÃ FIX: Chỉ giữ lại 1 dòng return
     }
 }

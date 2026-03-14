@@ -4,9 +4,9 @@
 
 <jsp:include page="includes/header.jsp"></jsp:include>
 
-<div class="container my-5">
-    <h2 class="fw-bold mb-4 border-bottom pb-2 text-uppercase luxury-logo">Tin tức & Sự kiện</h2>
-    
+    <div class="container my-5">
+        <h2 class="fw-bold mb-4 border-bottom pb-2 text-uppercase luxury-logo">Tin tức & Sự kiện</h2>
+
     <%-- DANH SÁCH BÀI VIẾT --%>
     <div class="row">
         <c:forEach items="${listN}" var="n">
@@ -26,21 +26,20 @@
                                 <p class="card-text text-muted mb-3" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
                                     ${n.content}
                                 </p>
-                                
+
                                 <div class="mt-auto">
                                     <a href="${n.externalLink}" target="_blank" class="btn btn-outline-warning btn-sm fw-bold">
                                         Đọc tiếp <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
                                     </a>
-                                    
+
                                     <%-- NÚT XÓA/SỬA CHỈ HIỂN THỊ KHI LÀ ADMIN (role == 1) --%>
                                     <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
                                         <div class="mt-2 pt-2 border-top">
-                                            <a href="NewsController?action=edit&id=${n.newsID}#admin-form" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen"></i> Sửa</a>
-                                            <a href="NewsController?action=delete&id=${n.newsID}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa bài báo này?');"><i class="fa-solid fa-trash"></i> Xóa</a>
+                                            <a href="MainController?target=News&action=edit&id=${n.newsID}#admin-form" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen"></i> Sửa</a>
+                                            <a href="MainController?target=News&action=delete&id=${n.newsID}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa bài báo này?');"><i class="fa-solid fa-trash"></i> Xóa</a>
                                         </div>
                                     </c:if>
                                 </div>
-                                
                             </div>
                         </div>
                     </div>
@@ -57,7 +56,8 @@
                 <i class="fa-solid fa-newspaper"></i> ${empty editNews ? 'THÊM TIN TỨC MỚI' : 'CẬP NHẬT TIN TỨC'}
             </div>
             <div class="card-body bg-light">
-                <form action="NewsController" method="POST">
+                <form action="MainController" method="POST">
+                    <input type="hidden" name="target" value="News">
                     <input type="hidden" name="action" value="save">
                     <input type="hidden" name="newsID" value="${editNews.newsID}">
 
@@ -84,7 +84,7 @@
 
                     <div class="d-flex justify-content-end gap-2">
                         <c:if test="${not empty editNews}">
-                            <a href="NewsController" class="btn btn-secondary fw-bold">Hủy Sửa</a>
+                            <a href="MainController?target=News" class="btn btn-secondary fw-bold">Hủy Sửa</a>
                         </c:if>
                         <button type="submit" class="btn btn-warning fw-bold text-dark">
                             <i class="fa-solid fa-floppy-disk"></i> LƯU THÔNG TIN
