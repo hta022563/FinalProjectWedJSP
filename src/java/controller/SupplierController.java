@@ -16,8 +16,8 @@ public class SupplierController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8"); // Xử lý tiếng Việt
-
+       request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         SupplierDAO dao = new SupplierDAO();
         String action = request.getParameter("action");
 

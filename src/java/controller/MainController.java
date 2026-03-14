@@ -35,7 +35,8 @@ public class MainController extends HttpServlet {
 protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        request.setCharacterEncoding("UTF-8");       
+      request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");     
         
         // Nhận tham số "target" để biết cần điều phối đi đâu
         String target = request.getParameter("target");
