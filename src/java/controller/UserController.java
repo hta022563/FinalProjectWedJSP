@@ -52,7 +52,6 @@ public class UserController extends HttpServlet {
                 response.addCookie(cUser);
                 response.addCookie(cPass);
             } else {
-                // Xóa Cookie nếu không chọn Remember
                 javax.servlet.http.Cookie cUser = new javax.servlet.http.Cookie("cUser", "");
                 javax.servlet.http.Cookie cPass = new javax.servlet.http.Cookie("cPass", "");
                 cUser.setPath("/");
@@ -73,19 +72,21 @@ public class UserController extends HttpServlet {
     protected void doLogout(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        session.invalidate(); 
+        if (session.getAttribute("user") != null) {
+            session.invalidate(); 
+        }
         response.sendRedirect("login.jsp");
     }
 
-    // --- 3. XỬ LÝ ĐĂNG KÝ (ĐÃ DỌN DẸP TIẾNG VIỆT) ---
+    // --- 3. XỬ LÝ ĐĂNG KÝ (SẠCH BONG TIẾNG VIỆT) ---
     protected void doRegister(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Nhờ có Filter, sếp cứ getParameter bình thường, nó tự ra tiếng Việt chuẩn
+        // Nhờ có Filter gác cổng, sếp cứ lấy Parameter bình thường, tự ra tiếng Việt chuẩn
         String username = request.getParameter("txtUsername");
         String pass = request.getParameter("txtPassword");
         String confirmPass = request.getParameter("txtConfirmPassword");
-        String fullName = request.getParameter("txtFullName"); 
+        String fullName = request.getParameter("txtFullName");
         String email = request.getParameter("txtEmail");
         String phone = request.getParameter("txtPhone");
 
@@ -111,10 +112,14 @@ public class UserController extends HttpServlet {
         newUser.setRole(0); 
 
         if (dao.register(newUser)) {
-            new ActivityDAO().logActivity("SYSTEM", "Gia nhập hệ thống: " + fullName, username, "NEW-USER", null);
+            // Log activity nhận fullName tiếng Việt nét căng
+            ActivityDAO actDao = new ActivityDAO();
+            actDao.logActivity("SYSTEM", "Gia nhập hệ thống: " + fullName, username, "NEW-USER", null);
+            
             request.setAttribute("message", "Đăng ký thành công! Vui lòng đăng nhập.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
+            // LỖI NÀY THƯỜNG DO DATABASE KHÔNG NHẬN ĐƯỢC DỮ LIỆU (Check độ dài cột Password nhé)
             request.setAttribute("ERROR", "Lỗi hệ thống Database!");
             request.getRequestDispatcher("register.jsp").forward(request, response);
         }
@@ -127,7 +132,7 @@ public class UserController extends HttpServlet {
         UserDTO currentUser = (UserDTO) session.getAttribute("user");
 
         if (currentUser != null) {
-            // Lấy thẳng dữ liệu, Filter đã lo phần Encoding
+            // Lấy dữ liệu trực tiếp, Filter đã lo phần xử lý ISO -> UTF-8
             currentUser.setFullName(request.getParameter("txtFullName"));
             currentUser.setEmail(request.getParameter("txtEmail"));
             currentUser.setPhone(request.getParameter("txtPhone"));
@@ -204,7 +209,6 @@ public class UserController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Xóa mấy cái dòng setCharacterEncoding ở đây đi cũng được vì Filter đã làm rồi
         String action = request.getParameter("action");
 
         if (action == null) {
@@ -268,6 +272,6 @@ public class UserController extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "UserController handles user actions for F-Auto Showroom";
+        return "UserController handles all user-related actions";
     }
 }
