@@ -5,175 +5,80 @@
 
 <jsp:include page="includes/header.jsp"></jsp:include>
 
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <style>
-        body {
-            background-color: #0a0a0a;
-            color: #e0e0e0;
-            font-family: 'Montserrat', sans-serif;
-        }
+<style>
+    body { background-color: #0a0a0a; color: #e0e0e0; font-family: 'Montserrat', sans-serif; }
+    .luxury-title { font-family: 'Playfair Display', serif; color: #D4AF37; text-transform: uppercase; letter-spacing: 2px; }
+    .text-gold { color: #D4AF37 !important; }
+    .text-light-grey { color: #cccccc !important; }
+    .luxury-container { background: #111; border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); padding: 30px; }
+    .table-luxury { --bs-table-bg: transparent; border-color: rgba(212, 175, 55, 0.1); }
+    .table-luxury th, .table-luxury td, .table-luxury tr, .table-luxury tbody, .table-luxury thead { background-color: transparent !important; color: #ffffff !important; }
+    .table-luxury thead th { background-color: rgba(0, 0, 0, 0.4) !important; border-bottom: 1px solid #D4AF37 !important; color: #D4AF37 !important; font-family: 'Playfair Display', serif; letter-spacing: 1px; text-transform: uppercase; padding: 15px; }
+    .table-luxury tbody tr { transition: 0.3s; }
+    .table-luxury tbody tr:hover td { background-color: rgba(212, 175, 55, 0.05) !important; }
+    .table-luxury td { border-bottom: 1px solid rgba(255, 255, 255, 0.05); vertical-align: middle; padding: 15px; }
+    
+    .btn-outline-luxury { color: #D4AF37; border: 1px solid #D4AF37; border-radius: 50px; font-weight: 500; transition: 0.3s; background: transparent; }
+    .btn-outline-luxury:hover { background: #D4AF37; color: #000; }
+    .btn-outline-danger-lux { color: #e74c3c; border: 1px solid #e74c3c; border-radius: 50px; font-weight: 500; transition: 0.3s; background: transparent; }
+    .btn-outline-danger-lux:hover { background: #e74c3c; color: #fff; }
+    
+    .badge-luxury { background: rgba(212, 175, 55, 0.1) !important; border: 1px solid rgba(212, 175, 55, 0.5); color: #D4AF37 !important; padding: 8px 15px; border-radius: 50px; font-weight: 500; letter-spacing: 0.5px; }
+    .swal-luxury-popup { border: 1px solid rgba(212, 175, 55, 0.3) !important; border-radius: 12px !important; box-shadow: 0 15px 40px rgba(0,0,0,0.8) !important; }
+</style>
 
-        .luxury-title {
-            font-family: 'Playfair Display', serif;
-            color: #D4AF37;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .text-gold {
-            color: #D4AF37 !important;
-        }
-        .text-light-grey {
-            color: #cccccc !important;
-        }
-
-        .luxury-container {
-            background: #111;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            padding: 30px;
-        }
-
-        .table-luxury {
-            --bs-table-bg: transparent;
-            border-color: rgba(212, 175, 55, 0.1);
-        }
-        .table-luxury th, .table-luxury td, .table-luxury tr, .table-luxury tbody, .table-luxury thead {
-            background-color: transparent !important;
-            color: #ffffff !important;
-        }
-        .table-luxury thead th {
-            background-color: rgba(0, 0, 0, 0.4) !important;
-            border-bottom: 1px solid #D4AF37 !important;
-            color: #D4AF37 !important;
-            font-family: 'Playfair Display', serif;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 15px;
-        }
-        .table-luxury tbody tr {
-            transition: 0.3s;
-        }
-        .table-luxury tbody tr:hover td {
-            background-color: rgba(212, 175, 55, 0.05) !important;
-        }
-        .table-luxury td {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            vertical-align: middle;
-            padding: 15px;
-        }
-
-        .btn-outline-luxury {
-            color: #D4AF37;
-            border: 1px solid #D4AF37;
-            border-radius: 50px;
-            font-weight: 500;
-            transition: 0.3s;
-            background: transparent;
-        }
-        .btn-outline-luxury:hover {
-            background: #D4AF37;
-            color: #000;
-        }
-
-        .btn-outline-danger-lux {
-            color: #e74c3c;
-            border: 1px solid #e74c3c;
-            border-radius: 50px;
-            font-weight: 500;
-            transition: 0.3s;
-            background: transparent;
-        }
-        .btn-outline-danger-lux:hover {
-            background: #e74c3c;
-            color: #fff;
-        }
-
-        .badge-luxury {
-            background: rgba(212, 175, 55, 0.1) !important;
-            border: 1px solid rgba(212, 175, 55, 0.5);
-            color: #D4AF37 !important;
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        /* Tùy chỉnh nhẹ lại khung Modal của SweetAlert2 cho Luxury */
-        .swal-luxury-popup {
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-radius: 12px !important;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8) !important;
-        }
-    </style>
-
-    <script>
-        function xoaDonHang(event, url, orderId) {
-            event.preventDefault();
-            Swal.fire({
-                title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37; font-size: 1.8rem;">Hủy Giao Dịch</span>',
-                html: '<p style="color: #ccc; font-family: \'Montserrat\', sans-serif; font-size: 1rem; margin-top: 10px;">Bạn có chắc chắn muốn hủy đơn đặt xe mã <b style="color: #fff;">#' + orderId + '</b> không?</p>',
-                icon: 'question',
-                iconColor: '#D4AF37',
-                background: '#121212',
-                backdrop: `rgba(0, 0, 0, 0.7)`,
-                showCancelButton: true,
-                confirmButtonText: 'Xác nhận hủy',
-                cancelButtonText: 'Đóng',
-                customClass: {
-                    popup: 'swal-luxury-popup',
-                    confirmButton: 'btn btn-danger px-4 py-2 mx-2 rounded-pill fw-bold',
-                    cancelButton: 'btn btn-outline-secondary text-white border-secondary px-4 py-2 mx-2 rounded-pill fw-bold'
-                },
-                buttonsStyling: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Hiển thị loading nhẹ nhàng
-                    Swal.fire({
-                        title: '<span style="color: #D4AF37; font-family: \'Playfair Display\', serif;">Đang xử lý...</span>',
-                        background: '#121212',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                            setTimeout(() => {
-                                window.location.href = url;
-                            }, 500);
-                        }
-                    });
-                }
+<script>
+    function xoaDonHang(event, url, orderId) {
+        event.preventDefault();
+        Swal.fire({
+            title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37; font-size: 1.8rem;">Hủy Giao Dịch</span>',
+            html: '<p style="color: #ccc; font-family: \'Montserrat\', sans-serif; font-size: 1rem; margin-top: 10px;">Bạn có chắc chắn muốn hủy đơn đặt xe mã <b style="color: #fff;">#' + orderId + '</b> không?</p>',
+            icon: 'question', iconColor: '#D4AF37', background: '#121212', backdrop: `rgba(0, 0, 0, 0.7)`,
+            showCancelButton: true, confirmButtonText: 'Xác nhận hủy', cancelButtonText: 'Đóng',
+            customClass: {
+                popup: 'swal-luxury-popup',
+                confirmButton: 'btn btn-danger px-4 py-2 mx-2 rounded-pill fw-bold',
+                cancelButton: 'btn btn-outline-secondary text-white border-secondary px-4 py-2 mx-2 rounded-pill fw-bold'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: '<span style="color: #D4AF37; font-family: \'Playfair Display\', serif;">Đang xử lý...</span>',
+                    background: '#121212', allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        setTimeout(() => { window.location.href = url; }, 500);
+                    }
+                });
             }
-        }
-    </script>
+        });
+    }
+</script>
 
-    <div class="container my-5">
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="home.jsp" class="text-gold text-decoration-none">Trang chủ</a></li>
-                <li class="breadcrumb-item active text-light-grey" aria-current="page">Hồ sơ giao dịch</li>
-            </ol>
-        </nav>
+<div class="container my-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="home.jsp" class="text-gold text-decoration-none">Trang chủ</a></li>
+            <li class="breadcrumb-item active text-light-grey" aria-current="page">Hồ sơ giao dịch</li>
+        </ol>
+    </nav>
 
-        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-3">
-            <h2 class="luxury-title mb-0">Hồ Sơ Giao Dịch</h2>
-        </div>
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-3">
+        <h2 class="luxury-title mb-0">Hồ Sơ Giao Dịch</h2>
+    </div>
 
     <c:if test="${not empty msg}">
         <script>
             Swal.fire({
                 title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37;">Thành Công</span>',
                 html: '<span style="color: #e0e0e0; font-family: \'Montserrat\', sans-serif;">${msg}</span>',
-                icon: 'success',
-                iconColor: '#D4AF37',
-                background: '#121212',
-                customClass: {
-                    popup: 'swal-luxury-popup',
-                    confirmButton: 'btn btn-outline-luxury px-4 py-2 rounded-pill fw-bold'
-                },
-                buttonsStyling: false,
-                confirmButtonText: 'Đóng'
+                icon: 'success', iconColor: '#D4AF37', background: '#121212',
+                customClass: { popup: 'swal-luxury-popup', confirmButton: 'btn btn-outline-luxury px-4 py-2 rounded-pill fw-bold' },
+                buttonsStyling: false, confirmButtonText: 'Đóng'
             });
         </script>
         <c:remove var="msg" />
@@ -210,62 +115,62 @@
                                     <td class="text-start text-light-grey small" style="max-width: 250px;">${order.shippingAddress}</td>
                                     <td class="fw-bold text-white"><fmt:formatNumber value="${order.totalAmount}" type="number" pattern="#,###"/> VNĐ</td>
 
-                                    <%-- FIX LỖI ICON VÀ THÊM TỪ CHỐI Ở ĐÂY SẾP NHÉ --%>
                                     <td>
-                                        <span class="badge badge-luxury">
+                                        <span class="badge badge-luxury border-0">
                                             <c:choose>
-                                                <c:when test="${order.status == 'Đang xử lý'}">
-                                                    <i class="fa-solid fa-circle-notch fa-spin me-1 text-warning" style="font-size: 0.8rem;"></i>
+                                                <c:when test="${order.status == 'Pending'}">
+                                                    <i class="fa-solid fa-circle-notch fa-spin me-1 text-warning" style="font-size: 0.8rem;"></i> <span class="text-warning">CHỜ DUYỆT</span>
                                                 </c:when>
-                                                <c:when test="${order.status == 'Đã duyệt'}">
-                                                    <i class="fa-solid fa-clipboard-check me-1 text-info" style="font-size: 0.8rem;"></i>
+                                                <c:when test="${order.status == 'Approved'}">
+                                                    <i class="fa-solid fa-clipboard-check me-1 text-info" style="font-size: 0.8rem;"></i> <span class="text-info">ĐÃ DUYỆT</span>
                                                 </c:when>
-                                                <c:when test="${order.status == 'Đang giao'}">
-                                                    <i class="fa-solid fa-truck-fast me-1 text-primary" style="font-size: 0.8rem;"></i>
+                                                <c:when test="${order.status == 'Shipping'}">
+                                                    <i class="fa-solid fa-truck-fast me-1 text-primary" style="font-size: 0.8rem;"></i> <span class="text-primary">ĐANG GIAO</span>
                                                 </c:when>
-                                                <%-- KHÁCH HÀNG THẤY BỊ TỪ CHỐI --%>
-                                                <c:when test="${order.status == 'Đã từ chối'}">
-                                                    <i class="fa-solid fa-ban me-1 text-danger" style="font-size: 0.8rem;"></i>
+                                                <c:when test="${order.status == 'Rejected'}">
+                                                    <i class="fa-solid fa-ban me-1 text-danger" style="font-size: 0.8rem;"></i> <span class="text-danger">TỪ CHỐI</span>
+                                                </c:when>
+                                                <c:when test="${order.status == 'Completed'}">
+                                                    <i class="fa-solid fa-circle-check me-1 text-success" style="font-size: 0.8rem;"></i> <span class="text-success">HOÀN TẤT</span>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <i class="fa-solid fa-circle-check me-1 text-success" style="font-size: 0.8rem;"></i>
+                                                    <i class="fa-solid fa-circle-question me-1 text-secondary" style="font-size: 0.8rem;"></i> <span class="text-secondary">KHÔNG XÁC ĐỊNH</span>
                                                 </c:otherwise>
                                             </c:choose>
-                                            ${order.status}
                                         </span>
                                     </td>
 
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            <a href="MainController?target=Order&action=detail&id=${order.orderID}" class="btn btn-sm btn-outline-luxury px-3">
-                                                Xem
-                                            </a>
+                                            <a href="MainController?target=Order&action=detail&id=${order.orderID}" class="btn btn-sm btn-outline-luxury px-3">Xem</a>
 
-                                            <%-- NẾU BỊ TỪ CHỐI RỒI THÌ KHÓA NÚT HỦY LUÔN --%>
                                             <c:choose>
-                                                <c:when test="${order.status == 'Đang xử lý'}">
-                                                    <a href="MainController?target=Order&action=delete&id=${order.orderID}" class="btn btn-sm btn-outline-danger-lux px-3" onclick="xoaDonHang(event, this.href, '${order.orderID}')">
-                                                        Hủy
-                                                    </a>
+                                                <%-- Khách chỉ được hủy khi đơn đang 'Pending' --%>
+                                                <c:when test="${order.status == 'Pending'}">
+                                                    <a href="MainController?target=Order&action=delete&id=${order.orderID}" class="btn btn-sm btn-outline-danger-lux px-3" onclick="xoaDonHang(event, this.href, '${order.orderID}')">Hủy</a>
                                                 </c:when>
-                                                <c:when test="${order.status == 'Đã từ chối'}">
+                                                
+                                                <%-- Nếu đã bị hủy/từ chối --%>
+                                                <c:when test="${order.status == 'Rejected'}">
                                                     <button class="btn btn-sm px-3" disabled style="border: 1px solid #555; background: transparent; color: #888; border-radius: 50px; opacity: 0.5;">
                                                         <i class="fa-solid fa-xmark"></i> Đã Hủy
                                                     </button>
                                                 </c:when>
-                                                <%-- THÊM NÚT TẢI HỢP ĐỒNG NẾU ĐÃ HOÀN THÀNH --%>
-                                                <c:when test="${order.status == 'Hoàn thành'}">
+                                                
+                                                <%-- Nếu đã hoàn thành thì tải được hợp đồng --%>
+                                                <c:when test="${order.status == 'Completed'}">
                                                     <a href="MainController?target=Order&action=exportContract&id=${order.orderID}" target="_blank" class="btn btn-sm btn-outline-success px-3 rounded-pill fw-bold" style="border-width: 2px;">
-                                                        <i class="fa-solid fa-file-pdf me-1"></i> Tải Hợp Đồng
+                                                        <i class="fa-solid fa-file-pdf me-1"></i> Hợp Đồng
                                                     </a>
                                                 </c:when>
+                                                
+                                                <%-- Các trạng thái còn lại (Approved, Shipping) thì khóa nút --%>
                                                 <c:otherwise>
-                                                    <button class="btn btn-sm btn-outline-secondary px-3" disabled style="opacity: 0.5;" title="Admin đang xử lý, không thể thao tác">
-                                                        <i class="fa-solid fa-lock"></i> Khóa
+                                                    <button class="btn btn-sm btn-outline-secondary px-3" disabled style="opacity: 0.5;" title="Đơn hàng đang xử lý, không thể thao tác">
+                                                        <i class="fa-solid fa-lock"></i> Đang Khóa
                                                     </button>
                                                 </c:otherwise>
                                             </c:choose>
-
                                         </div>
                                     </td>
                                 </tr>
@@ -276,6 +181,7 @@
             </table>
         </div>
     </div>
+    
     <div class="mt-4 text-start">
         <a href="home.jsp" class="btn btn-outline-luxury px-4 py-2"><i class="fa-solid fa-arrow-left me-2"></i> Trở về Showroom</a>
     </div>
