@@ -12,15 +12,14 @@
         for (Cookie c : cookies) {
             if (c.getName().equals("cUser") && c.getValue() != null && !c.getValue().isEmpty()) {
                 savedUser = SecurityUtils.decrypt(c.getValue());
-                if(savedUser == null) savedUser = ""; // Nếu giải mã lỗi thì để trống
+                if(savedUser == null) savedUser = ""; 
             }
             if (c.getName().equals("cPass") && c.getValue() != null && !c.getValue().isEmpty()) {
                 savedPass = SecurityUtils.decrypt(c.getValue());
-                if(savedPass == null) savedPass = ""; // Nếu giải mã lỗi thì để trống
+                if(savedPass == null) savedPass = ""; 
             }
         }
     }
-    // Set vào pageContext để bên dưới thẻ HTML có thể gọi ra dùng
     pageContext.setAttribute("savedUser", savedUser);
     pageContext.setAttribute("savedPass", savedPass);
 %>
