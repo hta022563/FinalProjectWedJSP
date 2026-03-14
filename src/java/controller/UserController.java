@@ -37,26 +37,33 @@ public class UserController extends HttpServlet {
         if (user != null) {
             session.setAttribute("user", user);
 
-            // --- XỬ LÝ COOKIE (GHI NHỚ TÀI KHOẢN) ---
-            // Tạo 2 cái thẻ Cookie để lưu Username và Password
-            javax.servlet.http.Cookie cUser = new javax.servlet.http.Cookie("cUser", txtUsername);
-            javax.servlet.http.Cookie cPass = new javax.servlet.http.Cookie("cPass", txtPassword);
-
-            cUser.setPath("/");
-            cPass.setPath("/");
-
+            // --- XỬ LÝ COOKIE MÃ HÓA BẢO MẬT (GHI NHỚ TÀI KHOẢN) ---
             if (remember != null) {
-                // Nếu khách có tích chọn -> Lưu Cookie sống 7 ngày (7 * 24 * 60 * 60 giây)
-                cUser.setMaxAge(7 * 24 * 60 * 60);
+                // Nếu khách có tích chọn -> Mã hóa AES trước khi lưu
+                String encryptedUser = utils.SecurityUtils.encrypt(txtUsername);
+                String encryptedPass = utils.SecurityUtils.encrypt(txtPassword);
+
+                javax.servlet.http.Cookie cUser = new javax.servlet.http.Cookie("cUser", encryptedUser);
+                javax.servlet.http.Cookie cPass = new javax.servlet.http.Cookie("cPass", encryptedPass);
+                
+                cUser.setPath("/");
+                cPass.setPath("/");
+                cUser.setMaxAge(7 * 24 * 60 * 60); // Sống 7 ngày
                 cPass.setMaxAge(7 * 24 * 60 * 60);
+                
+                response.addCookie(cUser);
+                response.addCookie(cPass);
             } else {
-                // Nếu khách KHÔNG tích -> Hủy Cookie ngay lập tức (set thời gian = 0)
+                // Nếu khách KHÔNG tích -> Hủy Cookie ngay lập tức
+                javax.servlet.http.Cookie cUser = new javax.servlet.http.Cookie("cUser", "");
+                javax.servlet.http.Cookie cPass = new javax.servlet.http.Cookie("cPass", "");
+                cUser.setPath("/");
+                cPass.setPath("/");
                 cUser.setMaxAge(0);
                 cPass.setMaxAge(0);
+                response.addCookie(cUser);
+                response.addCookie(cPass);
             }
-            // Gắn Cookie vào response để gửi về trình duyệt
-            response.addCookie(cUser);
-            response.addCookie(cPass);
             // ----------------------------------------
 
             url = "home.jsp";
@@ -273,17 +280,13 @@ public class UserController extends HttpServlet {
         } else if (action.equals("register")) {
             doRegister(request, response);
         } else if (action.equals("profile")) {
-            // Điều hướng sang trang jsp
             request.getRequestDispatcher("profile.jsp").forward(request, response);
         } else if (action.equals("updateProfile")) {
-            // Gọi hàm cập nhật
             doUpdateProfile(request, response);
         } else if (action.equals("changePassword")) {
-            // Gọi hàm đổi mật khẩu
             doChangePassword(request, response);
         } else if (action.equals("sendChangePassOTP")) {
             doSendChangePassOTP(request, response);
-
             // =========================================================================
             // HÀM MỚI: XỬ LÝ UPLOAD ẢNH ĐẠI DIỆN TỪ FORM MULTIPART
             // =========================================================================
