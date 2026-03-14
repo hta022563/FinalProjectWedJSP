@@ -19,6 +19,7 @@ public class NewsController extends HttpServlet {
         
         // Đảm bảo tiếng Việt không bị lỗi font khi form gửi lên
         request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
         
         String action = request.getParameter("action");
