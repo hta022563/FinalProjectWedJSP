@@ -17,7 +17,6 @@ import model.ProductDAO;
 import model.ProductDTO;
 import model.UserDTO;
 import model.WishlistDAO;
-
 /**
  *
  * @author AngDeng
@@ -39,35 +38,21 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         
+        HttpSession session = request.getSession();
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        
+
+        if (user == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
         String action = request.getParameter("action");
         if (action == null) action = "view"; 
         
-        HttpSession session = request.getSession();
-        UserDTO user = (UserDTO) session.getAttribute("user");
         WishlistDAO wDao = new WishlistDAO();
+        List<Integer> wishlist = wDao.getWishlistByUser(user.getUserID());
 
-        // 1. TẢI DỮ LIỆU WISHLIST LÊN
-        List<Integer> wishlist = new ArrayList<>();
-        if (user != null) {
-            // Nếu đã đăng nhập -> Lấy data bất tử từ Database
-            wishlist = wDao.getWishlistByUser(user.getUserID());
-            
-            // Gộp tự động: Nếu lúc chưa đăng nhập khách có thả tim dở dang, thì nhét luôn vào DB
-            List<Integer> sessionWishlist = (List<Integer>) session.getAttribute("wishlist");
-            if (sessionWishlist != null && !sessionWishlist.isEmpty()) {
-                for (int pid : sessionWishlist) {
-                    wDao.add(user.getUserID(), pid);
-                }
-                wishlist = wDao.getWishlistByUser(user.getUserID()); // Tải lại list mới
-                session.removeAttribute("wishlist"); // Dọn dẹp rác session
-            }
-        } else {
-            // Nếu chưa đăng nhập -> Lấy list tạm thời từ Session
-            wishlist = (List<Integer>) session.getAttribute("wishlist");
-            if (wishlist == null) wishlist = new ArrayList<>();
-        }
-
-        // 2. XỬ LÝ NÚT BẤM (ADD / REMOVE / VIEW)
         if ("add".equals(action)) {
             String productIdStr = request.getParameter("productId");
             String returnUrl = request.getParameter("returnUrl");
@@ -75,18 +60,11 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
             if (productIdStr != null && !productIdStr.isEmpty()) {
                 int productId = Integer.parseInt(productIdStr);
                 if (!wishlist.contains(productId)) {
-                    if (user != null) {
-                        wDao.add(user.getUserID(), productId); // Lưu hẳn vào DB
-                        wishlist = wDao.getWishlistByUser(user.getUserID());
-                    } else {
-                        wishlist.add(productId); // Lưu tạm vào Session
-                    }
-                    session.setAttribute("msg", "Đã thả tim! Siêu phẩm được thêm vào Danh sách Yêu thích.");
-                } else {
-                    session.setAttribute("msg", "Siêu phẩm này đã có sẵn trong tim bạn rồi!");
+                    wDao.add(user.getUserID(), productId); // Lưu vào DB
+                    wishlist = wDao.getWishlistByUser(user.getUserID());
                 }
             }
-            session.setAttribute("wishlist", wishlist); // Đồng bộ lại đếm số Icon trên Header
+            session.setAttribute("wishlist", wishlist); // Đồng bộ số lượng trên Header
             if (returnUrl != null && !returnUrl.isEmpty()) { response.sendRedirect(returnUrl); } 
             else { response.sendRedirect("MainController?target=Product"); }
             
@@ -96,13 +74,8 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
             
             if (productIdStr != null && !productIdStr.isEmpty()) {
                 int productId = Integer.parseInt(productIdStr);
-                if (user != null) {
-                    wDao.remove(user.getUserID(), productId); // Xóa DB
-                    wishlist = wDao.getWishlistByUser(user.getUserID());
-                } else {
-                    wishlist.remove(Integer.valueOf(productId)); // Xóa Session
-                }
-                session.setAttribute("msg", "Đã bỏ siêu phẩm khỏi danh sách Yêu thích!");
+                wDao.remove(user.getUserID(), productId); // Xóa khỏi DB
+                wishlist = wDao.getWishlistByUser(user.getUserID());
             }
             session.setAttribute("wishlist", wishlist);
             if (returnUrl != null && !returnUrl.isEmpty()) { response.sendRedirect(returnUrl); } 
