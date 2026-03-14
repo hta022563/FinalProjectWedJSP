@@ -199,25 +199,22 @@
         .img-showcase {
             width: 100%;
             height: 450px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
             border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.05);
             overflow: hidden;
             position: relative;
+ 
         }
         .img-showcase img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            transition: transform 0.5s;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            transform: scale(1.15); 
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .img-showcase:hover img {
-            transform: scale(1.05);
+            transform: scale(1.25);
         }
-
         .car-title-main {
             font-size: 2.8rem;
             font-weight: 800;
