@@ -114,56 +114,61 @@
                         <h2 class="text-center fw-bold mb-1" style="color: #d4af37; letter-spacing: 2px;">F-AUTO</h2>
                         <p class="text-center mb-4" style="color: #adb5bd;">Đăng nhập hệ thống</p>
 
-                    <c:if test="${not empty message}">
-                        <div class="alert text-center fw-bold mb-4" role="alert" style="background-color: rgba(255, 77, 77, 0.1); color: #ff4d4d; border: 1px solid #ff4d4d; border-radius: 8px;">
-                            <i class="fa-solid fa-triangle-exclamation me-1"></i> ${message}
-                        </div>
-                    </c:if>
-
-                    <form action="MainController" method="POST">
-                        <div class="text-center mb-3">
-                            <span style="color:green">TỰ TẠO USER Nhé</span><br>
-                            <span style="color: #ff4d4d; font-size: 0.85rem;">(Gợi ý Admin: Tk: admin_hao | MK: 123456)</span> <br>
-                            <span style="color:#ffffff; font-size: 0.85rem;">(Gợi ý customer: Tk: hao | MK: 1)</span>
-                        </div>
-
-                        <input type="hidden" name="target" value="User"> 
-                        <input type="hidden" name="action" value="login">
-
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fa-solid fa-user me-2"></i>Tên đăng nhập</label>
-                            <%-- Đã sửa value thành biến savedUser lấy từ thuật toán giải mã phía trên --%>
-                            <input type="text" name="txtUsername" class="form-control" value="${savedUser}" placeholder="Nhập tên tài khoản..." required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label"><i class="fa-solid fa-lock me-2"></i>Mật khẩu</label>
-                            <%-- Đã sửa value thành biến savedPass --%>
-                            <input type="password" name="txtPassword" class="form-control" value="${savedPass}" placeholder="********" required>
-                        </div>
-
-                        <div class="d-flex justify-content-between mb-4 align-items-center">
-                            <div class="form-check">
-                                <%-- Thuộc tính Checked sẽ bật nếu savedUser không bị trống --%>
-                                <input class="form-check-input" type="checkbox" id="remember" name="remember" value="ON" ${not empty savedUser ? 'checked' : ''} style="accent-color: #d4af37; background-color: #333; border-color: #555;">
-                                <label class="form-check-label" for="remember" style="color: #adb5bd; cursor: pointer;">Ghi nhớ tôi</label>
+                        <%-- 1. HIỂN THỊ THÔNG BÁO LỖI (MÀU ĐỎ) --%>
+                        <c:if test="${not empty error}">
+                            <div class="alert text-center fw-bold mb-4" role="alert" style="background-color: rgba(255, 77, 77, 0.1); color: #ff4d4d; border: 1px solid #ff4d4d; border-radius: 8px;">
+                                <i class="fa-solid fa-triangle-exclamation me-1"></i> ${error}
                             </div>
-                            <a href="forgot-password.jsp" class="text-gold-link" style="font-size: 0.9rem; font-weight: normal;">Quên mật khẩu?</a>
-                        </div>
+                        </c:if>
 
-                        <div class="d-grid mb-4">
-                            <button type="submit" class="btn btn-gold btn-lg"><i class="fa-solid fa-right-to-bracket me-2"></i>ĐĂNG NHẬP</button>
-                        </div>
-                    </form>
+                        <%-- 2. HIỂN THỊ THÔNG BÁO THÀNH CÔNG (MÀU XANH LỤC) --%>
+                        <c:if test="${not empty message}">
+                            <div class="alert text-center fw-bold mb-4" role="alert" style="background-color: rgba(56, 239, 125, 0.1); color: #38ef7d; border: 1px solid #38ef7d; border-radius: 8px;">
+                                <i class="fa-solid fa-circle-check me-1"></i> ${message}
+                            </div>
+                        </c:if>
 
-                    <div class="text-center mt-2" style="font-size: 0.95rem;">
-                        <span style="color: #8a939b;">Chưa có tài khoản?</span> 
-                        <a href="register.jsp" class="text-gold-link ms-1">Đăng ký ngay</a>
+                        <form action="MainController" method="POST">
+                            <div class="text-center mb-3">
+                                <span style="color:green">TỰ TẠO USER Nhé</span><br>
+                                <span style="color: #ff4d4d; font-size: 0.85rem;">(Gợi ý Admin: Tk: admin_hao | MK: 123456)</span> <br>
+                                <span style="color:#ffffff; font-size: 0.85rem;">(Gợi ý customer: Tk: hao | MK: 1)</span>
+                            </div>
+
+                            <input type="hidden" name="target" value="User"> 
+                            <input type="hidden" name="action" value="login">
+
+                            <div class="mb-3">
+                                <label class="form-label"><i class="fa-solid fa-user me-2"></i>Tên đăng nhập</label>
+                                <input type="text" name="txtUsername" class="form-control" value="${savedUser}" placeholder="Nhập tên tài khoản..." required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label"><i class="fa-solid fa-lock me-2"></i>Mật khẩu</label>
+                                <input type="password" name="txtPassword" class="form-control" value="${savedPass}" placeholder="********" required>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-4 align-items-center">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="remember" name="remember" value="ON" ${not empty savedUser ? 'checked' : ''} style="accent-color: #d4af37; background-color: #333; border-color: #555;">
+                                    <label class="form-check-label" for="remember" style="color: #adb5bd; cursor: pointer;">Ghi nhớ tôi</label>
+                                </div>
+                                <a href="forgot-password.jsp" class="text-gold-link" style="font-size: 0.9rem; font-weight: normal;">Quên mật khẩu?</a>
+                            </div>
+
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-gold btn-lg"><i class="fa-solid fa-right-to-bracket me-2"></i>ĐĂNG NHẬP</button>
+                            </div>
+                        </form>
+
+                        <div class="text-center mt-2" style="font-size: 0.95rem;">
+                            <span style="color: #8a939b;">Chưa có tài khoản?</span> 
+                            <a href="register.jsp" class="text-gold-link ms-1">Đăng ký ngay</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 <jsp:include page="includes/footer.jsp"></jsp:include>
