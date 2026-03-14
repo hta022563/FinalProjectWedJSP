@@ -75,7 +75,6 @@ public class MainController extends HttpServlet {
             } else if (target.equals("ForgotPassword")) {
                 url = "ForgotPasswordController";
 
-                // SỬA LẠI ĐOẠN WISHLIST ĐỂ ĐỒNG BỘ VỚI TOÀN BỘ CONTROLLER
             } else if (target.equals("Wishlist")) {
                 url = "WishlistController";
             }
