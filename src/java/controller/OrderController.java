@@ -35,43 +35,38 @@ public class OrderController extends HttpServlet {
             UserDTO user = (UserDTO) session.getAttribute("user");
             int userId = user.getUserID();
             
-         if ("checkout".equals(action)) {
-                // Lấy thông tin mã giảm giá từ Session (nếu khách có nhập)
+        if ("checkout".equals(action)) {
+                // 1. Lấy địa chỉ Showroom khách vừa chọn từ Form
+                String shippingAddress = request.getParameter("shippingAddress");
+                if (shippingAddress == null || shippingAddress.trim().isEmpty()) {
+                    shippingAddress = "Giao xe tại Showroom F-Auto Hội Sở"; // Fallback an toàn
+                }
+
+                // 2. Lấy mã giảm giá (nếu có)
                 Integer promoId = (Integer) session.getAttribute("promotionId");
                 
-                // Truyền promoId vào hàm checkout thay vì để chữ 'null' như cũ
-                boolean isSuccess = orderDAO.checkout(userId, 1, promoId, "Giao xe tại Showroom F-Auto");
+                // 3. Chốt đơn: TRUYỀN shippingAddress VÀO HÀM CHECKOUT (thay cho chữ cứng lúc trước)
+                boolean isSuccess = orderDAO.checkout(userId, 1, promoId, shippingAddress);
                 
                 if (isSuccess) {
                     request.setAttribute("msg", "Ting ting! Chốt đơn siêu xe thành công!");
 
-                    // Xóa mã giảm giá khỏi Session sau khi xài xong để tránh khách "xài chùa" lần sau
+                    // Xóa session mã giảm giá
                     session.removeAttribute("appliedPromoCode");
                     session.removeAttribute("discountPercent");
                     session.removeAttribute("promotionId");
 
-                    // =========================================================
-                    // GHI LOG HOẠT ĐỘNG LÊN DASHBOARD
-                    // =========================================================
+                    // Ghi Log hoạt động
                     try {
                         List<OrderDTO> recentOrders = orderDAO.getOrdersByUserId(userId);
                         if (recentOrders != null && !recentOrders.isEmpty()) {
                             OrderDTO newestOrder = recentOrders.get(0); 
-                            
                             ActivityDAO actDao = new ActivityDAO();
-                            actDao.logActivity(
-                                "ORDER", 
-                                "Đơn hàng VIP mới từ khách " + user.getUsername(), 
-                                user.getUsername(), 
-                                "FA-" + newestOrder.getOrderID(), 
-                                Double.valueOf(String.valueOf(newestOrder.getTotalAmount())) 
-                            );
+                            actDao.logActivity("ORDER", "Đơn hàng VIP mới từ khách " + user.getUsername(), user.getUsername(), "FA-" + newestOrder.getOrderID(), Double.valueOf(String.valueOf(newestOrder.getTotalAmount())));
                         }
                     } catch (Exception ex) {
-                        System.out.println("Lỗi khi ghi Log đơn hàng: " + ex.getMessage());
+                        System.out.println("Lỗi khi ghi Log: " + ex.getMessage());
                     }
-                    // =========================================================
-
                 } else {
                     request.setAttribute("error", "Lỗi: Giỏ hàng trống hoặc hệ thống đang bận!");
                 }
