@@ -1,5 +1,29 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page import="utils.SecurityUtils"%>
+<%@page import="javax.servlet.http.Cookie"%>
+
+<%
+    // ĐOẠN MÃ GIẢI MÃ COOKIE TRƯỚC KHI HIỂN THỊ
+    String savedUser = "";
+    String savedPass = "";
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+        for (Cookie c : cookies) {
+            if (c.getName().equals("cUser") && c.getValue() != null && !c.getValue().isEmpty()) {
+                savedUser = SecurityUtils.decrypt(c.getValue());
+                if(savedUser == null) savedUser = ""; // Nếu giải mã lỗi thì để trống
+            }
+            if (c.getName().equals("cPass") && c.getValue() != null && !c.getValue().isEmpty()) {
+                savedPass = SecurityUtils.decrypt(c.getValue());
+                if(savedPass == null) savedPass = ""; // Nếu giải mã lỗi thì để trống
+            }
+        }
+    }
+    // Set vào pageContext để bên dưới thẻ HTML có thể gọi ra dùng
+    pageContext.setAttribute("savedUser", savedUser);
+    pageContext.setAttribute("savedPass", savedPass);
+%>
 
 <jsp:include page="includes/header.jsp"></jsp:include>
 
@@ -114,17 +138,20 @@
                         
                         <div class="mb-3">
                             <label class="form-label"><i class="fa-solid fa-user me-2"></i>Tên đăng nhập</label>
-                            <input type="text" name="txtUsername" class="form-control" value="${cookie.cUser.value}" placeholder="Nhập tên tài khoản..." required>
+                            <%-- Đã sửa value thành biến savedUser lấy từ thuật toán giải mã phía trên --%>
+                            <input type="text" name="txtUsername" class="form-control" value="${savedUser}" placeholder="Nhập tên tài khoản..." required>
                         </div>
                         
                         <div class="mb-4">
                             <label class="form-label"><i class="fa-solid fa-lock me-2"></i>Mật khẩu</label>
-                            <input type="password" name="txtPassword" class="form-control" value="${cookie.cPass.value}" placeholder="********" required>
+                            <%-- Đã sửa value thành biến savedPass --%>
+                            <input type="password" name="txtPassword" class="form-control" value="${savedPass}" placeholder="********" required>
                         </div>
                         
                         <div class="d-flex justify-content-between mb-4 align-items-center">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="remember" name="remember" value="ON" ${not empty cookie.cUser ? 'checked' : ''} style="accent-color: #d4af37; background-color: #333; border-color: #555;">
+                                <%-- Thuộc tính Checked sẽ bật nếu savedUser không bị trống --%>
+                                <input class="form-check-input" type="checkbox" id="remember" name="remember" value="ON" ${not empty savedUser ? 'checked' : ''} style="accent-color: #d4af37; background-color: #333; border-color: #555;">
                                 <label class="form-check-label" for="remember" style="color: #adb5bd; cursor: pointer;">Ghi nhớ tôi</label>
                             </div>
                             <a href="forgot-password.jsp" class="text-gold-link" style="font-size: 0.9rem; font-weight: normal;">Quên mật khẩu?</a>
