@@ -2,6 +2,18 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page import="model.ShowroomDAO"%>
+<%@page import="model.ShowroomDTO"%>
+<%@page import="java.util.List"%>
+<%
+    // Bọc Try-Catch an toàn và GỌI ĐÚNG TÊN HÀM getAllActive() CỦA SẾP
+    try {
+        ShowroomDAO srDao = new ShowroomDAO();
+        request.setAttribute("listShowrooms", srDao.getAllActive());
+    } catch (Exception e) {
+        System.out.println("Lỗi load Showroom: " + e.getMessage());
+    }
+%>
 
 <jsp:include page="includes/header.jsp"></jsp:include>
 
@@ -9,117 +21,27 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        body {
-            background-color: #0a0a0a;
-            color: #e0e0e0;
-            font-family: 'Montserrat', sans-serif;
-        }
-        .luxury-title {
-            font-family: 'Playfair Display', serif;
-            color: #D4AF37;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.4);
-        }
-        .text-gold {
-            color: #D4AF37 !important;
-        }
-        .text-light-grey {
-            color: #cccccc !important;
-        }
-        .luxury-container {
-            background: linear-gradient(145deg, #1a1a1a, #121212);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.05);
-            padding: 25px;
-        }
-        .table-luxury {
-            --bs-table-bg: transparent;
-            border-color: rgba(212, 175, 55, 0.2);
-        }
-        .table-luxury tbody, .table-luxury tr, .table-luxury td, .table-luxury th, .table-luxury thead {
-            background-color: transparent !important;
-            background: none !important;
-            color: #ffffff !important;
-        }
-        .table-luxury thead th {
-            background-color: rgba(0, 0, 0, 0.5) !important;
-            border-bottom: 2px solid #D4AF37 !important;
-            color: #D4AF37 !important;
-            font-family: 'Playfair Display', serif;
-            letter-spacing: 1px;
-        }
-        .table-luxury tbody tr {
-            transition: 0.3s;
-        }
-        .table-luxury tbody tr:hover td {
-            background-color: rgba(212, 175, 55, 0.08) !important;
-        }
-        .table-luxury td {
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-            vertical-align: middle;
-        }
-        .btn-luxury {
-            background: linear-gradient(45deg, #B8860B, #FFD700, #B8860B);
-            background-size: 200% auto;
-            color: #000 !important;
-            font-weight: 700;
-            text-transform: uppercase;
-            border: none;
-            border-radius: 50px;
-            padding: 12px 25px;
-            transition: 0.5s;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-        }
-        .btn-luxury:hover {
-            background-position: right center;
-            transform: translateY(-3px);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.8);
-        }
-        .btn-outline-luxury {
-            color: #D4AF37;
-            border: 1px solid #D4AF37;
-            border-radius: 50px;
-            text-transform: uppercase;
-            font-weight: 600;
-            transition: 0.4s;
-            background: transparent;
-        }
-        .btn-outline-luxury:hover {
-            background: #D4AF37;
-            color: #000;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-        }
-        .btn-qty {
-            background: transparent;
-            border: 1px solid #D4AF37;
-            color: #D4AF37;
-            font-weight: bold;
-        }
-        .btn-qty:hover {
-            background: #D4AF37;
-            color: #000;
-        }
-        .input-qty {
-            color: #ffffff !important;
-            background-color: transparent !important;
-        }
-        .swal-luxury-popup {
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-radius: 12px !important;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8) !important;
-        }
-        /* Làm sáng chữ placeholder trong ô nhập mã */
-        .promo-input::placeholder {
-            color: #a0a0a0 !important; 
-            opacity: 1; 
-            font-style: italic; 
-        }
-        .promo-input:focus {
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3) !important;
-            border-color: #D4AF37 !important;
-        }
+        body { background-color: #0a0a0a; color: #e0e0e0; font-family: 'Montserrat', sans-serif; }
+        .luxury-title { font-family: 'Playfair Display', serif; color: #D4AF37; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(212, 175, 55, 0.4); }
+        .text-gold { color: #D4AF37 !important; }
+        .text-light-grey { color: #cccccc !important; }
+        .luxury-container { background: linear-gradient(145deg, #1a1a1a, #121212); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 15px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.05); padding: 25px; }
+        .table-luxury { --bs-table-bg: transparent; border-color: rgba(212, 175, 55, 0.2); }
+        .table-luxury tbody, .table-luxury tr, .table-luxury td, .table-luxury th, .table-luxury thead { background-color: transparent !important; background: none !important; color: #ffffff !important; }
+        .table-luxury thead th { background-color: rgba(0, 0, 0, 0.5) !important; border-bottom: 2px solid #D4AF37 !important; color: #D4AF37 !important; font-family: 'Playfair Display', serif; letter-spacing: 1px; }
+        .table-luxury tbody tr { transition: 0.3s; }
+        .table-luxury tbody tr:hover td { background-color: rgba(212, 175, 55, 0.08) !important; }
+        .table-luxury td { border-bottom: 1px solid rgba(212, 175, 55, 0.1); vertical-align: middle; }
+        .btn-luxury { background: linear-gradient(45deg, #B8860B, #FFD700, #B8860B); background-size: 200% auto; color: #000 !important; font-weight: 700; text-transform: uppercase; border: none; border-radius: 50px; padding: 12px 25px; transition: 0.5s; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+        .btn-luxury:hover { background-position: right center; transform: translateY(-3px); box-shadow: 0 0 30px rgba(212, 175, 55, 0.8); }
+        .btn-outline-luxury { color: #D4AF37; border: 1px solid #D4AF37; border-radius: 50px; text-transform: uppercase; font-weight: 600; transition: 0.4s; background: transparent; }
+        .btn-outline-luxury:hover { background: #D4AF37; color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
+        .btn-qty { background: transparent; border: 1px solid #D4AF37; color: #D4AF37; font-weight: bold; }
+        .btn-qty:hover { background: #D4AF37; color: #000; }
+        .input-qty { color: #ffffff !important; background-color: transparent !important; }
+        .swal-luxury-popup { border: 1px solid rgba(212, 175, 55, 0.3) !important; border-radius: 12px !important; box-shadow: 0 15px 40px rgba(0,0,0,0.8) !important; }
+        .promo-input::placeholder { color: #a0a0a0 !important; opacity: 1; font-style: italic; }
+        .promo-input:focus { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3) !important; border-color: #D4AF37 !important; }
     </style>
 
     <script>
@@ -134,12 +56,7 @@
                 buttonsStyling: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire({title: '<span style="color: #D4AF37; font-family: \'Playfair Display\', serif;">Đang cập nhật...</span>', background: '#121212', allowOutsideClick: false, didOpen: () => {
-                            Swal.showLoading();
-                            setTimeout(() => {
-                                window.location.href = url;
-                            }, 500);
-                        }});
+                    Swal.fire({title: '<span style="color: #D4AF37; font-family: \'Playfair Display\', serif;">Đang cập nhật...</span>', background: '#121212', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); setTimeout(() => { window.location.href = url; }, 500); }});
                 }
             });
         }
@@ -151,9 +68,7 @@
         </div>
 
         <c:if test="${not empty msg}">
-            <script>
-                Swal.fire({title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37;">Thành Công</span>', html: '<span style="color: #e0e0e0; font-family: \'Montserrat\', sans-serif;">${msg}</span>', icon: 'success', iconColor: '#D4AF37', background: '#121212', customClass: {popup: 'swal-luxury-popup', confirmButton: 'btn btn-outline-luxury px-4 py-2 rounded-pill fw-bold'}, buttonsStyling: false, confirmButtonText: 'Đóng'});
-            </script>
+            <script>Swal.fire({title: '<span style="font-family: \'Playfair Display\', serif; color: #D4AF37;">Thành Công</span>', html: '<span style="color: #e0e0e0; font-family: \'Montserrat\', sans-serif;">${msg}</span>', icon: 'success', iconColor: '#D4AF37', background: '#121212', customClass: {popup: 'swal-luxury-popup', confirmButton: 'btn btn-outline-luxury px-4 py-2 rounded-pill fw-bold'}, buttonsStyling: false, confirmButtonText: 'Đóng'});</script>
             <c:remove var="msg" />
         </c:if>
 
@@ -163,13 +78,7 @@
                     <div class="table-responsive">
                         <table class="table table-luxury mb-0 text-center">
                             <thead>
-                                <tr>
-                                    <th class="text-start ps-4 py-3">Siêu Phẩm</th> 
-                                    <th>Đơn Giá</th> 
-                                    <th>Số Lượng</th> 
-                                    <th>Thành Tiền</th> 
-                                    <th>Thao Tác</th>
-                                </tr>
+                                <tr><th class="text-start ps-4 py-3">Siêu Phẩm</th> <th>Đơn Giá</th> <th>Số Lượng</th> <th>Thành Tiền</th> <th>Thao Tác</th></tr>
                             </thead>
                             <tbody>
                                 <c:forEach items="${cartItems}" var="item">
@@ -195,12 +104,7 @@
                                     </tr>
                                 </c:forEach>
                                 <c:if test="${empty cartItems}">
-                                    <tr>
-                                        <td colspan="5" class="text-center py-5">
-                                            <i class="fa-solid fa-car mb-3" style="font-size: 4rem; color: #333;"></i><br>
-                                            <span class="fs-5 text-light-grey">Gara của bạn đang trống.</span>
-                                        </td>
-                                    </tr>
+                                    <tr><td colspan="5" class="text-center py-5"><i class="fa-solid fa-car mb-3" style="font-size: 4rem; color: #333;"></i><br><span class="fs-5 text-light-grey">Gara của bạn đang trống.</span></td></tr>
                                 </c:if>
                             </tbody>
                         </table>
@@ -229,9 +133,7 @@
 
                         <form action="CartController" method="POST" class="d-flex">
                             <input type="hidden" name="action" value="applyPromo">
-                            <input type="text" name="promoCode" class="form-control border-secondary text-white promo-input" 
-                                   style="background: #111;" placeholder="Nhập mã ưu đãi của bạn..." 
-                                   value="${sessionScope.appliedPromoCode}">
+                            <input type="text" name="promoCode" class="form-control border-secondary text-white promo-input" style="background: #111;" placeholder="Nhập mã ưu đãi của bạn..." value="${sessionScope.appliedPromoCode}">
                             <button type="submit" class="btn btn-warning fw-bold ms-2 px-4">ÁP DỤNG</button>
                         </form>
 
@@ -245,18 +147,30 @@
                         </c:if>
                     </div>
 
-                    <%-- TÍNH TOÁN GIẢM GIÁ & TỔNG CỘNG --%>
+                    <%-- TÍNH TOÁN GIẢM GIÁ (CHỈ GIẢM KHI CÓ ĐÚNG 1 MÓN TRONG GIỎ) --%>
                     <c:set var="finalTotal" value="${cartTotal}" />
+                    <c:set var="totalItemsInCart" value="0" />
+                    
+                    <c:forEach items="${cartItems}" var="item">
+                        <c:set var="totalItemsInCart" value="${totalItemsInCart + item.quantity}" />
+                    </c:forEach>
                     
                     <c:if test="${not empty sessionScope.discountPercent}">
-                        <%-- Tính số tiền được trừ (Nhớ ép sang 100.0 để ra số thập phân chính xác) --%>
-                        <c:set var="discountAmount" value="${cartTotal * sessionScope.discountPercent / 100.0}" />
-                        <c:set var="finalTotal" value="${cartTotal - discountAmount}" />
-                        
-                        <div class="d-flex justify-content-between text-success fw-bold mb-2">
-                            <span>Chiết khấu (${sessionScope.discountPercent}%):</span>
-                            <span>- <fmt:formatNumber value="${discountAmount}" type="number" pattern="#,###"/> VNĐ</span>
-                        </div>
+                        <c:choose>
+                            <c:when test="${totalItemsInCart == 1}">
+                                <c:set var="discountAmount" value="${cartTotal * sessionScope.discountPercent / 100.0}" />
+                                <c:set var="finalTotal" value="${cartTotal - discountAmount}" />
+                                <div class="d-flex justify-content-between text-success fw-bold mb-2">
+                                    <span>Chiết khấu (${sessionScope.discountPercent}%):</span>
+                                    <span>- <fmt:formatNumber value="${discountAmount}" type="number" pattern="#,###"/> VNĐ</span>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="text-danger small fw-bold mb-3 p-2 rounded" style="background: rgba(220,53,69,0.1); border: 1px solid rgba(220,53,69,0.3);">
+                                    <i class="fa-solid fa-triangle-exclamation me-1"></i> Mã ưu đãi này chỉ có hiệu lực cho đơn hàng gồm ĐÚNG 1 sản phẩm!
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </c:if>
                     
                     <div class="d-flex justify-content-between mb-4 border-top border-secondary pt-3">
@@ -264,9 +178,29 @@
                         <span class="fs-4 fw-bold text-gold"><fmt:formatNumber value="${finalTotal}" type="number" pattern="#,###"/> VNĐ</span>
                     </div>
 
+                    <%-- FORM CHỐT HỢP ĐỒNG (CÓ DROPDOWN CHỌN SHOWROOM) --%>
                     <form action="MainController" method="POST">
                         <input type="hidden" name="target" value="Order">
                         <input type="hidden" name="action" value="checkout">
+                        
+                        <div class="mb-4 text-start">
+                            <label class="text-light-grey small fw-bold mb-2 text-uppercase">
+                                <i class="fa-solid fa-map-location-dot text-gold me-2"></i>CHỌN ĐIỂM BÀN GIAO XE:
+                            </label>
+                            <select name="shippingAddress" class="form-select border-secondary text-white" style="background: #111; font-size: 0.85rem;" required>
+                                <c:choose>
+                                    <c:when test="${not empty listShowrooms}">
+                                        <c:forEach items="${listShowrooms}" var="sr">
+                                            <option value="${sr.showroomName} - ${sr.address}">${sr.showroomName} (${sr.address})</option>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="Giao xe tại Showroom F-Auto Hội Sở">Giao xe tại Showroom F-Auto Hội Sở</option>
+                                    </c:otherwise>
+                                </c:choose>
+                            </select>
+                        </div>
+
                         <button type="submit" class="btn btn-luxury w-100 fs-6" ${empty cartItems ? 'disabled' : ''}>
                             <i class="fa-solid fa-file-signature me-2"></i> LÀM HỢP ĐỒNG MUA
                         </button>

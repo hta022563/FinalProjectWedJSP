@@ -33,6 +33,7 @@ public class ReviewController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         ReviewDAO dao = new ReviewDAO();
         UserDTO user = (UserDTO) request.getSession().getAttribute("user");
