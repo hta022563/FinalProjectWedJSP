@@ -86,7 +86,7 @@ INSERT INTO Product (ProductName, Description, Price, StockQuantity, ImageURL, C
 -- CATEGORY 5: MPV (XE ĐA DỤNG)
 (N'Kia Carnival Royal', N'MPV đa dụng dành cho gia đình, cửa lùa điện, không gian vô đối.', 2499000000, 6, 'IMG/car_carnival.jpg', 5, 10, 1),
 (N'Mitsubishi Xpander Premium', N'Vua doanh số phân khúc MPV 7 chỗ, gầm cao.', 658000000, 25, 'IMG/car_xpander.jpg', 5, 12, 1),
-(N'Toyota Innova Cross HEV', N'MPV công nghệ Hybrid êm ái và siêu tiết kiệm.', 990000000, 12, 'IMG/car_innova.jpg', 5, 1, 1),
+(N'Toyota Innova Cross HEV', N'MPV công nghệ Hybrid êm ái và siêu tiết kiệm.', 990000000, 12, 'IMG/car_11.jpg', 5, 1, 1),
 
 -- CATEGORY 6: PHỤ TÙNG & PHỤ KIỆN
 (N'Lốp xe Michelin Primacy 4 (1 cái)', N'Lốp cao cấp bám đường tuyệt đỉnh trên đường ướt.', 2800000, 100, 'IMG/part_michelin.jpg', 6, 17, 1),
@@ -97,43 +97,35 @@ INSERT INTO Product (ProductName, Description, Price, StockQuantity, ImageURL, C
 
 -- 3.8. TIN TỨC (NEWS)
 INSERT INTO News (Title, Content, Thumbnail, PublishDate, ExternalLink) VALUES 
-(N'F-AUTO Chính Thức Khai Trương Showroom Siêu Xe Lớn Nhất TP.HCM', 
- N'Sáng nay, F-AUTO đã chính thức cắt băng khánh thành showroom xe sang và siêu xe lớn nhất miền Nam tọa lạc tại trung tâm TP.HCM. Showroom trưng bày hàng loạt tên tuổi lớn như Rolls-Royce, Bentley, Porsche, Ferrari... hứa hẹn là điểm đến lý tưởng cho giới thượng lưu.', 
- 'IMG/OIP (2).webp', GETDATE(), 'https://autopro.com.vn'),
-(N'Siêu Phẩm Mercedes-AMG G63 Phiên Bản Đặc Biệt Về Việt Nam', 
- N'Chiếc "chuyên cơ mặt đất" G63 AMG bản giới hạn với màu sơn độc quyền vừa cập cảng Việt Nam và sẽ được bàn giao ngay cho một đại gia giấu tên. Điểm nhấn của mẫu xe này là nội thất bọc da Nappa và động cơ V8 Bi-turbo công suất khủng.', 
- 'IMG/Mec300.webp', DATEADD(day, -2, GETDATE()), 'https://vnexpress.net/oto-xe-may'),
-(N'Thị Trường Siêu Xe Tại Việt Nam 2026: Nhu Cầu Tăng Đột Biến', 
- N'Bất chấp các biến động kinh tế, doanh số bán siêu xe và xe siêu sang tại Việt Nam quý đầu năm 2026 vẫn ghi nhận mức tăng trưởng 150% so với cùng kỳ năm ngoái. Giới chuyên gia nhận định đây là xu hướng khẳng định đẳng cấp của các doanh nhân trẻ.', 
- 'IMG/Por.jpg', DATEADD(day, -5, GETDATE()), 'https://dantri.com.vn/o-to-xe-may.htm'),
 (N'Tôi ngậm ngùi "trùm mền" chiếc Mercedes-Benz C 300 khi giá xăng gần 30.000 đồng/lít, đi xa cũng không dám dùng', 
  N'Khi giá xăng tăng từ 20.000 lên 27.000 đồng/lít, chi phí đổ đầy bình gần 2 triệu đồng khiến chiếc Mercedes-Benz C300 AMG đời 2014 của tôi bắt đầu ít ra khỏi gara.', 
- 'https://autopro8.mediacdn.vn/thumb_w/640/134505113543774208/2026/3/9/trum-men-xe-vi-gia-xang-17730609237141013332968.jpg', 
- '2026-03-09 23:02:15', 'https://autopro.com.vn'),
+ 'https://autopro8.mediacdn.vn/thumb_w/640/134505113543774208/2026/3/9/trum-men-xe-vi-gia-xang-17730609237141013332968.jpg'
+ , 
+ '2026-03-09 23:02:15', 'https://autopro.com.vn/toi-ngam-ngui-trum-men-chiec-mercedes-benz-c-300-khi-gia-xang-gan-30000-dong-lit-di-xa-cung-khong-dam-dung-177260309165452687.chn'),
 (N'Range Rover Evoque 2026 ra mắt Việt Nam: Có thể chạy thuần điện 66 km, giá từ 2,739 tỷ đồng', 
  N'Không thay đổi nhiều về giá bán so với trước, nhưng Range Rover Evoque mới được nâng cấp đáng kể về công nghệ, hệ thống giải trí và bổ sung phiên bản plug-in hybrid có thể chạy thuần điện.', 
  'https://autopro8.mediacdn.vn/134505113543774208/2026/3/9/l551evoquearroiosgreyf34rt04300x250-1773033211352-1773033212856676196020.jpg', 
- '2026-03-09 23:05:08', 'https://autopro.com.vn'),
+ '2026-03-09 23:05:08', 'https://autopro.com.vn/range-rover-evoque-2026-ra-mat-viet-nam-co-the-chay-thuan-dien-66-km-gia-tu-2739-ty-dong-177260309120714803.chn'),
 (N'Chấp nhận lỗ 15,7 tỷ USD, Honda hủy bỏ kế hoạch ra mắt loạt xe điện mới', 
  N'Honda đã quyết định "quay xe" khi hủy bỏ kế hoạch ra mắt ba mẫu xe điện chiến lược tại thị trường Bắc Mỹ, bao gồm Honda 0 Saloon, Honda 0 SUV và Acura RSX EV để tập trung nhiều hơn vào dòng xe hybrid.', 
  'https://static-images.vnncdn.net/vps_images_publish/000001/000003/2026/3/13/honda-0-suv-concept-1578.jpg?width=0&s=kLIDMqmTSNzg7qVfmKjFxA', 
- '2026-03-13 22:44:10', 'https://vietnamnet.vn'),
+ '2026-03-13 22:44:10', 'https://vietnamnet.vn/chap-nhan-lo-15-7-ty-usd-honda-huy-bo-ke-hoach-ra-mat-loat-xe-dien-moi-2496993.html'),
 (N'Tổng hợp những mẫu xe hơi mới nhất ra mắt năm 2026', 
  N'(PLO)- Thị trường xe hơi mới năm 2026 hứa hẹn sự bùng nổ của các dòng xe điện, xe xăng và xe hybrid.', 
  'https://image.plo.vn/w850/Uploaded/2026/lcemdurlq/2026_03_09/xe-hoi-1jpg-3-5787.png.webp', 
- '2026-03-09 22:49:45', 'https://plo.vn'),
+ '2026-03-09 22:49:45', 'https://plo.vn/tong-hop-nhung-mau-xe-hoi-moi-nhat-ra-mat-nam-2026-post898706.html'),
 (N'Chi tiết siêu xe Ferrari Amalfi Spider hoàn toàn mới', 
  N'Sở hữu động cơ V8 twin-turbo 3.9L mạnh 640 mã lực, Ferrari Amalfi Spider là siêu xe mui trần nhập môn hoàn hảo đến từ Italy.', 
  'https://photo.znews.vn/w1920/Uploaded/aobhuua/2026_03_13/Ferrari_Amalfi_Spider_1.jpg', 
- '2026-03-13 22:50:39', 'https://znews.vn'),
+ '2026-03-13 22:50:39', 'https://znews.vn/chi-tiet-sieu-xe-ferrari-amalfi-spider-hoan-toan-moi-post1634614.html'),
 (N'Bí quyết của người Nhật giúp ô tô vận hành bền bỉ', 
  N'(VTC News) - Thay vì thay đổi xe theo xu hướng, người tiêu dùng tại Nhật Bản tập trung vào các thói quen vận hành và bảo dưỡng chi tiết giúp phương tiện hoạt động bền bỉ.', 
  'https://cdn-i.vtcnews.vn/resize/th/upload/2026/03/12/bao-duong-xe-tai-nhat-14175796.jpg', 
- '2026-03-12 22:51:44', 'https://vtcnews.vn'),
+ '2026-03-12 22:51:44', 'https://vtcnews.vn/bi-quyet-cua-nguoi-nhat-giup-o-to-van-hanh-ben-bi-ar1007239.html'),
 (N'Xe đa dụng cỡ nhỏ bán chạy tháng 2/2026: Hyundai Creta vượt các đối thủ Nhật Bản', 
  N'Nếu tính riêng các mẫu xe sử dụng động cơ đốt trong, cuộc đua ở phân khúc xe đa dụng cỡ nhỏ vốn chật chội nhất thị trường vẫn là sự cạnh tranh của các thương hiệu Nhật Bản và Hàn Quốc.', 
  'https://static-images.vnncdn.net/vps_images_publish/000001/000003/2026/3/13/vinfast-vf-5-1583.jpeg?width=0&s=Rlo_mRffp3RfUn-OCz4shQ', 
- '2026-03-13 22:52:33', 'https://vietnamnet.vn');
+ '2026-03-13 22:52:33', 'https://vietnamnet.vn/xe-da-dung-co-nho-ban-chay-thang-2-2026-hyundai-creta-vuot-cac-doi-thu-nhat-ban-2497002.html');
 
 -- 3.9. NHẬT KÝ HỆ THỐNG
 INSERT INTO Activity_Logs (log_type, title, created_by, reference_code, amount) VALUES 

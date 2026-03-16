@@ -214,7 +214,7 @@
         <div class="container">
             <h2 class="luxury-title text-white mb-3" style="font-size: 2.5rem;">TRẢI NGHIỆM ĐẲNG CẤP THỰC TẾ</h2>
             <p class="text-light mb-5 fs-5 mx-auto" style="max-width: 700px; line-height: 1.6;">Hãy trực tiếp cầm vô lăng và cảm nhận sức mạnh của những cỗ máy thời gian hoàn hảo nhất.</p>
-            <a href="tel:0909123456" class="btn btn-luxury rounded-pill px-5 py-3 fs-6"><i class="fa-solid fa-calendar-check me-2"></i> ĐẶT LỊCH LÁI THỬ NGAY</a>
+           
         </div>
     </div>
 
