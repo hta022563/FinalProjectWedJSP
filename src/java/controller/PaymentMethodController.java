@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 @WebServlet(name = "PaymentMethodController", urlPatterns = {"/PaymentMethodController"})
-// THÊM ĐOẠN NÀY ĐỂ SERVLET CÓ THỂ NHẬN FILE TỪ FORM ENCTYPE="MULTIPART/FORM-DATA"
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
                  maxFileSize = 1024 * 1024 * 10,      // 10MB
                  maxRequestSize = 1024 * 1024 * 50)   // 50MB
@@ -23,26 +22,30 @@ public class PaymentMethodController extends HttpServlet {
 
     // --- HÀM HỖ TRỢ UPLOAD FILE TỰ ĐỘNG ---
     private String uploadFile(HttpServletRequest request, Part filePart) throws IOException {
-        if (filePart == null || filePart.getSize() == 0) return null; // Nếu ko chọn file thì bỏ qua
+        if (filePart == null || filePart.getSize() == 0) return null; 
         
-        // Lấy tên file gốc
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        // Chống trùng lặp tên file bằng cách gắn thời gian vào trước
         String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
         
-        // Đường dẫn tới thư mục web/IMG của project
         String applicationPath = request.getServletContext().getRealPath("");
         String uploadFilePath = applicationPath + File.separator + "IMG";
         
-        // Tạo folder IMG nếu nó chưa có
         File uploadDir = new File(uploadFilePath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
         
-        // Ghi file xuống ổ cứng
         filePart.write(uploadFilePath + File.separator + uniqueFileName);
-        
-        // Trả về chuỗi để lưu Database
         return "IMG/" + uniqueFileName;
+    }
+
+    // --- HÀM HỖ TRỢ GIỮ LẠI DATA KHI LỖI (STICKY FORM) ---
+    private void keepFormData(HttpServletRequest request, String name, String code, String icon, String desc, String bank, String accNo, String accName) {
+        request.setAttribute("keepName", name);
+        request.setAttribute("keepCode", code);
+        request.setAttribute("keepIcon", icon);
+        request.setAttribute("keepDesc", desc);
+        request.setAttribute("keepBank", bank);
+        request.setAttribute("keepAccNo", accNo);
+        request.setAttribute("keepAccName", accName);
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -63,15 +66,28 @@ public class PaymentMethodController extends HttpServlet {
                 String accNo = request.getParameter("accountNo");
                 String accName = request.getParameter("accountName");
                 
-                // BẮT FILE TỪ FORM JPS BẰNG getPart, GỌI HÀM UPLOAD
-                Part filePart = request.getPart("qrCodeFile");
-                String qr = uploadFile(request, filePart); 
+                String qr = null;
+                // Dùng try-catch để không bị sập web nếu form bên JSP không có enctype multipart
+                try {
+                    if (request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart/")) {
+                        Part filePart = request.getPart("qrCodeFile");
+                        qr = uploadFile(request, filePart); 
+                    }
+                } catch (Exception e) {
+                    System.out.println("Form không có file đính kèm.");
+                }
 
                 if (name != null && !name.trim().isEmpty()) {
                     boolean success = dao.insert(name, code, icon, desc, bank, accNo, accName, qr);
-                    if (!success) request.setAttribute("errorMessage", "Thêm thất bại!");
+                    if (!success) {
+                        request.setAttribute("errorMessage", "Thêm thất bại do lỗi Database!");
+                        keepFormData(request, name, code, icon, desc, bank, accNo, accName);
+                    } else {
+                        request.setAttribute("successMessage", "Thêm phương thức thành công!");
+                    }
                 } else {
                     request.setAttribute("errorMessage", "Tên phương thức không được trống!");
+                    keepFormData(request, name, code, icon, desc, bank, accNo, accName);
                 }
                 
             } else if ("update".equals(action)) {
@@ -84,23 +100,27 @@ public class PaymentMethodController extends HttpServlet {
                 String accNo = request.getParameter("accountNo");
                 String accName = request.getParameter("accountName");
                 
-                // Lấy ảnh cũ đề phòng trường hợp Admin không upload ảnh mới
                 String qr = request.getParameter("oldQrCodeURL"); 
                 
-                // THỬ BẮT FILE ẢNH MỚI
-                Part filePart = request.getPart("qrCodeFile");
-                String newQr = uploadFile(request, filePart);
-                
-                // Nếu Admin có chọn file mới thì xài file mới, không thì giữ lại link cũ
-                if (newQr != null) {
-                    qr = newQr;
-                }
+                try {
+                    if (request.getContentType() != null && request.getContentType().toLowerCase().startsWith("multipart/")) {
+                        Part filePart = request.getPart("qrCodeFile");
+                        String newQr = uploadFile(request, filePart);
+                        if (newQr != null) {
+                            qr = newQr;
+                        }
+                    }
+                } catch (Exception e) {}
 
                 if (idStr != null && name != null && !name.trim().isEmpty()) {
                     try {
                         int id = Integer.parseInt(idStr);
                         boolean success = dao.update(id, name, code, icon, desc, bank, accNo, accName, qr);
-                        if (!success) request.setAttribute("errorMessage", "Cập nhật thất bại!");
+                        if (!success) {
+                            request.setAttribute("errorMessage", "Cập nhật thất bại!");
+                        } else {
+                            request.setAttribute("successMessage", "Cập nhật thành công!");
+                        }
                     } catch (NumberFormatException e) {
                         request.setAttribute("errorMessage", "ID không hợp lệ!");
                     }
@@ -114,6 +134,7 @@ public class PaymentMethodController extends HttpServlet {
                     try {
                         int id = Integer.parseInt(idStr);
                         dao.softDelete(id);
+                        request.setAttribute("successMessage", "Đã tạm ngưng phương thức!");
                     } catch (NumberFormatException e) {}
                 }
             } else if ("restore".equals(action)) {
@@ -122,6 +143,7 @@ public class PaymentMethodController extends HttpServlet {
                     try {
                         int id = Integer.parseInt(idStr);
                         dao.restore(id);
+                        request.setAttribute("successMessage", "Đã khôi phục phương thức!");
                     } catch (NumberFormatException e) {}
                 }
             }
