@@ -18,7 +18,7 @@ import model.UserDTO;
 import utils.EmailUtils;
 import model.PaymentMethodDAO; 
 import model.PaymentMethodDTO; 
-import model.ActivityDAO; 
+import model.ActivityDAO;
 
 @WebServlet(name = "OrderController", urlPatterns = {"/OrderController"})
 public class OrderController extends HttpServlet {
@@ -32,18 +32,23 @@ public class OrderController extends HttpServlet {
 
         try {
             HttpSession session = request.getSession();
-            // Lấy thông tin user (Không cần check null nữa vì Filter đã chặn ngoài cửa rồi)
             UserDTO user = (UserDTO) session.getAttribute("user");
-            int userId = user.getUserID();
+            if (user == null) {
+                session.setAttribute("msgError", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
+                response.sendRedirect("login.jsp");
+                return;
+            }
+            
+            int userId = user.getUserID(); 
             
             if ("checkout".equals(action)) {
                 // 1. Lấy địa chỉ Showroom khách vừa chọn từ Form
                 String shippingAddress = request.getParameter("shippingAddress");
                 if (shippingAddress == null || shippingAddress.trim().isEmpty()) {
-                    shippingAddress = "Giao xe tại Showroom F-Auto Hội Sở"; // Fallback an toàn
+                    shippingAddress = "Giao xe tại Showroom F-Auto Hội Sở"; 
                 }
 
-                // 2. Lấy mã giảm giá (nếu có)
+                // Lấy mã giảm giá (nếu có)
                 Integer promoId = (Integer) session.getAttribute("promotionId");
                 
                 // 3. Chốt đơn: TRUYỀN shippingAddress VÀO HÀM CHECKOUT
@@ -100,6 +105,7 @@ public class OrderController extends HttpServlet {
             // CHỖ NÀY ĐÃ ĐƯỢC TỐI ƯU CHO CHỮ TIẾNG ANH
             // ==========================================
             } else if ("updateStatus".equals(action)) {
+                // 2. FIX LỖI DUYỆT ĐƠN: Đảm bảo admin không bị văng
                 if (user.getRole() == 1) { // Chỉ Admin mới được update
                     String orderIdStr = request.getParameter("orderId");
                     
@@ -107,7 +113,17 @@ public class OrderController extends HttpServlet {
                     String newStatus = request.getParameter("status"); 
                     
                     if (orderIdStr != null && newStatus != null) {
-                        orderDAO.updateOrderStatus(Integer.parseInt(orderIdStr), newStatus);
+                        try {
+                            int oId = Integer.parseInt(orderIdStr.trim());
+                            boolean check = orderDAO.updateOrderStatus(oId, newStatus);
+                            if (check) {
+                                session.setAttribute("msg", "Đã cập nhật trạng thái đơn hàng thành công!");
+                            } else {
+                                session.setAttribute("msgError", "Cập nhật thất bại, kiểm tra lại DB!");
+                            }
+                        } catch (Exception e) {
+                            session.setAttribute("msgError", "Mã đơn hàng không hợp lệ!");
+                        }
                     }
                     response.sendRedirect("MainController?target=Dashboard"); 
                     return;
@@ -159,12 +175,12 @@ public class OrderController extends HttpServlet {
                     }
 
                     session.setAttribute("msg", "Xác nhận thành công! Vui lòng kiểm tra hộp thư Email.");
-                    response.sendRedirect("OrderController"); 
+                    response.sendRedirect("MainController?target=OrderHistory"); 
                     return;
                 } catch (Exception e) {
                     e.printStackTrace();
                     session.setAttribute("msgError", "Lỗi giao dịch: " + e.getMessage());
-                    response.sendRedirect("OrderController");
+                    response.sendRedirect("MainController?target=OrderHistory");
                     return;
                 }
                 
