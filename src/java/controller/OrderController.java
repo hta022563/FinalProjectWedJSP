@@ -26,6 +26,7 @@ public class OrderController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        // ĐÃ XÓA SẠCH MỚ BỌC BYTE NGUY HIỂM Ở ĐÂY ĐỂ KHÔNG BỊ NULL LỖI WEB NỮA
         String action = request.getParameter("action");
         OrderDAO orderDAO = new OrderDAO();
 
@@ -41,6 +42,7 @@ public class OrderController extends HttpServlet {
             int userId = user.getUserID(); 
             
             if ("checkout".equals(action)) {
+                // 1. Lấy địa chỉ Showroom khách vừa chọn từ Form
                 String shippingAddress = request.getParameter("shippingAddress");
                 if (shippingAddress == null || shippingAddress.trim().isEmpty()) {
                     shippingAddress = "Giao xe tại Showroom F-Auto Hội Sở"; 
@@ -49,7 +51,7 @@ public class OrderController extends HttpServlet {
                 // Lấy mã giảm giá (nếu có)
                 Integer promoId = (Integer) session.getAttribute("promotionId");
                 
-                // Chốt đơn
+                // 3. Chốt đơn: TRUYỀN shippingAddress VÀO HÀM CHECKOUT
                 boolean isSuccess = orderDAO.checkout(userId, 1, promoId, shippingAddress);
                 
                 if (isSuccess) {
@@ -74,6 +76,7 @@ public class OrderController extends HttpServlet {
                 } else {
                     request.setAttribute("error", "Lỗi: Giỏ hàng trống hoặc hệ thống đang bận!");
                 }
+                
             } else if ("detail".equals(action)) {
                 String orderIdStr = request.getParameter("id");
                 if (orderIdStr != null && !orderIdStr.isEmpty()) {
@@ -98,10 +101,15 @@ public class OrderController extends HttpServlet {
                     if (isDeleted) { request.setAttribute("msg", "Đã xóa đơn hàng thành công!"); }
                 }
                 
+            // ==========================================
+            // CHỖ NÀY ĐÃ ĐƯỢC TỐI ƯU CHO CHỮ TIẾNG ANH
+            // ==========================================
             } else if ("updateStatus".equals(action)) {
                 // 2. FIX LỖI DUYỆT ĐƠN: Đảm bảo admin không bị văng
                 if (user.getRole() == 1) { // Chỉ Admin mới được update
                     String orderIdStr = request.getParameter("orderId");
+                    
+                    // Lấy thẳng luôn, URL giờ truyền 'Approved', 'Shipping' rồi nên không lo lỗi
                     String newStatus = request.getParameter("status"); 
                     
                     if (orderIdStr != null && newStatus != null) {
@@ -123,6 +131,7 @@ public class OrderController extends HttpServlet {
                     response.sendRedirect("home.jsp");
                     return;
                 }
+                
             } else if ("processPayment".equals(action)) {
                 String orderIdStr = request.getParameter("orderId");
                 String paymentMethodId = request.getParameter("paymentMethod");
@@ -199,6 +208,7 @@ public class OrderController extends HttpServlet {
                 } 
             }
             
+            // Hiển thị lịch sử đơn hàng (Default action)
             List<OrderDTO> listOrders = orderDAO.getOrdersByUserId(userId);
             request.setAttribute("listOrders", listOrders);
             request.getRequestDispatcher("order-history.jsp").forward(request, response);
@@ -224,6 +234,6 @@ public class OrderController extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Order Controller"; // ĐÃ FIX: Chỉ giữ lại 1 dòng return
+        return "Order Controller"; 
     }
 }

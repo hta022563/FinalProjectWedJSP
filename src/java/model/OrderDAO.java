@@ -33,7 +33,7 @@ public class OrderDAO {
             newOrder.setMethodID(methodId);
             newOrder.setPromotionID(promotionId);
             newOrder.setOrderDate(new Date());
-            newOrder.setStatus("Đang xử lý");
+            newOrder.setStatus("Pending"); // ĐÃ CHUẨN TIẾNG ANH
             newOrder.setShippingAddress(shippingAddress);
             newOrder.setTotalAmount(BigDecimal.ZERO);
             em.persist(newOrder); 
@@ -61,29 +61,24 @@ public class OrderDAO {
             }
             
             // ====================================================================
-            // 5. [ĐÃ THÊM MỚI] XỬ LÝ TRỪ TIỀN KHUYẾN MÃI TRƯỚC KHI LƯU TỔNG CỘNG
+            // 5. XỬ LÝ TRỪ TIỀN KHUYẾN MÃI
             // ====================================================================
             if (promotionId != null) {
                 try {
-                    // Móc xuống DB lấy số % giảm giá của cái mã này
                     Object discountObj = em.createNativeQuery("SELECT DiscountPercent FROM Promotion WHERE PromotionID = ? AND IsActive = 1")
                                            .setParameter(1, promotionId)
                                            .getSingleResult();
                     
                     if (discountObj != null) {
                         int discountPercent = Integer.parseInt(discountObj.toString());
-                        
-                        // Công thức trừ tiền: Total = Total - (Total * (Percent / 100))
                         BigDecimal discountRate = new BigDecimal(discountPercent).divide(new BigDecimal(100));
                         BigDecimal discountAmount = total.multiply(discountRate);
-                        
                         total = total.subtract(discountAmount); // Trừ đi số tiền được giảm
                     }
                 } catch (Exception ex) {
                     System.out.println("Lỗi khi áp dụng mã giảm giá lúc chốt đơn: " + ex.getMessage());
                 }
             }
-            // ====================================================================
             
             // 6. Cập nhật lại Tổng tiền cuối cùng và lưu DB
             newOrder.setTotalAmount(total);
@@ -130,9 +125,10 @@ public class OrderDAO {
     
     public Double getTotalRevenue() {
         Double total = 0.0;
-        String sql = "SELECT SUM(TotalAmount) FROM [Order] WHERE Status != N'Đã từ chối'"; // Không tính doanh thu đơn bị hủy
+        // ĐÃ FIX: Tính doanh thu dựa trên trạng thái tiếng Anh (Không tính đơn bị từ chối)
+        String sql = "SELECT SUM(TotalAmount) FROM [Order] WHERE Status != 'Rejected'"; 
         
-        try (Connection conn = utils.DbUtils.getConnection(); // Chỉnh thành DBUtils hoặc class kết nối của sếp
+        try (Connection conn = utils.DbUtils.getConnection(); 
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             
