@@ -324,9 +324,7 @@
                             <a href="MainController?target=Dashboard" class="btn btn-sm btn-outline-warning rounded-pill px-3 transition-all" title="Làm mới dữ liệu">
                                 <i class="fa-solid fa-rotate-right"></i> Đồng bộ
                             </a>
-                            <a href="ExportController" class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-sm">
-                                <i class="fa-solid fa-file-excel me-1"></i> Xuất Excel Báo Cáo
-                            </a>
+                           
                         </div>
                     </div>
                     <div class="cyber-feed pe-2" style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">

@@ -114,8 +114,8 @@
                     </p>
                     <div class="footer-contact-info">
                         <p class="mb-3 d-flex align-items-start"><i class="fa-solid fa-location-dot mt-1"></i> <span>TP.HCM</span></p>
-                        <p class="mb-3"><i class="fa-solid fa-phone"></i> Hotline CSKH: <span class="text-white fw-bold">0909 ******</span></p>
-                        <p class="mb-3"><i class="fa-solid fa-envelope"></i> Email: <span class="text-white">**********@f-auto.vn</span></p>
+                        <p class="mb-3"><i class="fa-solid fa-phone"></i> Hotline CSKH: <span class="text-white fw-bold">0909 090909</span></p>
+                        <p class="mb-3"><i class="fa-solid fa-envelope"></i> Email: <span class="text-white">hta02256app@gmail.com</span></p>
                     </div>
                 </div>
 
@@ -132,13 +132,13 @@
 
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <h5 class="footer-heading">Hỗ Trợ Khách Hàng</h5>
-                    <ul class="list-unstyled">
+                   <!--<ul class="list-unstyled">
                         <li><a href="#" class="footer-link">Đăng Ký Lái Thử Cảm Nhận</a></li>
                         <li><a href="#" class="footer-link">Chính Sách Bảo Hành Cơ Bản</a></li>
                         <li><a href="#" class="footer-link">Hướng Dẫn Mua Xe Trả Góp</a></li>
                         <li><a href="#" class="footer-link">Bảo Mật Thông Tin Khách Hàng</a></li>
                         <li><a href="#" class="footer-link">Câu Hỏi Thường Gặp (FAQ)</a></li>
-                    </ul>
+                    </ul>--> 
                 </div>
 
                 <div class="col-lg-3 col-md-6">
@@ -146,10 +146,10 @@
                     <p style="font-size: 0.9rem; line-height: 1.6;" class="mb-4">
                         Đăng ký email để không bỏ lỡ các mẫu siêu xe mới nhất và những đặc quyền giới hạn dành riêng cho bạn.
                     </p>
-                    <form action="#" class="mb-4">
+                    <form action="" class="mb-4">
                         <div class="input-group">
-                            <input type="email" class="form-control newsletter-input " placeholder="Nhập địa chỉ email..." required>
-                            <button class="btn btn-newsletter" type="button" title="Đăng ký"><i class="fa-solid fa-paper-plane"></i></button>
+                          
+                            
                         </div>
                     </form><!-- <div class="social-icons mt-4">
                         <a href="#" class="social-icon-btn" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
