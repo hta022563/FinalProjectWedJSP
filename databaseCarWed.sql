@@ -32,16 +32,17 @@ CREATE TABLE Supplier (
 -- Đã gộp các cột thêm mới vào thẳng bảng lúc tạo
 CREATE TABLE PaymentMethod (
     MethodID INT PRIMARY KEY IDENTITY(1,1),
-    MethodName NVARCHAR(100) NOT NULL,
-    MethodCode VARCHAR(20),      -- VD: QR, CARD, CASH
-    IconClass VARCHAR(50),       -- VD: fa-solid fa-qrcode
-    [Description] NVARCHAR(255), 
-    BankName NVARCHAR(100),      
-    AccountNo VARCHAR(50),       
-    AccountName NVARCHAR(100),   
-    QRCodeURL VARCHAR(255),      
-    IsActive INT DEFAULT 1 
+    MethodName NVARCHAR(100) NOT NULL,     -- Tên phương thức (VD: Tiền mặt, Chuyển khoản QR)
+    MethodCode VARCHAR(20),                -- Mã code để Javascript nhận diện (VD: QR, CARD, CASH)
+    IconClass VARCHAR(50),                 -- Lưu tên icon của FontAwesome (VD: fa-solid fa-qrcode)
+    [Description] NVARCHAR(255),           -- Đoạn mô tả nhỏ bên dưới tên phương thức
+    BankName NVARCHAR(100),                -- [Dành cho mã QR] Tên ngân hàng
+    AccountNo VARCHAR(50),                 -- [Dành cho mã QR] Số tài khoản
+    AccountName NVARCHAR(100),             -- [Dành cho mã QR] Tên chủ tài khoản
+    QRCodeURL VARCHAR(255),                -- [Dành cho mã QR] Link ảnh mã QR
+    IsActive INT DEFAULT 1                 -- 1: Đang hoạt động, 0: Đã ẩn
 );
+GO
 
 CREATE TABLE Promotion (
     PromotionID INT PRIMARY KEY IDENTITY(1,1),
