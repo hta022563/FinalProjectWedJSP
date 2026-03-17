@@ -20,7 +20,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            background-image: url('IMG/porche.jpg'); /* Đảm bảo sếp có ảnh này trong folder IMG */
+            background-image: url('IMG/porche.jpg'); /* Đảm bảo có ảnh này trong folder IMG */
             background-size: cover;
             background-position: center;
             filter: brightness(0.5);
@@ -127,52 +127,69 @@
             </div>
         </div>
 
-        <%-- FORM THÊM MỚI --%>
+        <%-- FORM THÊM MỚI (ĐÃ CÓ STICKY FORM + THÔNG BÁO TỪ CONTROLLER) --%>
         <div class="aero-card p-4 mb-5 border-start border-success border-5">
             <h5 class="fw-bold mb-4 d-flex align-items-center" style="color: #11998e;">
                 <span class="bg-success bg-opacity-10 p-2 rounded-3 me-3"><i class="fa-solid fa-sack-dollar text-success"></i></span>
                 Phát hành phương thức giao dịch mới
             </h5>
-            <form action="PaymentMethodController" method="POST" enctype="multipart/form-data">
+            <form action="PaymentMethodController" method="POST">
                 <input type="hidden" name="action" value="add"> 
+                
+                <%-- HIỂN THỊ THÔNG BÁO --%>
+                <c:if test="${not empty errorMessage}">
+                    <div class="alert alert-danger fw-bold border-0 shadow-sm"><i class="fa-solid fa-triangle-exclamation me-2"></i>${errorMessage}</div>
+                </c:if>
+                <c:if test="${not empty successMessage}">
+                    <div class="alert alert-success fw-bold border-0 shadow-sm"><i class="fa-solid fa-circle-check me-2"></i>${successMessage}</div>
+                </c:if>
+
                 <div class="row g-3 mb-3">
                     <div class="col-md-4">
                         <label class="small fw-bold text-muted mb-2 text-uppercase">Danh xưng phương thức</label>
-                        <input type="text" name="methodName" class="form-control aero-input" placeholder="VD: Chuyển khoản QR..." required>
+                        <input type="text" name="methodName" class="form-control aero-input" value="${keepName}" placeholder="VD: Chuyển khoản QR..." required>
                     </div>
                     <div class="col-md-4">
                         <label class="small fw-bold text-muted mb-2 text-uppercase">Mã hệ thống (QR, CARD, CASH)</label>
                         <select name="methodCode" id="addMethodCode" class="form-select aero-input" onchange="toggleBankInfo('add')">
-                            <option value="QR">Mã QR (Chuyển khoản)</option>
-                            <option value="CARD">Thẻ tín dụng (Visa/Master)</option>
-                            <option value="CASH">Tiền mặt tại Showroom</option>
+                            <option value="QR" ${keepCode == 'QR' ? 'selected' : ''}>Mã QR (Chuyển khoản)</option>
+                            <option value="CARD" ${keepCode == 'CARD' ? 'selected' : ''}>Thẻ tín dụng (Visa/Master)</option>
+                            <option value="CASH" ${keepCode == 'CASH' ? 'selected' : ''}>Tiền mặt tại Showroom</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="small fw-bold text-muted mb-2 text-uppercase">Icon hiển thị (FontAwesome)</label>
-                        <input type="text" name="iconClass" class="form-control aero-input" placeholder="fa-solid fa-qrcode">
+                        <label class="small fw-bold text-muted mb-2 text-uppercase">Icon hiển thị</label>
+                        <select name="iconClass" class="form-select aero-input">
+                            <option value="fa-solid fa-qrcode" ${keepIcon == 'fa-solid fa-qrcode' ? 'selected' : ''}>Mã QR Code</option>
+                            <option value="fa-solid fa-building-columns" ${keepIcon == 'fa-solid fa-building-columns' ? 'selected' : ''}>Ngân hàng</option>
+                            <option value="fa-solid fa-wallet" ${keepIcon == 'fa-solid fa-wallet' ? 'selected' : ''}>Ví điện tử</option>
+                            <option value="fa-solid fa-credit-card" ${keepIcon == 'fa-solid fa-credit-card' ? 'selected' : ''}>Thẻ tín dụng chung</option>
+                            <option value="fa-brands fa-cc-visa" ${keepIcon == 'fa-brands fa-cc-visa' ? 'selected' : ''}>Thẻ Visa</option>
+                            <option value="fa-brands fa-cc-mastercard" ${keepIcon == 'fa-brands fa-cc-mastercard' ? 'selected' : ''}>Thẻ MasterCard</option>
+                            <option value="fa-solid fa-money-bill-1-wave" ${keepIcon == 'fa-solid fa-money-bill-1-wave' ? 'selected' : ''}>Tiền mặt</option>
+                        </select>
                     </div>
                     <div class="col-md-12">
                         <label class="small fw-bold text-muted mb-2 text-uppercase">Mô tả ngắn</label>
-                        <input type="text" name="description" class="form-control aero-input" placeholder="Nhập mô tả hiển thị cho khách hàng...">
+                        <input type="text" name="description" class="form-control aero-input" value="${keepDesc}" placeholder="Nhập mô tả hiển thị cho khách hàng...">
                     </div>
                 </div>
 
-                <%-- KHUNG NHẬP THÔNG TIN NGÂN HÀNG (Mặc định sẽ hiện vì option đầu là QR) --%>
+                <%-- KHUNG NHẬP THÔNG TIN NGÂN HÀNG --%>
                 <div id="addBankInfoBox" class="row g-3 p-3 bg-success bg-opacity-10 rounded-3 mb-4 border border-success border-opacity-25" style="display: flex;">
                     <h6 class="text-success fw-bold m-0"><i class="fa-solid fa-building-columns me-2"></i>Cấu hình tài khoản nhận tiền</h6>
-                    <div class="col-md-3">
-                        <input type="text" name="bankName" class="form-control aero-input" placeholder="Tên Ngân hàng (VD: Vietcombank)">
+                    <div class="col-md-4">
+                        <label class="small fw-bold text-muted mb-1">Mã Ngân hàng</label>
+                        <input type="text" name="bankName" class="form-control aero-input" value="${keepBank}" placeholder="VD: MB, VCB, TPB, TCB...">
+                        <small class="text-danger fw-bold mt-1 d-block" style="font-size: 0.75rem;">*Bắt buộc dùng chữ viết tắt để hiện mã QR</small>
                     </div>
-                    <div class="col-md-3">
-                        <input type="text" name="accountNo" class="form-control aero-input" placeholder="Số tài khoản">
+                    <div class="col-md-4">
+                        <label class="small fw-bold text-muted mb-1">Số tài khoản</label>
+                        <input type="text" name="accountNo" class="form-control aero-input" value="${keepAccNo}" placeholder="Nhập số tài khoản">
                     </div>
-                    <div class="col-md-3">
-                        <input type="text" name="accountName" class="form-control aero-input" placeholder="Tên chủ thẻ">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="file" name="qrCodeFile" class="form-control aero-input" accept="image/*">
-                        <small class="text-muted mt-1 d-block">Tải lên ảnh mã QR</small>
+                    <div class="col-md-4">
+                        <label class="small fw-bold text-muted mb-1">Tên chủ tài khoản</label>
+                        <input type="text" name="accountName" class="form-control aero-input" value="${keepAccName}" placeholder="Viết hoa không dấu (VD: NGUYEN VAN A)">
                     </div>
                 </div>
 
@@ -230,7 +247,7 @@
             </div>
         </div>
 
-        <%-- KHU VỰC THÙNG RÁC (ĐÃ ẨN) --%>
+        <%-- KHU VỰC THÙNG RÁC --%>
         <div class="mt-5 mb-4 d-flex justify-content-between align-items-center border-top border-success border-opacity-10 pt-4">
             <h5 class="fw-bold text-muted text-uppercase" style="letter-spacing: 2px;"><i class="fa-solid fa-box-archive me-2"></i> Hồ sơ giao dịch đã đóng</h5>
             <button class="btn btn-outline-secondary btn-sm rounded-pill px-4 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#trashSection">Mở Archive</button>
@@ -264,12 +281,12 @@
         </div>
     </div>
 
-    <%-- MODAL CHỈNH SỬA (LẶP THEO SỐ LƯỢNG PHƯƠNG THỨC) --%>
+    <%-- MODAL CHỈNH SỬA --%>
     <c:forEach items="${listPaymentMethod}" var="pm">
         <div class="modal fade" id="editModalPM${pm.methodID}" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content aero-card border-0 p-4" style="background: rgba(255,255,255,0.98);">
-                    <form action="PaymentMethodController" method="POST" enctype="multipart/form-data">
+                    <form action="PaymentMethodController" method="POST">
                         <div class="modal-header border-0 pb-0">
                             <h5 class="fw-bold fs-4 text-success">Hiệu chỉnh phương thức</h5>
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
@@ -293,7 +310,15 @@
                                 </div>
                                 <div class="col-md-12">
                                     <label class="fw-bold text-muted small mb-2 text-uppercase">Icon hiển thị</label>
-                                    <input type="text" name="iconClass" class="form-control aero-input" value="${pm.iconClass}">
+                                    <select name="iconClass" class="form-select aero-input">
+                                        <option value="fa-solid fa-qrcode" ${pm.iconClass == 'fa-solid fa-qrcode' ? 'selected' : ''}>Mã QR Code</option>
+                                        <option value="fa-solid fa-building-columns" ${pm.iconClass == 'fa-solid fa-building-columns' ? 'selected' : ''}>Ngân hàng</option>
+                                        <option value="fa-solid fa-wallet" ${pm.iconClass == 'fa-solid fa-wallet' ? 'selected' : ''}>Ví điện tử</option>
+                                        <option value="fa-solid fa-credit-card" ${pm.iconClass == 'fa-solid fa-credit-card' ? 'selected' : ''}>Thẻ tín dụng chung</option>
+                                        <option value="fa-brands fa-cc-visa" ${pm.iconClass == 'fa-brands fa-cc-visa' ? 'selected' : ''}>Thẻ Visa</option>
+                                        <option value="fa-brands fa-cc-mastercard" ${pm.iconClass == 'fa-brands fa-cc-mastercard' ? 'selected' : ''}>Thẻ MasterCard</option>
+                                        <option value="fa-solid fa-money-bill-1-wave" ${pm.iconClass == 'fa-solid fa-money-bill-1-wave' ? 'selected' : ''}>Tiền mặt</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-12">
                                     <label class="fw-bold text-muted small mb-2 text-uppercase">Mô tả</label>
@@ -301,26 +326,21 @@
                                 </div>
                             </div>
 
-                            <%-- KHUNG THÔNG TIN NGÂN HÀNG (TRONG MODAL SỬA) --%>
+                            <%-- KHUNG THÔNG TIN NGÂN HÀNG TRONG MODAL SỬA --%>
                             <div id="editBankInfoBox${pm.methodID}" class="row g-3 p-3 bg-success bg-opacity-10 rounded-3" style="display: ${pm.methodCode == 'QR' ? 'flex' : 'none'};">
                                 <h6 class="text-success fw-bold m-0 w-100"><i class="fa-solid fa-building-columns me-2"></i>Cấu hình tài khoản nhận tiền</h6>
-                                <div class="col-md-6">
-                                    <label class="small text-muted mb-1">Ngân hàng</label>
+                                <div class="col-md-4">
+                                    <label class="small fw-bold text-muted mb-1">Mã Ngân hàng</label>
                                     <input type="text" name="bankName" class="form-control aero-input" value="${pm.bankName}">
+                                    <small class="text-danger fw-bold mt-1 d-block" style="font-size: 0.75rem;">*Viết tắt (VD: MB, VCB)</small>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="small text-muted mb-1">Số TK</label>
+                                <div class="col-md-4">
+                                    <label class="small fw-bold text-muted mb-1">Số TK</label>
                                     <input type="text" name="accountNo" class="form-control aero-input" value="${pm.accountNo}">
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="small text-muted mb-1">Chủ thẻ</label>
+                                <div class="col-md-4">
+                                    <label class="small fw-bold text-muted mb-1">Chủ thẻ</label>
                                     <input type="text" name="accountName" class="form-control aero-input" value="${pm.accountName}">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="small text-muted mb-1">Cập nhật Ảnh QR</label>
-                                    <input type="hidden" name="oldQrCodeURL" value="${pm.qrCodeURL}">
-                                    <input type="file" name="qrCodeFile" class="form-control aero-input" accept="image/*">
-                                    <small class="text-muted mt-1 d-block">Để trống nếu muốn giữ nguyên ảnh hiện tại.</small>
                                 </div>
                             </div>
                         </div>
@@ -334,7 +354,6 @@
         </div>
     </c:forEach>
 
-    <%-- SCRIPT ĐÃ ĐƯỢC TỐI ƯU SẠCH SẼ --%>
     <script>
         // Đồng hồ thời gian thực
         function updateClock() {
@@ -349,7 +368,7 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Đóng/Mở form Ngân hàng dựa trên việc chọn QR hay không
+        // Đóng/Mở form Ngân hàng
         function toggleBankInfo(mode, id = '') {
             let selectBox, bankBox;
 
@@ -370,7 +389,7 @@
             }
         }
 
-        // Tự động kích hoạt hàm ẩn/hiện form ngay khi trang load xong
+        // Kích hoạt hàm ẩn/hiện form khi tải trang
         document.addEventListener("DOMContentLoaded", function() {
             toggleBankInfo('add');
         });

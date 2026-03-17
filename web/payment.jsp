@@ -2,11 +2,32 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page import="model.PaymentMethodDAO, model.PaymentMethodDTO, java.util.List"%>
+<%@page import="model.OrderDAO, model.OrderDTO, model.UserDTO"%>
 
 <%
+    // Lấy danh sách phương thức thanh toán
     PaymentMethodDAO pmDAO = new PaymentMethodDAO();
     List<PaymentMethodDTO> listMethods = pmDAO.getAllActive();
     request.setAttribute("listMethods", listMethods);
+
+    // DÒNG CODE MỚI THÊM: Tự động lấy Tổng tiền của đơn hàng để truyền vào QR
+    double orderTotal = 0;
+    String orderIdStr = request.getParameter("orderId");
+    UserDTO user = (UserDTO) session.getAttribute("user");
+    
+    if (user != null && orderIdStr != null && !orderIdStr.isEmpty()) {
+        OrderDAO orderDAO = new OrderDAO();
+        List<OrderDTO> userOrders = orderDAO.getOrdersByUserId(user.getUserID());
+        for(OrderDTO o : userOrders) {
+            if(o.getOrderID() == Integer.parseInt(orderIdStr)) {
+                // ĐÃ FIX LỖI ÉP KIỂU: Thêm .doubleValue() để chuyển từ BigDecimal sang double
+                orderTotal = (o.getTotalAmount() != null) ? o.getTotalAmount().doubleValue() : 0; 
+                break;
+            }
+        }
+    }
+    // Ép kiểu số tiền về số nguyên (không có dấu thập phân) để API VietQR đọc được
+    request.setAttribute("orderTotal", String.format("%.0f", orderTotal));
 %>
 
 <jsp:include page="includes/header.jsp"></jsp:include>
@@ -130,7 +151,6 @@
                         </c:if>
                     </c:forEach>
 
-
                     <div id="dynamic-payment-section" class="mb-5 pt-4 border-top border-secondary">
                         
                         <%-- KHUNG A: CHUYỂN KHOẢN --%>
@@ -151,7 +171,12 @@
                                     <c:if test="${method.methodCode == 'QR'}">
                                         <div id="qr-detail-box-${method.methodID}" class="qr-detail-box text-center" style="display: none;">
                                             <div class="bg-light p-3 rounded-3 d-inline-block border border-warning mb-4 shadow">
-                                                <img src="${not empty method.qrCodeURL ? method.qrCodeURL : 'IMG/qr-sample.png'}" alt="QR Code" style="width: 220px; height: 220px; object-fit: contain; border-radius: 8px;">
+                                                
+                                                <%-- ĐÃ THAY BẰNG API VIETQR TỰ ĐỘNG CÓ SẴN TỔNG TIỀN VÀ NỘI DUNG --%>
+                                                <img src="https://img.vietqr.io/image/${method.bankName}-${method.accountNo}-compact2.png?amount=${orderTotal}&addInfo=FAUTO%20${param.orderId}&accountName=${method.accountName}" 
+                                                     alt="VietQR Code" 
+                                                     style="width: 220px; height: 220px; object-fit: contain; border-radius: 8px;">
+                                                     
                                             </div>
                                             <div class="text-start mx-auto p-4 qr-info-box" style="max-width: 420px;">
                                                 <p class="mb-2 text-grey fs-6">Ngân hàng: <strong class="text-bright fs-5 ms-1">${method.bankName}</strong></p>
