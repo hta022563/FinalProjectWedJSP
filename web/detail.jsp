@@ -3,15 +3,14 @@
     Created on : Jan 16, 2026, 10:42:38 AM
     Author     : AngDeng
 --%>
-
-<%-- File: web/detail.jsp --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page import="model.ReviewDAO, model.ReviewDTO, java.util.List"%>
+
 <%
-    // BỌC THÉP: Xử lý an toàn mọi trường hợp id bị null, rỗng, hoặc chứa chữ "null"
+    // BỌC THÉP: Xử lý an toàn mọi trường hợp id
     String carIdStr = request.getParameter("id");
     if (carIdStr == null || carIdStr.trim().isEmpty() || carIdStr.equalsIgnoreCase("null")) {
         carIdStr = request.getParameter("pid");
@@ -23,7 +22,7 @@
             cId = Integer.parseInt(carIdStr.trim());
         }
     } catch (Exception e) {
-        cId = 1; // Bất chấp lỗi gì cũng trả về xe số 1 để web không bị sập
+        cId = 1; 
     }
 
     ReviewDAO reviewDAO = new ReviewDAO();
@@ -31,7 +30,6 @@
     request.setAttribute("reviewList", reviewList);
     request.setAttribute("reviewDAO", reviewDAO);
 %>
-
 
 <%-- PHÂN TÍCH CATEGORY & SUPPLIER TỪ DB --%>
 <c:choose>
@@ -172,207 +170,34 @@
 
     <style>
         /* TRỞ VỀ DARK LUXURY THEME CHÍNH TÔNG */
-        body {
-            background-color: #0a0a0a;
-            color: #e0e0e0;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .luxury-title {
-            font-family: 'Playfair Display', serif;
-            color: #D4AF37;
-            letter-spacing: 1px;
-        }
-        .text-gold {
-            color: #D4AF37 !important;
-        }
-
-        /* Box chứa thông tin đen bóng */
-        .premium-panel {
-            background: #111;
-            border: 1px solid rgba(212, 175, 55, 0.15);
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
-        }
-
-        .img-showcase {
-            width: 100%;
-            height: 450px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
-            overflow: hidden;
-            position: relative;
- 
-        }
-        .img-showcase img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-            transform: scale(1.15); 
-            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .img-showcase:hover img {
-            transform: scale(1.25);
-        }
-        .car-title-main {
-            font-size: 2.8rem;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 5px;
-            line-height: 1.2;
-            text-transform: uppercase;
-        }
-        .car-price-main {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #D4AF37;
-            margin-bottom: 25px;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-        }
-
-        /* BẢNG THÔNG SỐ NHANH (Grid Specs) */
-        .specs-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .spec-item {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            padding: 15px 20px;
-            border-radius: 8px;
-            border-left: 3px solid #D4AF37;
-        }
-        .spec-lbl {
-            font-size: 0.75rem;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-        .spec-val {
-            font-size: 1.1rem;
-            color: #fff;
-            font-weight: 600;
-        }
-
-        .desc-text {
-            color: #aaa;
-            line-height: 1.8;
-            font-size: 1rem;
-            margin-bottom: 30px;
-            text-align: justify;
-        }
-
-        /* NHÓM NÚT BẤM ĐẶT HÀNG & WISHLIST */
-        .action-group {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn-luxury-action {
-            flex-grow: 1;
-            background: linear-gradient(135deg, #D4AF37, #FFD700);
-            color: #000;
-            border: none;
-            padding: 18px;
-            font-size: 1.1rem;
-            font-weight: 800;
-            border-radius: 50px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
-        }
-        .btn-luxury-action:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
-            background: #f1c40f;
-        }
-        .btn-luxury-action:disabled {
-            filter: grayscale(100%);
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* Nút Wishlist Trái tim */
-        .btn-wishlist {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: transparent;
-            border: 2px solid #D4AF37;
-            color: #D4AF37;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-        .btn-wishlist:hover {
-            background: #D4AF37;
-            color: #000;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
-        }
-
-        /* BẢNG THÔNG SỐ CHI TIẾT THEO PHONG CÁCH LUXURY */
-        .lux-spec-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .lux-spec-table th {
-            background: rgba(255,255,255,0.03);
-            color: #D4AF37;
-            padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            width: 35%;
-            text-align: left;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-        .lux-spec-table td {
-            background: transparent;
-            color: #fff;
-            padding: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-        .lux-spec-table tr:hover td, .lux-spec-table tr:hover th {
-            background: rgba(212, 175, 55, 0.05);
-        }
-
-        /* Review Area */
-        .review-box {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-        .input-dark-luxury {
-            background: #050505 !important;
-            border: 1px solid #333 !important;
-            color: #fff !important;
-        }
-        .input-dark-luxury:focus {
-            border-color: #D4AF37 !important;
-            box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
-        }
-
-        .swal-lux {
-            border: 1px solid #D4AF37 !important;
-            border-radius: 12px !important;
-        }
+        body { background-color: #0a0a0a; color: #e0e0e0; font-family: 'Montserrat', sans-serif; }
+        .luxury-title { font-family: 'Playfair Display', serif; color: #D4AF37; letter-spacing: 1px; }
+        .text-gold { color: #D4AF37 !important; }
+        .premium-panel { background: #111; border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 12px; padding: 40px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8); }
+        .img-showcase { width: 100%; height: 450px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; position: relative; }
+        .img-showcase img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.15); transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .img-showcase:hover img { transform: scale(1.25); }
+        .car-title-main { font-size: 2.8rem; font-weight: 800; color: #fff; margin-bottom: 5px; line-height: 1.2; text-transform: uppercase; }
+        .car-price-main { font-size: 2.2rem; font-weight: 800; color: #D4AF37; margin-bottom: 25px; text-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+        .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+        .spec-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(212, 175, 55, 0.1); padding: 15px 20px; border-radius: 8px; border-left: 3px solid #D4AF37; }
+        .spec-lbl { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .spec-val { font-size: 1.1rem; color: #fff; font-weight: 600; }
+        .desc-text { color: #aaa; line-height: 1.8; font-size: 1rem; margin-bottom: 30px; text-align: justify; }
+        .action-group { display: flex; gap: 15px; }
+        .btn-luxury-action { flex-grow: 1; background: linear-gradient(135deg, #D4AF37, #FFD700); color: #000; border: none; padding: 18px; font-size: 1.1rem; font-weight: 800; border-radius: 50px; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+        .btn-luxury-action:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4); background: #f1c40f; }
+        .btn-luxury-action:disabled { filter: grayscale(100%); opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-wishlist { width: 60px; height: 60px; border-radius: 50%; background: transparent; border: 2px solid #D4AF37; color: #D4AF37; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transition: 0.3s; cursor: pointer; }
+        .btn-wishlist:hover { background: #D4AF37; color: #000; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); }
+        .lux-spec-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .lux-spec-table th { background: rgba(255,255,255,0.03); color: #D4AF37; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 35%; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+        .lux-spec-table td { background: transparent; color: #fff; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500; font-size: 0.95rem; }
+        .lux-spec-table tr:hover td, .lux-spec-table tr:hover th { background: rgba(212, 175, 55, 0.05); }
+        .review-box { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 10px; margin-bottom: 15px; }
+        .input-dark-luxury { background: #050505 !important; border: 1px solid #333 !important; color: #fff !important; }
+        .input-dark-luxury:focus { border-color: #D4AF37 !important; box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important; }
+        .swal-lux { border: 1px solid #D4AF37 !important; border-radius: 12px !important; }
     </style>
 
 <c:if test="${not empty msg}">
@@ -403,7 +228,8 @@
         <div class="row align-items-center">
             <div class="col-lg-6 mb-4 mb-lg-0">
                 <div class="img-showcase">
-                    <img src="${product.imageURL}" onerror="this.src='IMG/logo.jpg'" alt="${product.productName}">
+                    <%-- ĐÃ FIX: Thêm contextPath vào đường dẫn hình ảnh --%>
+                    <img src="${pageContext.request.contextPath}/${product.imageURL}" onerror="this.src='${pageContext.request.contextPath}/IMG/logo.jpg'" alt="${product.productName}">
                 </div>
             </div>
 
@@ -423,13 +249,13 @@
                     </div>
                     <div class="spec-item">
                         <div class="spec-lbl">Trạng Thái Kho</div>
-                       <div class="spec-val ${product.stockQuantity > 0 ? 'text-success' : 'text-danger'}">
-    <i class="fa-solid fa-warehouse me-2"></i> 
-    <c:choose>
-        <c:when test="${product.stockQuantity > 0}">${product.stockQuantity} sản phẩm</c:when>
-        <c:otherwise>Hết hàng</c:otherwise>
-    </c:choose>
-</div>
+                        <div class="spec-val ${product.stockQuantity > 0 ? 'text-success' : 'text-danger'}">
+                            <i class="fa-solid fa-warehouse me-2"></i> 
+                            <c:choose>
+                                <c:when test="${product.stockQuantity > 0}">${product.stockQuantity} sản phẩm</c:when>
+                                <c:otherwise>Hết hàng</c:otherwise>
+                            </c:choose>
+                        </div>
                     </div>
                     <div class="spec-item">
                         <div class="spec-lbl">Chất lượng</div>
@@ -457,7 +283,6 @@
                         <input type="hidden" name="action" value="${isLiked ? 'remove' : 'add'}">
                         <input type="hidden" name="productId" value="${product.productID}">
                         <input type="hidden" name="returnUrl" value="MainController?target=Detail&id=${product.productID}">
-
                         <button type="submit" class="btn-wishlist" style="${isLiked ? 'background-color: #D4AF37; color: #000;' : ''}">
                             <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                         </button>
@@ -517,156 +342,6 @@
                                     <option value="2" style="color: black;">⭐⭐ Tạm được</option>
                                     <option value="1" style="color: black;">⭐ Thất vọng</option>
                                  </select>
-                            </div>
-                            <div class="mb-4">
-                                <label class="spec-lbl">Nội dung chi tiết</label>
-                                <textarea name="comment" class="form-control input-dark-luxury" rows="4" placeholder="Nhập cảm nhận của bạn..." required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-outline-warning w-100 fw-bold py-2 rounded-pill">
-                                XÁC NHẬN ĐÁNH GIÁ
-                            </button>
-                        </form>
-                    </c:when>
-                    <c:otherwise>
-                        <div class="p-4 text-center border border-secondary rounded" style="background: #050505;">
-                            <i class="fa-solid fa-user-lock fs-2 text-gold mb-3 opacity-50"></i>
-                            <h6 class="text-white fw-bold mb-2">Yêu Cầu Đăng Nhập</h6>
-                            <p class="text-muted small mb-4">Tham gia cộng đồng F-AUTO để chia sẻ cảm nhận.</p>
-                            <a href="login.jsp" class="btn btn-outline-light btn-sm px-4 fw-bold rounded-pill text-uppercase">Đăng Nhập Ngay</a>
-                        </div>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-
-            <div class="col-md-7 ps-md-4" style="max-height: 500px; overflow-y: auto;">
-                <c:choose>
-                    <c:when test="${empty reviewList}">
-                        <div class="text-center py-5">
-                            <i class="fa-regular fa-comment-slash fs-1 text-secondary mb-3 opacity-25"></i>
-                            <p class="text-secondary text-uppercase" style="letter-spacing: 1px;">Chưa có đánh giá nào.</p>
-                        </div>
-                    </c:when>
-                    <c:otherwise>
-                        <c:forEach var="rev" items="${reviewList}">
-                            <div class="review-box">
-                                <div class="d-flex justify-content-between align-items-center mb-2 border-bottom border-secondary border-opacity-25 pb-2">
-                                    <div class="d-flex align-items-center">
-                                        <div class="bg-dark text-gold rounded-circle d-flex justify-content-center align-items-center me-3 border border-secondary" style="width: 40px; height: 40px;">
-                                            <i class="fa-solid fa-user"></i>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold text-white">${reviewDAO.getUsername(rev.userID)}</div>
-                                            <div class="text-warning" style="font-size: 0.75rem;"><c:forEach begin="1" end="${rev.rating}">⭐</c:forEach></div>
-                                            </div>
-                                        </div>
-                                        <span class="text-muted small"><fmt:formatDate value="${rev.reviewDate}" pattern="dd/MM/yyyy" /></span>
-                                </div>
-                                <p class="text-light mb-0 mt-3" style="line-height: 1.6;">${rev.comment}</p>
-
-                                <c:if test="${sessionScope.user != null && (sessionScope.user.userID == rev.userID || sessionScope.user.role == 1)}">
-                                    <div class="mt-3 text-end">
-                                        <c:if test="${sessionScope.user.userID == rev.userID}">
-                                            <button class="btn btn-sm btn-link text-info p-0 me-3 fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#editModal${rev.reviewID}">Sửa</button>
-                                        </c:if>
-                                        <a href="MainController?target=Review&action=delete&reviewId=${rev.reviewID}&productId=${product.productID}" class="btn btn-sm btn-link text-danger p-0 fw-bold text-decoration-none" onclick="return confirm('Bạn chắc chắn muốn xóa?');">Xóa</a>
-                                    </div>
-
-                                    <div class="modal fade" id="editModal${rev.reviewID}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content" style="background: #111; border: 1px solid #D4AF37;">
-                                                <form action="MainController" method="POST">
-                                                    <div class="modal-header border-bottom border-secondary">
-                                                        <h5 class="modal-title fw-bold text-gold">SỬA ĐÁNH GIÁ</h5>
-                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <input type="hidden" name="target" value="Review">
-                                                        <input type="hidden" name="action" value="update">
-                                                        <input type="hidden" name="reviewId" value="${rev.reviewID}">
-                                                        <input type="hidden" name="productId" value="${product.productID}">
-
-                                                        <div class="mb-3">
-                                                            <select name="rating" class="form-select input-dark-luxury text-warning fw-bold">
-                                                                <option value="5" style="color: black;" ${rev.rating == 5 ? 'selected' : ''}>⭐⭐⭐⭐⭐ Đẳng cấp</option>
-                                                                <option value="4" style="color: black;" ${rev.rating == 4 ? 'selected' : ''}>⭐⭐⭐⭐ Rất tốt</option>
-                                                                <option value="3" style="color: black;" ${rev.rating == 3 ? 'selected' : ''}>⭐⭐⭐ Hài lòng</option>
-                                                                <option value="2" style="color: black;" ${rev.rating == 2 ? 'selected' : ''}>⭐⭐ Tạm được</option>
-                                                                <option value="1" style="color: black;" ${rev.rating == 1 ? 'selected' : ''}>⭐ Thất vọng</option>
-                                                            </select>
-                                                        </div>
-                                                        <div>
-                                                            <textarea name="comment" class="form-control input-dark-luxury" rows="4">${rev.comment}</textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer border-top border-secondary">
-                                                        <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Hủy</button>
-                                                        <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold">Lưu thay đổi</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </c:if>
-                            </div>
-                        </c:forEach>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-        </div>
-    </div>
-</div>
-
-<jsp:include page="includes/footer.jsp"></jsp:include>
-    <c:if test="${product.categoryID != 6}">
-        <div class="premium-panel mb-5 p-4 p-md-5">
-            <h3 class="luxury-title fs-4 border-bottom border-secondary pb-3 mb-4">
-                <i class="fa-solid fa-microchip me-2 text-gold"></i> THÔNG SỐ KỸ THUẬT CHI TIẾT
-            </h3>
-            <div class="row">
-                <div class="col-md-6 pe-md-4">
-                    <table class="lux-spec-table">
-                        <tr><th>Động Cơ (Engine)</th> <td>${spec_engine}</td></tr>
-                        <tr><th>Công Suất (Power)</th> <td>${spec_hp}</td></tr>
-                        <tr><th>Mô-men Xoắn (Torque)</th> <td>${spec_torque}</td></tr>
-                        <tr><th>Hộp Số (Transmission)</th> <td>${spec_gear}</td></tr>
-                    </table>
-                </div>
-                <div class="col-md-6 ps-md-4 mt-4 mt-md-0 border-start border-secondary border-opacity-25">
-                    <table class="lux-spec-table">
-                        <tr><th>Tăng tốc 0-100 km/h</th> <td>${spec_0100}</td></tr>
-                        <tr><th>Tốc Độ Tối Đa</th> <td>${spec_speed}</td></tr>
-                        <tr><th>Hệ Dẫn Động</th> <td>${spec_drive}</td></tr>
-                        <tr><th>Kích Thước & Khối lượng</th> <td>${spec_dim} <br> <span class="text-muted" style="font-size: 0.8rem;">Trọng lượng: ${spec_weight}</span></td></tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </c:if>
-
-    <div class="premium-panel p-4 p-md-5">
-        <h3 class="luxury-title fs-4 border-bottom border-secondary pb-3 mb-4">
-            ĐÁNH GIÁ TỪ KHÁCH HÀNG <span class="badge bg-warning text-dark ms-2 rounded-pill fs-6">${reviewList.size()}</span>
-        </h3>
-
-        <div class="row">
-            <div class="col-md-5 mb-5 mb-md-0 border-end border-secondary border-opacity-25 pe-md-4">
-                <h5 class="fw-bold mb-4 text-white"><i class="fa-solid fa-pen-nib text-gold me-2"></i> Trải nghiệm của bạn</h5>
-                <c:choose>
-                    <c:when test="${sessionScope.user != null}">
-                        <form action="MainController" method="POST">
-                            <input type="hidden" name="target" value="Review">
-                            <input type="hidden" name="action" value="add">
-                            <input type="hidden" name="productId" value="${product.productID}">
-
-                            <div class="mb-3">
-                                <label class="spec-lbl">Mức độ hài lòng</label>
-                                <select name="rating" class="form-select input-dark-luxury fw-bold text-warning">
-                                    <option value="5" style="color: black;">⭐⭐⭐⭐⭐ Đẳng cấp</option>
-                                    <option value="4" style="color: black;">⭐⭐⭐⭐ Rất tốt</option>
-                                    <option value="3" style="color: black;">⭐⭐⭐ Hài lòng</option>
-                                    <option value="2" style="color: black;">⭐⭐ Tạm được</option>
-                                    <option value="1" style="color: black;">⭐ Thất vọng</option>
-                                </select>
                             </div>
                             <div class="mb-4">
                                 <label class="spec-lbl">Nội dung chi tiết</label>
