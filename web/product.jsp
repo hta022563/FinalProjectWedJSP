@@ -6,11 +6,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<%
-    String[] catNames = {"TẤT CẢ", "SEDAN", "SPORT", "SUV & CUV", "BÁN TẢI", "MPV", "PHỤ TÙNG / ĐỒ CHƠI"};
-    request.setAttribute("catNames", catNames);
-%>
-
 <style>
     /* -- CSS CHUẨN DARK MODE LUXURY -- */
     body {
@@ -65,7 +60,6 @@
         z-index: 10;
     }
 
-    /* ĐÃ SỬA: Ép khung ảnh nền trắng và rộng 100% */
     .product-img-wrapper {
         height: 230px;
         width: 100%;
@@ -77,11 +71,10 @@
         position: relative;
     }
 
-    /* ĐÃ SỬA: Căng ảnh lấp đầy khung 100% */
     .product-img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Hoặc có thể thử 'contain' nếu 'cover' làm xe bị mất đầu/đuôi */
+        object-fit: cover;
         transition: transform 0.5s ease;
     }
 
@@ -241,33 +234,111 @@
 </div>
 
 <div class="container mb-5 mt-5">
+    
+    <%-- =======================================================
+         PHẦN 1: IN MENU DANH MỤC (Lấy động từ Database)
+         ======================================================= --%>
     <ul class="nav nav-tabs justify-content-center f-auto-tabs" id="categoryTabs" role="tablist">
-        <c:forEach begin="0" end="6" var="i">
+        <%-- Nút TẤT CẢ (Cứng) --%>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-0-btn" data-bs-toggle="tab" data-bs-target="#tab-0" type="button" role="tab">TẤT CẢ</button>
+        </li>
+        <%-- Lặp in ra các danh mục từ DB --%>
+        <c:forEach items="${listCategories}" var="cat">
             <li class="nav-item" role="presentation">
-                <button class="nav-link ${i == 0 ? 'active' : ''}" id="tab-${i}-btn" data-bs-toggle="tab" data-bs-target="#tab-${i}" type="button" role="tab">${catNames[i]}</button>
+                <button class="nav-link" id="tab-${cat.categoryID}-btn" data-bs-toggle="tab" data-bs-target="#tab-${cat.categoryID}" type="button" role="tab">${cat.categoryName}</button>
             </li>
         </c:forEach>
     </ul>
 
+    <%-- =======================================================
+         PHẦN 2: NỘI DUNG TỪNG TAB SẢN PHẨM
+         ======================================================= --%>
     <div class="tab-content" id="categoryTabsContent">
-        <c:forEach begin="0" end="6" var="catId">
-            <div class="tab-pane fade ${catId == 0 ? 'show active' : ''}" id="tab-${catId}" role="tabpanel">
+        
+        <%-- NỘI DUNG TAB TẤT CẢ (catId = 0) --%>
+        <div class="tab-pane fade show active" id="tab-0" role="tabpanel">
+            <div class="row g-4">
+                <c:set var="countAll" value="0" />
+                <c:forEach items="${listP}" var="p">
+                    <c:set var="countAll" value="${countAll + 1}" />
+                    <div class="col-md-4 col-lg-3">
+                        <div class="card h-100 product-card shadow-sm ${!p.status ? 'opacity-50' : ''}">
+                            <div class="product-img-wrapper">
+                                <img src="${p.imageURL}" class="product-img" alt="${p.productName}" onerror="this.src='https://via.placeholder.com/300x230/ffffff/d4af37?text=F-AUTO'">
+                                <c:if test="${!p.status && sessionScope.user != null && sessionScope.user.role == 1}">
+                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2 px-2 py-1 shadow">ĐÃ ẨN</span>
+                                </c:if>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title fw-bold text-white mb-2">${p.productName}</h5>
+                                <p class="small mb-3 line-clamp-2">${p.description}</p>
+                                <div class="mt-auto">
+                                    <h4 class="car-price mb-3"><fmt:formatNumber value="${p.price}" type="currency" currencySymbol="VNĐ" maxFractionDigits="0"/></h4>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="badge" style="background-color: #333; border: 1px solid #444;"><i class="fa-solid fa-layer-group text-warning"></i> Kho: ${p.stockQuantity}</span>
+                                    </div>
+                                    <div class="d-grid gap-2">
+                                        <a href="DetailController?pid=${p.productID}" class="btn btn-outline-light fw-bold text-uppercase" style="letter-spacing: 1px;">Xem chi tiết</a>
+                                        <c:choose>
+                                            <c:when test="${sessionScope.user != null && sessionScope.user.role == 1}">
+                                                <div class="d-flex gap-2 mt-1">
+                                                    <a href="ProductController?action=edit&id=${p.productID}" class="btn btn-primary flex-fill fw-bold border-0" style="background-color: #0d6efd;"><i class="fa-solid fa-pen"></i> Sửa</a>
+                                                    <c:choose>
+                                                        <c:when test="${p.status}">
+                                                            <a href="ProductController?action=delete&id=${p.productID}" class="btn btn-danger flex-fill fw-bold border-0" onclick="return confirm('Bạn muốn ẩn chiếc xe này khỏi Showroom?');"><i class="fa-solid fa-eye-slash"></i> Ẩn</a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <button class="btn btn-secondary flex-fill fw-bold border-0" disabled>Đã bị ẩn</button>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <a href="CartController?action=addToCart&productId=${p.productID}&returnUrl=ProductController" class="btn btn-warning fw-bold text-dark text-uppercase" style="letter-spacing: 1px;">
+                                                    <i class="fa-solid fa-cart-shopping me-1"></i> Thêm giỏ hàng
+                                                </a>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
+                
+                <c:if test="${countAll == 0}">
+                    <div class="col-12 text-center py-5">
+                        <h4 class="text-secondary"><i class="fa-solid fa-box-open me-2"></i>Không tìm thấy sản phẩm nào.</h4>
+                    </div>
+                </c:if>
+                <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
+                    <div class="col-md-4 col-lg-3">
+                        <a href="admin-product-form.jsp" class="card h-100 shadow-sm d-flex flex-column align-items-center justify-content-center text-decoration-none product-card" style="border: 2px dashed #d4af37; min-height: 380px; background-color: rgba(212, 175, 55, 0.03);">
+                            <i class="fa-solid fa-circle-plus fa-3x mb-3" style="color: #d4af37;"></i>
+                            <h5 class="fw-bold text-center text-uppercase" style="color: #d4af37; letter-spacing: 1px;">THÊM MỚI SẢN PHẨM</h5>
+                        </a>
+                    </div>
+                </c:if>
+            </div>
+        </div>
+
+        <%-- NỘI DUNG CÁC TAB CÒN LẠI (Tự sinh theo DB) --%>
+        <c:forEach items="${listCategories}" var="cat">
+            <div class="tab-pane fade" id="tab-${cat.categoryID}" role="tabpanel">
                 <div class="row g-4">
                     <c:set var="countProduct" value="0" />
                     <c:forEach items="${listP}" var="p">
-                        <c:if test="${catId == 0 || p.categoryID == catId}">
+                        <c:if test="${p.categoryID == cat.categoryID}">
                             <c:set var="countProduct" value="${countProduct + 1}" />
                             <div class="col-md-4 col-lg-3">
                                 <div class="card h-100 product-card shadow-sm ${!p.status ? 'opacity-50' : ''}">
-
-                                    <%-- Thẻ chứa ảnh đã được tối ưu --%>
                                     <div class="product-img-wrapper">
                                         <img src="${p.imageURL}" class="product-img" alt="${p.productName}" onerror="this.src='https://via.placeholder.com/300x230/ffffff/d4af37?text=F-AUTO'">
                                         <c:if test="${!p.status && sessionScope.user != null && sessionScope.user.role == 1}">
                                             <span class="badge bg-danger position-absolute top-0 end-0 m-2 px-2 py-1 shadow">ĐÃ ẨN</span>
                                         </c:if>
                                     </div>
-
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title fw-bold text-white mb-2">${p.productName}</h5>
                                         <p class="small mb-3 line-clamp-2">${p.description}</p>
@@ -305,27 +376,24 @@
                             </div>
                         </c:if>
                     </c:forEach>
+                    
                     <c:if test="${countProduct == 0}">
                         <div class="col-12 text-center py-5">
-                            <h4 class="text-secondary"><i class="fa-solid fa-box-open me-2"></i>Không tìm thấy sản phẩm nào.</h4>
+                            <h4 class="text-secondary"><i class="fa-solid fa-box-open me-2"></i>Không tìm thấy xe nào trong danh mục ${cat.categoryName}.</h4>
                         </div>
                     </c:if>
                     <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
                         <div class="col-md-4 col-lg-3">
                             <a href="admin-product-form.jsp" class="card h-100 shadow-sm d-flex flex-column align-items-center justify-content-center text-decoration-none product-card" style="border: 2px dashed #d4af37; min-height: 380px; background-color: rgba(212, 175, 55, 0.03);">
                                 <i class="fa-solid fa-circle-plus fa-3x mb-3" style="color: #d4af37;"></i>
-                                <h5 class="fw-bold text-center text-uppercase" style="color: #d4af37; letter-spacing: 1px;">
-                                    <c:choose>
-                                        <c:when test="${catId == 0}">THÊM MỚI SẢN PHẨM</c:when>
-                                        <c:otherwise>THÊM ${catNames[catId]}</c:otherwise>
-                                    </c:choose>
-                                </h5>
+                                <h5 class="fw-bold text-center text-uppercase" style="color: #d4af37; letter-spacing: 1px;">THÊM ${cat.categoryName}</h5>
                             </a>
                         </div>
                     </c:if>
                 </div>
             </div>
         </c:forEach>
+        
     </div>
 </div>
 

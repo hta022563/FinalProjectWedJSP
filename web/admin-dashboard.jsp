@@ -324,7 +324,7 @@
                             <a href="MainController?target=Dashboard" class="btn btn-sm btn-outline-warning rounded-pill px-3 transition-all" title="Làm mới dữ liệu">
                                 <i class="fa-solid fa-rotate-right"></i> Đồng bộ
                             </a>
-                           
+                            
                         </div>
                     </div>
                     <div class="cyber-feed pe-2" style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">

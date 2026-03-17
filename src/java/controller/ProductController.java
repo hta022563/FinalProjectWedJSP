@@ -15,6 +15,8 @@ import model.ProductDTO;
 import model.SearchHistoryDAO;
 import model.SearchHistoryDTO;
 import model.UserDTO;
+import model.ProductCategoryDAO; 
+import model.ProductCategoryDTO; 
 
 @WebServlet(name = "ProductController", urlPatterns = {"/ProductController"})
 public class ProductController extends HttpServlet {
@@ -31,6 +33,9 @@ public class ProductController extends HttpServlet {
 
         ProductDAO dao = new ProductDAO();
         SearchHistoryDAO trendDAO = new SearchHistoryDAO();
+        
+        // KHỞI TẠO DAO DANH MỤC
+        ProductCategoryDAO catDAO = new ProductCategoryDAO(); 
 
         HttpSession session = request.getSession();
         UserDTO user = (UserDTO) session.getAttribute("user");
@@ -60,17 +65,23 @@ public class ProductController extends HttpServlet {
             List<SearchHistoryDTO> topTrending = trendDAO.getTopSearches(4);
             request.setAttribute("topSearches", topTrending);
 
-            // CHIA TAB (Xe Hơi và Phụ Tùng)
+            // ĐÃ SỬA: Dùng hàm getAll() theo đúng file DAO của bạn
+            List<ProductCategoryDTO> listCategories = catDAO.getAll();
+            request.setAttribute("listCategories", listCategories);
+
+            // CHIA TAB (Xe Hơi và Phụ Tùng) 
             List<ProductDTO> listCars = new ArrayList<>();
             List<ProductDTO> listParts = new ArrayList<>();
 
             if (listProduct != null) {
                 for (ProductDTO p : listProduct) {
                     int catID = p.getCategoryID();
-                    if (catID >= 1 && catID <= 5) {
-                        listCars.add(p); // Tab Xe
-                    } else if (catID == 6) {
-                        listParts.add(p); // Tab Phụ Tùng
+                    // Nếu ID = 6 (Phụ tùng) thì cho vào Tab Phụ tùng
+                    if (catID == 6) {
+                        listParts.add(p);
+                    } else {
+                        // Còn lại (Bao gồm Sedan, Sport, và Siêu xe...) cho hết vào Tab Xe
+                        listCars.add(p); 
                     }
                 }
             }
@@ -134,7 +145,7 @@ public class ProductController extends HttpServlet {
                     actDao.logActivity(
                             "IMPORT",
                             "Nhập kho lô xe mới: " + name,
-                            "Admin", // Quản trị viên thao tác
+                            "Admin", 
                             "IMP-" + idStr,
                             null
                     );
