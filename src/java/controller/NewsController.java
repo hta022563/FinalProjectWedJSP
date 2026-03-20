@@ -16,39 +16,34 @@ public class NewsController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Đảm bảo tiếng Việt không bị lỗi font khi form gửi lên
+
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
-        
+
         String action = request.getParameter("action");
         if (action == null) {
             action = "list";
         }
-        
+
         NewsDAO dao = new NewsDAO();
 
         try {
             if ("delete".equals(action)) {
-                // XÓA BÀI VIẾT
                 int id = Integer.parseInt(request.getParameter("id"));
                 dao.deleteNews(id);
                 response.sendRedirect("NewsController");
-                
+
             } else if ("edit".equals(action)) {
-                // SỬA BÀI VIẾT
                 int id = Integer.parseInt(request.getParameter("id"));
                 NewsDTO editNews = dao.getNewsByID(id);
-                request.setAttribute("editNews", editNews); 
-                
-                // Load danh sách tin tức
+                request.setAttribute("editNews", editNews);
+
                 List<NewsDTO> listNews = dao.getAllNews();
                 request.setAttribute("listN", listNews);
                 request.getRequestDispatcher("news.jsp").forward(request, response);
-                
+
             } else if ("save".equals(action)) {
-                // LƯU BÀI VIẾT (THÊM MỚI & CẬP NHẬT)
                 String idStr = request.getParameter("newsID");
                 String title = request.getParameter("title");
                 String content = request.getParameter("content");
@@ -63,15 +58,14 @@ public class NewsController extends HttpServlet {
                 news.setPublishDate(new Date());
 
                 if (idStr == null || idStr.trim().isEmpty()) {
-                    dao.addNews(news); 
+                    dao.addNews(news);
                 } else {
                     news.setNewsID(Integer.parseInt(idStr));
-                    dao.updateNews(news); 
+                    dao.updateNews(news);
                 }
                 response.sendRedirect("NewsController");
-                
+
             } else {
-                // MẶC ĐỊNH LÀ DANH SÁCH
                 List<NewsDTO> listNews = dao.getAllNews();
                 request.setAttribute("listN", listNews);
                 request.getRequestDispatcher("news.jsp").forward(request, response);

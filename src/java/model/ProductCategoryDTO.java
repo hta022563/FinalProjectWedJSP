@@ -21,7 +21,6 @@ public class ProductCategoryDTO {
         this.categoryName = categoryName;
     }
 
-    // Getter và Setter
     public int getCategoryID() {
         return categoryID;
     }

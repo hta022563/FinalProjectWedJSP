@@ -6,7 +6,6 @@ import utils.JPAUtil;
 
 public class NewsDAO {
 
-    // Hàm lấy toàn bộ tin tức, sắp xếp tin mới nhất lên đầu
     public List<NewsDTO> getAllNews() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -25,8 +24,7 @@ public class NewsDAO {
             em.close();
         }
     }
-    
-    // 1. THÊM bài viết mới
+
     public boolean addNews(NewsDTO news) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -35,14 +33,15 @@ public class NewsDAO {
             em.getTransaction().commit();
             return true;
         } catch (Exception e) {
-            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             return false;
         } finally {
             em.close();
         }
     }
 
-    // 2. CẬP NHẬT bài viết
     public boolean updateNews(NewsDTO news) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -51,14 +50,15 @@ public class NewsDAO {
             em.getTransaction().commit();
             return true;
         } catch (Exception e) {
-            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             return false;
         } finally {
             em.close();
         }
     }
 
-    // 3. XÓA bài viết
     public boolean deleteNews(int id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -70,7 +70,9 @@ public class NewsDAO {
             em.getTransaction().commit();
             return true;
         } catch (Exception e) {
-            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             return false;
         } finally {
             em.close();

@@ -16,13 +16,12 @@ public class SupplierController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-       request.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         SupplierDAO dao = new SupplierDAO();
         String action = request.getParameter("action");
 
         try {
-            // 1. THÊM NHÀ CUNG CẤP (ADD)
             if ("add".equals(action)) {
                 String name = request.getParameter("supplierName");
                 String phone = request.getParameter("phone");
@@ -36,9 +35,7 @@ public class SupplierController extends HttpServlet {
                 } else {
                     request.setAttribute("errorMessage", "Tên nhà cung cấp không được để trống!");
                 }
-            } 
-            // 2. XÓA MỀM (SOFT DELETE)
-            else if ("delete".equals(action)) {
+            } else if ("delete".equals(action)) {
                 String idStr = request.getParameter("id");
                 if (idStr != null && !idStr.trim().isEmpty()) {
                     try {
@@ -51,9 +48,7 @@ public class SupplierController extends HttpServlet {
                         request.setAttribute("errorMessage", "ID không hợp lệ!");
                     }
                 }
-            }
-            // 3. SỬA THÔNG TIN (UPDATE)
-            else if ("update".equals(action)) {
+            } else if ("update".equals(action)) {
                 String idStr = request.getParameter("id");
                 String name = request.getParameter("supplierName");
                 String phone = request.getParameter("phone");
@@ -70,11 +65,9 @@ public class SupplierController extends HttpServlet {
                         request.setAttribute("errorMessage", "ID không hợp lệ!");
                     }
                 } else {
-                     request.setAttribute("errorMessage", "Tên nhà cung cấp bắt buộc nhập!");
+                    request.setAttribute("errorMessage", "Tên nhà cung cấp bắt buộc nhập!");
                 }
-            }
-            // 4. KHÔI PHỤC (RESTORE)
-            else if ("restore".equals(action)) {
+            } else if ("restore".equals(action)) {
                 String idStr = request.getParameter("id");
                 if (idStr != null && !idStr.trim().isEmpty()) {
                     try {
@@ -94,7 +87,6 @@ public class SupplierController extends HttpServlet {
             request.setAttribute("errorMessage", "Đã xảy ra lỗi hệ thống: " + e.getMessage());
         } finally {
             try {
-                // Lấy danh sách đang hoạt động và danh sách đã xóa để gửi sang JSP
                 List<SupplierDTO> listActive = dao.getAllActive();
                 List<SupplierDTO> listDeleted = dao.getDeletedAll();
 
@@ -104,7 +96,6 @@ public class SupplierController extends HttpServlet {
                 e.printStackTrace();
                 request.setAttribute("errorMessage", "Lỗi tải dữ liệu!");
             }
-            // Chuyển hướng sang trang giao diện
             request.getRequestDispatcher("supplier.jsp").forward(request, response);
         }
     }

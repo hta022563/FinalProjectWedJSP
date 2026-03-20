@@ -4,7 +4,7 @@
 <%@page import="javax.servlet.http.Cookie"%>
 
 <%
-    // ĐOẠN MÃ GIẢI MÃ COOKIE TRƯỚC KHI HIỂN THỊ
+    
     String savedUser = "";
     String savedPass = "";
     Cookie[] cookies = request.getCookies();

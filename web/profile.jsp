@@ -4,7 +4,7 @@
 <jsp:include page="includes/header.jsp"></jsp:include>
 
     <style>
-        /* Đồng bộ nền tối với F-AUTO Premium Theme */
+        
         body {
             background-color: #1a1a1a;
         }
@@ -200,7 +200,7 @@
                             btn.disabled = true;
                             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gửi...';
 
-                            // GỌI MAIN CONTROLLER ĐỂ LẤY MÃ OTP
+                            
                             fetch('MainController?target=User&action=sendChangePassOTP')
                                     .then(response => response.text())
                                     .then(data => {

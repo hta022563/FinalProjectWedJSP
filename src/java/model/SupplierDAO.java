@@ -9,7 +9,6 @@ import java.util.List;
 
 public class SupplierDAO {
 
-    // 1. Lấy tất cả Nhà Cung Cấp đang hoạt động (IsActive = 1)
     public List<SupplierDTO> getAllActive() {
         List<SupplierDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM Supplier WHERE IsActive = 1";
@@ -33,9 +32,7 @@ public class SupplierDAO {
         return list;
     }
 
-    // 2. Thêm Nhà Cung Cấp mới (Mặc định IsActive = 1)
     public boolean insert(String name, String phone, String address) {
-        // Assuming your DB has IsActive defaulting to 1, otherwise explicitly insert it
         String sql = "INSERT INTO Supplier (SupplierName, Phone, Address, IsActive) VALUES (?, ?, ?, 1)";
         try (Connection conn = DbUtils.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -51,7 +48,6 @@ public class SupplierDAO {
         return false;
     }
 
-    // 3. Sửa Nhà Cung Cấp
     public boolean update(int id, String newName, String newPhone, String newAddress) {
         String sql = "UPDATE Supplier SET SupplierName = ?, Phone = ?, Address = ? WHERE SupplierID = ?";
         try (Connection conn = DbUtils.getConnection();
@@ -69,7 +65,6 @@ public class SupplierDAO {
         return false;
     }
 
-    // 4. Xóa "Mềm" Nhà Cung Cấp (Đưa vào Thùng Rác)
     public boolean softDelete(int id) {
         String sql = "UPDATE Supplier SET IsActive = 0 WHERE SupplierID = ?";
         try (Connection conn = DbUtils.getConnection();
@@ -82,7 +77,6 @@ public class SupplierDAO {
         return false;
     }
     
-    // 5. Lấy danh sách Nhà Cung Cấp Đã Bị Xóa (Thùng Rác)
     public List<SupplierDTO> getDeletedAll() {
         List<SupplierDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM Supplier WHERE IsActive = 0";
@@ -104,7 +98,6 @@ public class SupplierDAO {
         return list;
     }
     
-    // 6. Khôi phục Nhà Cung Cấp
     public boolean restore(int id) {
         String sql = "UPDATE Supplier SET IsActive = 1 WHERE SupplierID = ?";
         try (Connection conn = DbUtils.getConnection();

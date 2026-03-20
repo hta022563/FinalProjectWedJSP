@@ -4,14 +4,14 @@
 <jsp:include page="includes/admin-header.jsp"></jsp:include>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
-        /* Nền tổng thể: Trắng sứ pha ánh hồng ngoại nhẹ */
+
         body {
             background: linear-gradient(135deg, #fff5f5 0%, #f0f4f8 100%);
             color: #2d3436;
             font-family: 'Inter', sans-serif;
         }
 
-        /* BANNER CINEMATIC - Siêu xe Đỏ rực tạo cảm giác KHUYẾN MÃI HOT */
+
         .banner-container {
             height: 280px;
             border-radius: 24px;
@@ -54,7 +54,6 @@
             text-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
         }
 
-        /* Aero Card Glassmorphism với viền ánh hồng */
         .aero-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
@@ -63,7 +62,7 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
         }
 
-        /* Input & Button phong cách "Hot Deal" */
+
         .aero-input {
             background: #ffffff !important;
             border: 1px solid #ffcccc !important;
@@ -93,7 +92,6 @@
             box-shadow: 0 12px 25px rgba(255, 65, 108, 0.5);
         }
 
-        /* Bảng dữ liệu Premium */
         .aero-table thead th {
             background: #fff5f5;
             color: #d63031;

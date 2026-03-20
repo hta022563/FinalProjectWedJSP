@@ -22,7 +22,6 @@ public class CategoryController extends HttpServlet {
         ProductCategoryDAO dao = new ProductCategoryDAO();
         String action = request.getParameter("action");
         
-
         try {
             if ("add".equals(action)) {
                 String name = request.getParameter("categoryName");
@@ -47,7 +46,7 @@ public class CategoryController extends HttpServlet {
                         request.setAttribute("errorMessage", "ID danh mục không hợp lệ!");
                     }
                 }
-            } // 3. Xử lý SỬA (Update) - MỚI THÊM
+            } 
             else if ("update".equals(action)) {
                 String idStr = request.getParameter("id");
                 String newName = request.getParameter("newCategoryName");
@@ -65,7 +64,7 @@ public class CategoryController extends HttpServlet {
                 } else {
                     request.setAttribute("errorMessage", "Tên danh mục không được để trống!");
                 }
-            } // 4. Xử lý KHÔI PHỤC (Restore)
+            } 
             else if ("restore".equals(action)) {
                 String idStr = request.getParameter("id");
                 if (idStr != null && !idStr.trim().isEmpty()) {
@@ -85,13 +84,11 @@ public class CategoryController extends HttpServlet {
             request.setAttribute("errorMessage", "Đã xảy ra lỗi hệ thống: " + e.getMessage());
         } finally {
            try {
-                // Lấy danh sách đang hoạt động
                 List<ProductCategoryDTO> list = dao.getAll(); 
-                // Lấy danh sách đã xóa (Thùng rác)
                 List<ProductCategoryDTO> listDeleted = dao.getDeletedAll(); 
                 
                 request.setAttribute("listCategory", list);
-                request.setAttribute("listDeleted", listDeleted); // Gửi thêm thùng rác sang JSP
+                request.setAttribute("listDeleted", listDeleted); 
             } catch (Exception e) {
                 e.printStackTrace();
                 request.setAttribute("errorMessage", "Lỗi tải danh mục!");

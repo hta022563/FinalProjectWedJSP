@@ -1,4 +1,4 @@
-<%-- File: web/order-detail.jsp --%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -75,7 +75,7 @@
             color: #000;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
         }
-        /* CSS NÚT THANH TOÁN (Mới thêm) */
+        
         .btn-luxury {
             background: linear-gradient(45deg, #B8860B, #FFD700, #B8860B);
             background-size: 200% auto; color: #000 !important; font-weight: 700; text-transform: uppercase;
@@ -126,7 +126,7 @@
                 </table>
             </div>
             
-            <%-- NÚT THANH TOÁN --%>
+            
             <div class="d-flex justify-content-end p-4 border-top" style="border-color: rgba(212, 175, 55, 0.2) !important;">
                 <a href="payment.jsp?orderId=${orderId}" class="btn btn-luxury btn-lg px-5 py-3 fs-5 shadow-lg">
                     <i class="fa-solid fa-qrcode me-2"></i> THANH TOÁN HỢP ĐỒNG

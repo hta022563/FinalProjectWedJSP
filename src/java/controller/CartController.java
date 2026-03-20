@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import java.io.IOException;
@@ -25,10 +21,6 @@ import model.PromotionDTO;
 import model.UserDTO;
 import utils.JPAUtil;
 
-/**
- *
- * @author AngDeng
- */
 @WebServlet(name = "CartController", urlPatterns = {"/CartController"})
 public class CartController extends HttpServlet {
 
@@ -45,7 +37,6 @@ public class CartController extends HttpServlet {
             HttpSession session = request.getSession();
             UserDTO user = (UserDTO) session.getAttribute("user");
 
-            // CHỐT CHẶN: Nếu chưa đăng nhập -> Ép văng về trang Đăng nhập
             if (user == null) {
                 session.setAttribute("msgError", "Vui lòng đăng nhập để sử dụng tính năng này!");
                 response.sendRedirect("login.jsp");
@@ -61,12 +52,10 @@ public class CartController extends HttpServlet {
                     int productId = Integer.parseInt(productIdStr);
                     int quantity = (quantityStr != null && !quantityStr.isEmpty()) ? Integer.parseInt(quantityStr) : 1;
 
-                    // FIX 1: "Mồi" giỏ hàng trước để tránh lỗi SQL
                     cartDAO.getCartByUserId(userId);
 
                     boolean success = cartItemDAO.addToCart(userId, productId, quantity);
                     if (success) {
-                        // FIX 2: Lưu thông báo vào session để xài sendRedirect
                         session.setAttribute("msg", "Đã thêm siêu phẩm vào gara thành công!");
                     }
                 }
@@ -76,9 +65,8 @@ public class CartController extends HttpServlet {
                     returnUrl = "home.jsp";
                 }
 
-                // FIX 3: Dùng sendRedirect thay vì forward để trị dứt điểm bệnh "Trắng trang"
                 response.sendRedirect(returnUrl);
-                return; // Ngắt luồng tại đây
+                return; 
 
             } else if ("viewCart".equals(action)) {
                 CartDTO cart = cartDAO.getCartByUserId(userId);
@@ -123,15 +111,13 @@ public class CartController extends HttpServlet {
             } else if ("applyPromo".equals(action)) {
                 String promoCode = request.getParameter("promoCode");
 
-                // Gọi DAO để check mã (Sếp cần có hàm lấy Promotion theo Code trong PromotionDAO)
                 PromotionDAO promoDao = new PromotionDAO();
                 PromotionDTO promo = promoDao.getPromotionByCode(promoCode);
 
                 if (promo != null && promo.getIsActive() == 1) {
-                    // Lưu thông tin giảm giá vào Session để mang sang trang Checkout
                     session.setAttribute("appliedPromoCode", promo.getPromoCode());
                     session.setAttribute("discountPercent", promo.getDiscountPercent());
-                    session.setAttribute("promotionId", promo.getPromotionID()); // Lưu ID để mốt chốt đơn
+                    session.setAttribute("promotionId", promo.getPromotionID()); 
                     session.setAttribute("promoMsg", "Áp dụng mã giảm " + promo.getDiscountPercent() + "% thành công!");
                 } else {
                     session.removeAttribute("appliedPromoCode");
@@ -146,14 +132,12 @@ public class CartController extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // FIX 4: Nếu lỡ có Exception, cũng đá văng về Product kèm thông báo lỗi thay vì đứng hình trắng trang
             request.getSession().setAttribute("msgError", "Hệ thống bận, vui lòng thử lại sau!");
             response.sendRedirect("ProductController");
         }
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -169,6 +153,6 @@ public class CartController extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }

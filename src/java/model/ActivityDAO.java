@@ -5,13 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import utils.DbUtils; // Nhớ check lại import này xem đúng thư mục của Hảo chưa nhé
+import utils.DbUtils; 
 
 public class ActivityDAO {
 
-    // ==========================================================
-    // [C] CREATE - TẠO MỚI LOG (GHI VẾT)
-    // ==========================================================
     public void logActivity(String type, String title, String createdBy, String refCode, Double amount) {
         String sql = "INSERT INTO Activity_Logs (log_type, title, created_by, reference_code, amount) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DbUtils.getConnection();  
@@ -31,11 +28,6 @@ public class ActivityDAO {
         }
     }
 
-    // ==========================================================
-    // [R] READ - ĐỌC DỮ LIỆU LOG
-    // ==========================================================
-    
-    // 1. Đọc N dòng mới nhất cho Dashboard
     public List<ActivityDTO> getRecentActivities(int topNumber) {
         List<ActivityDTO> list = new ArrayList<>();
         String sql = "SELECT TOP (?) * FROM Activity_Logs ORDER BY created_at DESC";
@@ -65,7 +57,6 @@ public class ActivityDAO {
         return list;
     }
 
-    // 2. Đọc TOÀN BỘ Log (Dành cho trang Quản lý Nhật ký)
     public List<ActivityDTO> getAllActivities() {
         List<ActivityDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM Activity_Logs ORDER BY created_at DESC";
@@ -94,10 +85,6 @@ public class ActivityDAO {
         return list;
     }
 
-    // ==========================================================
-    // [U] UPDATE - CẬP NHẬT LOG 
-    // (Lưu ý: Chỉ dùng cho Admin gỡ lỗi/cập nhật trạng thái)
-    // ==========================================================
     public boolean updateActivity(int logId, String type, String title, String refCode, Double amount) {
         String sql = "UPDATE Activity_Logs SET log_type=?, title=?, reference_code=?, amount=? WHERE log_id=?";
         boolean isUpdated = false;
@@ -123,11 +110,6 @@ public class ActivityDAO {
         return isUpdated;
     }
 
-    // ==========================================================
-    // [D] DELETE - XÓA LOG
-    // ==========================================================
-    
-    // 1. Xóa 1 dòng Log cụ thể
     public boolean deleteActivity(int logId) {
         String sql = "DELETE FROM Activity_Logs WHERE log_id=?";
         boolean isDeleted = false;
@@ -144,9 +126,8 @@ public class ActivityDAO {
         return isDeleted;
     }
 
-    // 2. Dọn dẹp toàn bộ Log (Tính năng Admin Reset Hệ thống)
     public boolean clearAllLogs() {
-        String sql = "TRUNCATE TABLE Activity_Logs"; // Chạy cực nhanh so với DELETE
+        String sql = "TRUNCATE TABLE Activity_Logs"; 
         boolean isCleared = false;
         
         try (Connection conn = DbUtils.getConnection(); 
