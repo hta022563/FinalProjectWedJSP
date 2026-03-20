@@ -43,7 +43,8 @@ public class ShowroomController extends HttpServlet {
                 int id = Integer.parseInt(request.getParameter("id"));
                 dao.restore(id);
             }
-        } catch (Exception e) { e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             request.setAttribute("listShowroom", dao.getAllActive());
             request.setAttribute("listDeleted", dao.getDeletedAll());
@@ -52,7 +53,12 @@ public class ShowroomController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { processRequest(req, resp); }
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
+    }
+
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { processRequest(req, resp); }
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        processRequest(req, resp);
+    }
 }

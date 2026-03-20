@@ -513,7 +513,7 @@
 </div>
 
 <script>
-    // Cập nhật đồng hồ HUD
+    
     function updateClock() {
         const now = new Date();
         document.getElementById('digital-clock').innerText =
@@ -524,7 +524,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Auto reload bảng Log (Radar)
+    
     function refreshLogs() {
         fetch('MainController?target=Dashboard&type=ajax')
                 .then(response => response.text())
@@ -538,7 +538,7 @@
     }
     setInterval(refreshLogs, 5000);
 
-    // Nạp data vào form Sửa Nhật Ký
+    
     function prepareEditModal(btnElement) {
         document.getElementById('editLogId').value = btnElement.getAttribute('data-id');
         document.getElementById('editLogTitle').value = btnElement.getAttribute('data-title');

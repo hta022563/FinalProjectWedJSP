@@ -6,7 +6,7 @@
 <%@page import="model.ShowroomDTO"%>
 <%@page import="java.util.List"%>
 <%
-    // Bọc Try-Catch an toàn và GỌI ĐÚNG TÊN HÀM getAllActive() CỦA SẾP
+    
     try {
         ShowroomDAO srDao = new ShowroomDAO();
         request.setAttribute("listShowrooms", srDao.getAllActive());

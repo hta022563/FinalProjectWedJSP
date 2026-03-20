@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * @author Computing Fundamental - HCM Campus
  */
 public class DbUtils {
-//    Do not change this code
+
     private static final String DB_NAME = "CarStore_FinalWeb";
     private static final String DB_USER_NAME = "sa";
     private static final String DB_PASSWORD = "12345";

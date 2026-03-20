@@ -17,7 +17,6 @@ public class PaymentMethodDTO {
     @Column(name = "IsActive")
     private int isActive;
 
-    // --- CÁC CỘT MỚI THÊM CHO GIAO DIỆN ĐỘNG ---
     @Column(name = "MethodCode")
     private String methodCode;
 
@@ -42,7 +41,6 @@ public class PaymentMethodDTO {
     public PaymentMethodDTO() {
     }
 
-    // --- GETTER VÀ SETTER CHO TẤT CẢ CÁC BIẾN ---
     public int getMethodID() {
         return methodID;
     }

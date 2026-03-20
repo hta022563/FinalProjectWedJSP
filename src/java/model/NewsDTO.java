@@ -40,7 +40,6 @@ public class NewsDTO {
         this.externalLink = externalLink;
     }
 
-    // --- GETTER & SETTER ---
     public int getNewsID() {
         return newsID;
     }

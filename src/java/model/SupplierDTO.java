@@ -6,7 +6,7 @@ public class SupplierDTO {
     private String supplierName;
     private String phone;
     private String address;
-    private int isActive; // Using int (0 or 1) to match the BIT column
+    private int isActive; 
 
     public SupplierDTO() {
     }
@@ -19,7 +19,6 @@ public class SupplierDTO {
         this.isActive = isActive;
     }
 
-    // Getters and Setters
     public int getSupplierID() {
         return supplierID;
     }

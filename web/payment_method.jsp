@@ -127,7 +127,7 @@
             </div>
         </div>
 
-        <%-- FORM THÊM MỚI (ĐÃ CÓ STICKY FORM + THÔNG BÁO TỪ CONTROLLER) --%>
+        
         <div class="aero-card p-4 mb-5 border-start border-success border-5">
             <h5 class="fw-bold mb-4 d-flex align-items-center" style="color: #11998e;">
                 <span class="bg-success bg-opacity-10 p-2 rounded-3 me-3"><i class="fa-solid fa-sack-dollar text-success"></i></span>
@@ -136,7 +136,6 @@
             <form action="PaymentMethodController" method="POST">
                 <input type="hidden" name="action" value="add"> 
                 
-                <%-- HIỂN THỊ THÔNG BÁO --%>
                 <c:if test="${not empty errorMessage}">
                     <div class="alert alert-danger fw-bold border-0 shadow-sm"><i class="fa-solid fa-triangle-exclamation me-2"></i>${errorMessage}</div>
                 </c:if>
@@ -175,7 +174,6 @@
                     </div>
                 </div>
 
-                <%-- KHUNG NHẬP THÔNG TIN NGÂN HÀNG --%>
                 <div id="addBankInfoBox" class="row g-3 p-3 bg-success bg-opacity-10 rounded-3 mb-4 border border-success border-opacity-25" style="display: flex;">
                     <h6 class="text-success fw-bold m-0"><i class="fa-solid fa-building-columns me-2"></i>Cấu hình tài khoản nhận tiền</h6>
                     <div class="col-md-4">
@@ -201,7 +199,6 @@
             </form>
         </div>
 
-        <%-- BẢNG PHƯƠNG THỨC ĐANG HOẠT ĐỘNG --%>
         <div class="aero-card overflow-hidden shadow-lg border-0 mb-5">
             <div class="table-responsive">
                 <table class="table aero-table align-middle text-center mb-0">
@@ -247,7 +244,6 @@
             </div>
         </div>
 
-        <%-- KHU VỰC THÙNG RÁC --%>
         <div class="mt-5 mb-4 d-flex justify-content-between align-items-center border-top border-success border-opacity-10 pt-4">
             <h5 class="fw-bold text-muted text-uppercase" style="letter-spacing: 2px;"><i class="fa-solid fa-box-archive me-2"></i> Hồ sơ giao dịch đã đóng</h5>
             <button class="btn btn-outline-secondary btn-sm rounded-pill px-4 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#trashSection">Mở Archive</button>
@@ -281,7 +277,6 @@
         </div>
     </div>
 
-    <%-- MODAL CHỈNH SỬA --%>
     <c:forEach items="${listPaymentMethod}" var="pm">
         <div class="modal fade" id="editModalPM${pm.methodID}" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
             <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -326,7 +321,6 @@
                                 </div>
                             </div>
 
-                            <%-- KHUNG THÔNG TIN NGÂN HÀNG TRONG MODAL SỬA --%>
                             <div id="editBankInfoBox${pm.methodID}" class="row g-3 p-3 bg-success bg-opacity-10 rounded-3" style="display: ${pm.methodCode == 'QR' ? 'flex' : 'none'};">
                                 <h6 class="text-success fw-bold m-0 w-100"><i class="fa-solid fa-building-columns me-2"></i>Cấu hình tài khoản nhận tiền</h6>
                                 <div class="col-md-4">
@@ -355,7 +349,6 @@
     </c:forEach>
 
     <script>
-        // Đồng hồ thời gian thực
         function updateClock() {
             const now = new Date();
             const clockEl = document.getElementById('digital-clock');
@@ -368,7 +361,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Đóng/Mở form Ngân hàng
         function toggleBankInfo(mode, id = '') {
             let selectBox, bankBox;
 
@@ -389,7 +381,6 @@
             }
         }
 
-        // Kích hoạt hàm ẩn/hiện form khi tải trang
         document.addEventListener("DOMContentLoaded", function() {
             toggleBankInfo('add');
         });

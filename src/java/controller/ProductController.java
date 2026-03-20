@@ -15,8 +15,8 @@ import model.ProductDTO;
 import model.SearchHistoryDAO;
 import model.SearchHistoryDTO;
 import model.UserDTO;
-import model.ProductCategoryDAO; 
-import model.ProductCategoryDTO; 
+import model.ProductCategoryDAO;
+import model.ProductCategoryDTO;
 
 @WebServlet(name = "ProductController", urlPatterns = {"/ProductController"})
 public class ProductController extends HttpServlet {
@@ -33,27 +33,20 @@ public class ProductController extends HttpServlet {
 
         ProductDAO dao = new ProductDAO();
         SearchHistoryDAO trendDAO = new SearchHistoryDAO();
-        
-        // KHỞI TẠO DAO DANH MỤC
-        ProductCategoryDAO catDAO = new ProductCategoryDAO(); 
+
+        ProductCategoryDAO catDAO = new ProductCategoryDAO();
 
         HttpSession session = request.getSession();
         UserDTO user = (UserDTO) session.getAttribute("user");
 
-        // ==========================================================
-        // 1. HIỂN THỊ DANH SÁCH (CÓ TÌM KIẾM VÀ CHIA TAB)
-        // ==========================================================
         if (action == null || action.equals("list")) {
             List<ProductDTO> listProduct;
 
-            // NẾU CÓ TÌM KIẾM
             if (keyword != null && !keyword.trim().isEmpty()) {
                 trendDAO.saveOrUpdateSearch(keyword);
                 listProduct = dao.searchProductsByName(keyword);
                 request.setAttribute("currentKeyword", keyword);
-            } // NẾU KHÔNG TÌM KIẾM
-            else {
-                // Admin thấy hết, Khách thấy xe đang bán
+            } else {
                 if (user != null && user.getRole() == 1) {
                     listProduct = dao.getAllProducts();
                 } else {
@@ -61,41 +54,32 @@ public class ProductController extends HttpServlet {
                 }
             }
 
-            // Lấy Top 4 Xu Hướng
             List<SearchHistoryDTO> topTrending = trendDAO.getTopSearches(4);
             request.setAttribute("topSearches", topTrending);
 
-            // ĐÃ SỬA: Dùng hàm getAll() theo đúng file DAO của bạn
             List<ProductCategoryDTO> listCategories = catDAO.getAll();
             request.setAttribute("listCategories", listCategories);
 
-            // CHIA TAB (Xe Hơi và Phụ Tùng) 
             List<ProductDTO> listCars = new ArrayList<>();
             List<ProductDTO> listParts = new ArrayList<>();
 
             if (listProduct != null) {
                 for (ProductDTO p : listProduct) {
                     int catID = p.getCategoryID();
-                    // Nếu ID = 6 (Phụ tùng) thì cho vào Tab Phụ tùng
                     if (catID == 6) {
                         listParts.add(p);
                     } else {
-                        // Còn lại (Bao gồm Sedan, Sport, và Siêu xe...) cho hết vào Tab Xe
-                        listCars.add(p); 
+                        listCars.add(p);
                     }
                 }
             }
 
-            // Đẩy dữ liệu sang JSP
             request.setAttribute("listCars", listCars);
             request.setAttribute("listParts", listParts);
-            request.setAttribute("listP", listProduct); // Dùng cho Admin
+            request.setAttribute("listP", listProduct);
 
             request.getRequestDispatcher("product.jsp").forward(request, response);
 
-            // ==========================================================
-            // 2. CHỨC NĂNG XÓA MỀM (ADMIN)
-            // ==========================================================
         } else if (action.equals("delete")) {
             try {
                 int id = Integer.parseInt(request.getParameter("id"));
@@ -105,9 +89,6 @@ public class ProductController extends HttpServlet {
             }
             response.sendRedirect("ProductController");
 
-            // ==========================================================
-            // 3. MỞ FORM CHỈNH SỬA (ADMIN)
-            // ==========================================================
         } else if (action.equals("edit")) {
             try {
                 int id = Integer.parseInt(request.getParameter("id"));
@@ -118,9 +99,6 @@ public class ProductController extends HttpServlet {
                 response.sendRedirect("ProductController");
             }
 
-            // ==========================================================
-            // 4. LƯU SẢN PHẨM (THÊM MỚI HOẶC CẬP NHẬT)
-            // ==========================================================
         } else if (action.equals("save")) {
             try {
                 String idStr = request.getParameter("productID");
@@ -132,26 +110,24 @@ public class ProductController extends HttpServlet {
                 String desc = request.getParameter("description");
                 String img = request.getParameter("imageURL");
 
-                boolean status = true; // Mặc định mở bán
+                boolean status = true;
                 if (request.getParameter("status") != null) {
                     status = Boolean.parseBoolean(request.getParameter("status"));
                 }
 
                 if (idStr == null || idStr.isEmpty()) {
-                    // THÊM MỚI
                     dao.addProduct(new ProductDTO(0, cateID, suppID, name, price, stock, desc, img, true));
 
                     ActivityDAO actDao = new ActivityDAO();
                     actDao.logActivity(
                             "IMPORT",
                             "Nhập kho lô xe mới: " + name,
-                            "Admin", 
+                            "Admin",
                             "IMP-" + idStr,
                             null
                     );
 
                 } else {
-                    // CẬP NHẬT
                     int id = Integer.parseInt(idStr);
                     dao.updateProduct(new ProductDTO(id, cateID, suppID, name, price, stock, desc, img, status));
                 }

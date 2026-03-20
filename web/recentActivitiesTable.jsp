@@ -3,7 +3,6 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:choose>
-    <%-- TRƯỜNG HỢP 1: CÓ DỮ LIỆU --%>
     <c:when test="${not empty listActivities}">
         <c:forEach items="${listActivities}" var="act">
             <div class="log-row d-flex align-items-center p-3 rounded-4 mb-3 position-relative">
@@ -42,7 +41,6 @@
                     </c:otherwise>
                 </c:choose>
 
-                <%-- Nội dung chính --%>
                 <div class="flex-grow-1">
                     <h6 class="m-0 ${titleColor} fw-bold mb-1" style="font-size: 0.9rem;">${act.title}</h6>
                     <small class="text-white d-flex align-items-center" style="font-size: 0.75rem;">
@@ -52,7 +50,6 @@
                     </small>
                 </div>
 
-                <%-- Tag trạng thái & Cột Nút Thao Tác (Hiện khi Hover) --%>
                 <div class="d-flex flex-column align-items-end justify-content-center ms-3">
                     ${rightTag}
                     <div class="log-actions mt-2 d-flex gap-2">
@@ -72,7 +69,6 @@
         </c:forEach>
     </c:when>
 
-    <%-- TRƯỜNG HỢP 2: TRỐNG DỮ LIỆU --%>
     <c:otherwise>
         <div class="text-center p-5 mt-2 border border-danger border-opacity-50 rounded-4 position-relative overflow-hidden" style="background: rgba(220, 53, 69, 0.05);">
             <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10" style="background: repeating-linear-gradient(45deg, transparent, transparent 10px, #dc3545 10px, #dc3545 20px);"></div>
