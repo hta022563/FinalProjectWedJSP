@@ -11,23 +11,19 @@ import javax.mail.internet.MimeMessage;
 
 public class EmailUtils {
 
-    // Điền Email của bạn (Dùng làm email tổng đài F-Auto)
-    private static final String EMAIL_FROM = "hta02256app@gmail.com"; 
-    
-    // ĐÂY LÀ MẬT KHẨU ỨNG DỤNG (Không phải mật khẩu đăng nhập Gmail nha)
-    private static final String APP_PASSWORD = "urln cmax ouff fmbw"; 
+    private static final String EMAIL_FROM = "hta02256app@gmail.com";
+
+    private static final String APP_PASSWORD = "urln cmax ouff fmbw";
 
     public static boolean sendEmail(String toEmail, String subject, String body) {
         boolean isSent = false;
 
-        // 1. Cấu hình thông số máy chủ SMTP của Google
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
 
-        // 2. Đăng nhập vào Gmail của bạn bằng App Password
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -35,18 +31,15 @@ public class EmailUtils {
             }
         });
 
-      try {
-            // 1. Sửa chữ Message thành MimeMessage ở đầu
+        try {
             MimeMessage message = new MimeMessage(session);
-            
-            message.setFrom(new InternetAddress(EMAIL_FROM)); 
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail)); 
-            
-          // 2. Ép kiểu UTF-8 và Khai báo gửi dạng HTML
-            message.setSubject(subject, "UTF-8"); 
+
+            message.setFrom(new InternetAddress(EMAIL_FROM));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+
+            message.setSubject(subject, "UTF-8");
             message.setContent(body, "text/html; charset=UTF-8");
 
-            // Bấm nút Gửi
             Transport.send(message);
             isSent = true;
             System.out.println("Đã gửi mail thành công tới: " + toEmail);
@@ -58,9 +51,6 @@ public class EmailUtils {
         return isSent;
     }
 
-    // =========================================================================
-    // HÀM VẼ GIAO DIỆN EMAIL OTP
-    // =========================================================================
     public static String getOtpEmailTemplate(String customerName, String otp) {
         StringBuilder html = new StringBuilder();
         html.append("<div style=\"font-family: 'Segoe UI', Arial, sans-serif; background-color: #0a0a0a; color: #ffffff; padding: 40px 20px; max-width: 600px; margin: 0 auto; border: 1px solid #333; border-radius: 10px;\">");
@@ -82,9 +72,6 @@ public class EmailUtils {
         return html.toString();
     }
 
-    // =========================================================================
-    // HÀM VẼ GIAO DIỆN EMAIL XÁC NHẬN ĐƠN HÀNG (THÊM MỚI)
-    // =========================================================================
     public static String getOrderConfirmationTemplate(String customerName, String orderId, String paymentMethod) {
         StringBuilder html = new StringBuilder();
         html.append("<div style=\"font-family: 'Segoe UI', Arial, sans-serif; background-color: #0a0a0a; color: #ffffff; padding: 40px 20px; max-width: 600px; margin: 0 auto; border: 1px solid #D4AF37; border-radius: 10px;\">");
@@ -95,13 +82,13 @@ public class EmailUtils {
         html.append("    <h3 style=\"color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; font-weight: 500;\">XÁC NHẬN THANH TOÁN THÀNH CÔNG</h3>");
         html.append("    <p style=\"line-height: 1.6; color: #ccc; font-size: 15px;\">Kính chào quý khách <b>").append(customerName).append("</b>,</p>");
         html.append("    <p style=\"line-height: 1.6; color: #ccc; font-size: 15px;\">Cảm ơn quý khách đã tin tưởng và lựa chọn F-AUTO. Chúng tôi xin xác nhận hệ thống đã ghi nhận yêu cầu thanh toán cho hợp đồng của quý khách với chi tiết như sau:</p>");
-        
+
         html.append("    <div style=\"background: rgba(212, 175, 55, 0.05); border-left: 4px solid #D4AF37; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0;\">");
         html.append("        <p style=\"margin: 8px 0; color: #ccc;\">Mã Hợp Đồng: <strong style=\"color: #D4AF37; font-size: 18px;\">#").append(orderId).append("</strong></p>");
         html.append("        <p style=\"margin: 8px 0; color: #ccc;\">Cổng Thanh Toán: <strong>").append(paymentMethod).append("</strong></p>");
         html.append("        <p style=\"margin: 8px 0; color: #ccc;\">Trạng Thái: <strong style=\"color: #38ef7d;\">Đang chờ xử lý</strong></p>");
         html.append("    </div>");
-        
+
         html.append("    <p style=\"line-height: 1.6; color: #ccc; font-size: 14px;\">Chuyên viên tư vấn của F-AUTO sẽ liên hệ với quý khách trong thời gian sớm nhất để hướng dẫn các thủ tục tiếp theo.</p>");
         html.append("    <hr style=\"border-color: #333; margin: 30px 0;\">");
         html.append("    <p style=\"font-size: 12px; color: #666; text-align: center; line-height: 1.5;\">Mọi thắc mắc xin vui lòng liên hệ Tổng đài CSKH: <b style=\"color: #D4AF37;\">0909.123.456</b></p>");

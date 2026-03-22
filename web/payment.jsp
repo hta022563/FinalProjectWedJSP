@@ -5,12 +5,12 @@
 <%@page import="model.OrderDAO, model.OrderDTO, model.UserDTO"%>
 
 <%
-    // Lấy danh sách phương thức thanh toán
+    
     PaymentMethodDAO pmDAO = new PaymentMethodDAO();
     List<PaymentMethodDTO> listMethods = pmDAO.getAllActive();
     request.setAttribute("listMethods", listMethods);
 
-    // DÒNG CODE MỚI THÊM: Tự động lấy Tổng tiền của đơn hàng để truyền vào QR
+    
     double orderTotal = 0;
     String orderIdStr = request.getParameter("orderId");
     UserDTO user = (UserDTO) session.getAttribute("user");
@@ -20,13 +20,13 @@
         List<OrderDTO> userOrders = orderDAO.getOrdersByUserId(user.getUserID());
         for(OrderDTO o : userOrders) {
             if(o.getOrderID() == Integer.parseInt(orderIdStr)) {
-                // ĐÃ FIX LỖI ÉP KIỂU: Thêm .doubleValue() để chuyển từ BigDecimal sang double
+                
                 orderTotal = (o.getTotalAmount() != null) ? o.getTotalAmount().doubleValue() : 0; 
                 break;
             }
         }
     }
-    // Ép kiểu số tiền về số nguyên (không có dấu thập phân) để API VietQR đọc được
+    
     request.setAttribute("orderTotal", String.format("%.0f", orderTotal));
 %>
 
@@ -69,7 +69,7 @@
     .form-dark:focus { border-color: #D4AF37 !important; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2) !important; }
     .form-dark::placeholder { color: #666666; }
 
-    /* Custom CSS thẻ Select Option */
+    
     .custom-select-qr {
         background-color: #1a1a1a;
         color: #D4AF37;
@@ -119,7 +119,7 @@
                         <c:if test="${method.methodCode == 'QR'}"><c:set var="hasQR" value="true" /></c:if>
                     </c:forEach>
 
-                    <%-- NÚT GOM NHÓM MÃ QR --%>
+                    
                     <c:if test="${hasQR}">
                         <label class="d-block mb-3">
                             <input type="radio" name="ui_selector" value="GROUP_QR" class="pay-radio" checked>
@@ -134,7 +134,7 @@
                         </label>
                     </c:if>
 
-                    <%-- CÁC NÚT PHƯƠNG THỨC KHÁC --%>
+                    
                     <c:forEach var="method" items="${listMethods}">
                         <c:if test="${method.methodCode != 'QR'}">
                             <label class="d-block mb-3">
@@ -153,7 +153,7 @@
 
                     <div id="dynamic-payment-section" class="mb-5 pt-4 border-top border-secondary">
                         
-                        <%-- KHUNG A: CHUYỂN KHOẢN --%>
+                        
                         <c:if test="${hasQR}">
                             <div id="pane-GROUP_QR" class="payment-info-pane">
                                 <div class="mb-4 text-center">
@@ -172,7 +172,7 @@
                                         <div id="qr-detail-box-${method.methodID}" class="qr-detail-box text-center" style="display: none;">
                                             <div class="bg-light p-3 rounded-3 d-inline-block border border-warning mb-4 shadow">
                                                 
-                                                <%-- ĐÃ THAY BẰNG API VIETQR TỰ ĐỘNG CÓ SẴN TỔNG TIỀN VÀ NỘI DUNG --%>
+                                                
                                                 <img src="https://img.vietqr.io/image/${method.bankName}-${method.accountNo}-compact2.png?amount=${orderTotal}&addInfo=FAUTO%20${param.orderId}&accountName=${method.accountName}" 
                                                      alt="VietQR Code" 
                                                      style="width: 220px; height: 220px; object-fit: contain; border-radius: 8px;">
@@ -193,7 +193,7 @@
                             </div>
                         </c:if>
 
-                        <%-- KHUNG B: THẺ VÀ TIỀN MẶT --%>
+                        
                         <c:forEach var="method" items="${listMethods}">
                             <c:if test="${method.methodCode != 'QR'}">
                                 <div id="pane-${method.methodID}" class="payment-info-pane" style="display: none;">

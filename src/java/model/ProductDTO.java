@@ -43,7 +43,6 @@ public class ProductDTO {
     public ProductDTO() {
     }
 
-    // Hàm khởi tạo đã được thêm tham số status
     public ProductDTO(int productID, int categoryID, int supplierID, String productName, double price, int stockQuantity, String description, String imageURL, boolean status) {
         this.productID = productID;
         this.categoryID = categoryID;
@@ -53,10 +52,9 @@ public class ProductDTO {
         this.stockQuantity = stockQuantity;
         this.description = description;
         this.imageURL = imageURL;
-        this.status = status; // <-- THÊM DÒNG NÀY NỮA LÀ CHUẨN
+        this.status = status; 
     }
 
-    // --- Getters và Setters ---
     public int getProductID() {
         return productID;
     }

@@ -7,7 +7,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
-    /* -- CSS CHUẨN DARK MODE LUXURY -- */
     body {
         background-color: #0a0a0a;
         color: #f8f9fa;
@@ -105,7 +104,6 @@
         border-color: #fff;
     }
 
-    /* CSS THANH TÌM KIẾM */
     .search-glass-wrapper {
         background: rgba(20, 20, 20, 0.85);
         backdrop-filter: blur(15px);
@@ -181,7 +179,6 @@
     }
 </style>
 
-<%-- THÔNG BÁO TỪ SESSION --%>
 <c:if test="${not empty sessionScope.msg}">
     <script>
         Swal.fire({
@@ -235,9 +232,7 @@
 
 <div class="container mb-5 mt-5">
     
-    <%-- =======================================================
-         PHẦN 1: IN MENU DANH MỤC (Lấy động từ Database)
-         ======================================================= --%>
+    
     <ul class="nav nav-tabs justify-content-center f-auto-tabs" id="categoryTabs" role="tablist">
         <%-- Nút TẤT CẢ (Cứng) --%>
         <li class="nav-item" role="presentation">
@@ -251,9 +246,7 @@
         </c:forEach>
     </ul>
 
-    <%-- =======================================================
-         PHẦN 2: NỘI DUNG TỪNG TAB SẢN PHẨM
-         ======================================================= --%>
+    
     <div class="tab-content" id="categoryTabsContent">
         
         <%-- NỘI DUNG TAB TẤT CẢ (catId = 0) --%>
@@ -323,7 +316,7 @@
             </div>
         </div>
 
-        <%-- NỘI DUNG CÁC TAB CÒN LẠI (Tự sinh theo DB) --%>
+        
         <c:forEach items="${listCategories}" var="cat">
             <div class="tab-pane fade" id="tab-${cat.categoryID}" role="tabpanel">
                 <div class="row g-4">

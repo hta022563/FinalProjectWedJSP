@@ -71,7 +71,7 @@ public class AuthFilter implements Filter {
         UserDTO currentUser = (session != null) ? (UserDTO) session.getAttribute("user") : null;
 
         if (isAdminArea) {
-            if (currentUser == null || currentUser.getRole() != 1) { // role 1 = Admin
+            if (currentUser == null || currentUser.getRole() != 1) { 
                 req.getSession().setAttribute("msgError", "CẢNH BÁO: Khu vực này chỉ dành cho Ban Quản Trị!");
                 res.sendRedirect(req.getContextPath() + "/login.jsp");
                 return;

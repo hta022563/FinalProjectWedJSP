@@ -15,14 +15,13 @@ import java.io.File;
 import model.ActivityDAO;
 
 @MultipartConfig(
-    fileSizeThreshold = 1024 * 1024 * 2,
-    maxFileSize = 1024 * 1024 * 10,
-    maxRequestSize = 1024 * 1024 * 50
+        fileSizeThreshold = 1024 * 1024 * 2,
+        maxFileSize = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 50
 )
 @WebServlet(name = "UserController", urlPatterns = {"/UserController"})
 public class UserController extends HttpServlet {
 
-    // --- 1. XỬ LÝ ĐĂNG NHẬP ---
     protected void doLogin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
@@ -43,12 +42,12 @@ public class UserController extends HttpServlet {
 
                 javax.servlet.http.Cookie cUser = new javax.servlet.http.Cookie("cUser", encryptedUser);
                 javax.servlet.http.Cookie cPass = new javax.servlet.http.Cookie("cPass", encryptedPass);
-                
+
                 cUser.setPath("/");
                 cPass.setPath("/");
-                cUser.setMaxAge(7 * 24 * 60 * 60); 
+                cUser.setMaxAge(7 * 24 * 60 * 60);
                 cPass.setMaxAge(7 * 24 * 60 * 60);
-                
+
                 response.addCookie(cUser);
                 response.addCookie(cPass);
             } else {
@@ -68,21 +67,18 @@ public class UserController extends HttpServlet {
         }
     }
 
-    // --- 2. XỬ LÝ ĐĂNG XUẤT ---
     protected void doLogout(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         if (session.getAttribute("user") != null) {
-            session.invalidate(); 
+            session.invalidate();
         }
         response.sendRedirect("login.jsp");
     }
 
-    // --- 3. XỬ LÝ ĐĂNG KÝ (SẠCH BONG TIẾNG VIỆT) ---
     protected void doRegister(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Nhờ có Filter gác cổng, sếp cứ lấy Parameter bình thường, tự ra tiếng Việt chuẩn
+
         String username = request.getParameter("txtUsername");
         String pass = request.getParameter("txtPassword");
         String confirmPass = request.getParameter("txtConfirmPassword");
@@ -105,51 +101,46 @@ public class UserController extends HttpServlet {
 
         UserDTO newUser = new UserDTO();
         newUser.setUsername(username);
-        newUser.setPassword(pass); 
+        newUser.setPassword(pass);
         newUser.setFullName(fullName);
         newUser.setEmail(email);
         newUser.setPhone(phone);
-        newUser.setRole(0); 
+        newUser.setRole(0);
 
         if (dao.register(newUser)) {
-            // Log activity nhận fullName tiếng Việt nét căng
             ActivityDAO actDao = new ActivityDAO();
             actDao.logActivity("SYSTEM", "Gia nhập hệ thống: " + fullName, username, "NEW-USER", null);
-            
+
             request.setAttribute("message", "Đăng ký thành công! Vui lòng đăng nhập.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
-            // LỖI NÀY THƯỜNG DO DATABASE KHÔNG NHẬN ĐƯỢC DỮ LIỆU (Check độ dài cột Password nhé)
             request.setAttribute("ERROR", "Lỗi hệ thống Database!");
             request.getRequestDispatcher("register.jsp").forward(request, response);
         }
     }
 
-    // --- 4. CẬP NHẬT PROFILE ---
     protected void doUpdateProfile(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         UserDTO currentUser = (UserDTO) session.getAttribute("user");
 
         if (currentUser != null) {
-            // Lấy dữ liệu trực tiếp, Filter đã lo phần xử lý ISO -> UTF-8
             currentUser.setFullName(request.getParameter("txtFullName"));
             currentUser.setEmail(request.getParameter("txtEmail"));
             currentUser.setPhone(request.getParameter("txtPhone"));
 
             if (new UserDAO().updateProfile(currentUser)) {
-                session.setAttribute("user", currentUser); 
+                session.setAttribute("user", currentUser);
                 request.setAttribute("message", "Cập nhật thông tin cá nhân thành công!");
             } else {
                 request.setAttribute("error", "Lỗi hệ thống!");
             }
             request.getRequestDispatcher("profile.jsp").forward(request, response);
         } else {
-            response.sendRedirect("login.jsp"); 
+            response.sendRedirect("login.jsp");
         }
     }
 
-    // --- 5. ĐỔI MẬT KHẨU ---
     protected void doChangePassword(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
@@ -159,8 +150,8 @@ public class UserController extends HttpServlet {
             String oldPass = request.getParameter("oldPassword");
             String newPass = request.getParameter("newPassword");
             String confirmPass = request.getParameter("confirmPassword");
-            String inputOtp = request.getParameter("otp"); 
-            String sessionOtp = (String) session.getAttribute("change_pass_otp"); 
+            String inputOtp = request.getParameter("otp");
+            String sessionOtp = (String) session.getAttribute("change_pass_otp");
 
             if (sessionOtp == null || !sessionOtp.equals(inputOtp)) {
                 request.setAttribute("error", "Mã OTP không chính xác!");
@@ -205,10 +196,9 @@ public class UserController extends HttpServlet {
         }
     }
 
-    // --- ĐIỀU PHỐI CHÍNH ---
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String action = request.getParameter("action");
 
         if (action == null) {
@@ -232,7 +222,7 @@ public class UserController extends HttpServlet {
         }
     }
 
-    private void handleAvatarUpload(HttpServletRequest request, HttpServletResponse response) 
+    private void handleAvatarUpload(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         UserDTO currentUser = (UserDTO) session.getAttribute("user");
@@ -243,7 +233,9 @@ public class UserController extends HttpServlet {
                     String fileName = "avatar_" + currentUser.getUserID() + ".jpg";
                     String uploadPath = request.getServletContext().getRealPath("") + File.separator + "IMG" + File.separator + "avatars";
                     File uploadDir = new File(uploadPath);
-                    if (!uploadDir.exists()) uploadDir.mkdirs();
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdirs();
+                    }
                     filePart.write(uploadPath + File.separator + fileName);
                     request.setAttribute("message", "Đã cập nhật ảnh đại diện thành công!");
                 } else {

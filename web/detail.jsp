@@ -10,13 +10,13 @@
 <%@page import="model.ReviewDAO, model.ReviewDTO, java.util.List"%>
 
 <%
-    // BỌC THÉP: Xử lý an toàn mọi trường hợp id
+   
     String carIdStr = request.getParameter("id");
     if (carIdStr == null || carIdStr.trim().isEmpty() || carIdStr.equalsIgnoreCase("null")) {
         carIdStr = request.getParameter("pid");
     }
     
-    int cId = 1; // Mã mặc định an toàn
+    int cId = 1;
     try {
         if (carIdStr != null && !carIdStr.trim().isEmpty() && !carIdStr.equalsIgnoreCase("null")) {
             cId = Integer.parseInt(carIdStr.trim());
@@ -153,7 +153,7 @@
     </c:when>
 </c:choose>
 
-<%-- CHECK TRẠNG THÁI WISHLIST ĐỂ ĐỔI MÀU TIM --%>
+
 <c:set var="isLiked" value="false" />
 <c:if test="${not empty sessionScope.wishlist}">
     <c:forEach var="wId" items="${sessionScope.wishlist}">

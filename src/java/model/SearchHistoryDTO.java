@@ -21,11 +21,9 @@ public class SearchHistoryDTO implements Serializable {
     private String keyword;
 
     @Column(name = "SearchCount")
-    private int searchCount = 1; // Mặc định khi mới tạo là tìm kiếm 1 lần
+    private int searchCount = 1; 
 
-    // ==========================================
-    // 1. HÀM KHỞI TẠO (CONSTRUCTORS)
-    // ==========================================
+
     public SearchHistoryDTO() {
     }
 
@@ -35,15 +33,12 @@ public class SearchHistoryDTO implements Serializable {
         this.searchCount = searchCount;
     }
     
-    // Hàm khởi tạo tiện lợi khi chỉ cần truyền Keyword (Lần đầu tìm kiếm)
     public SearchHistoryDTO(String keyword) {
         this.keyword = keyword;
         this.searchCount = 1;
     }
 
-    // ==========================================
-    // 2. GETTER & SETTER
-    // ==========================================
+
     public int getSearchID() {
         return searchID;
     }
@@ -68,7 +63,7 @@ public class SearchHistoryDTO implements Serializable {
         this.searchCount = searchCount;
     }
     
-    // Hàm tiện ích để tự động tăng số lần tìm kiếm lên 1
+
     public void incrementCount() {
         this.searchCount++;
     }

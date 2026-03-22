@@ -18,7 +18,6 @@ public class PaymentMethodDAO {
                 method.setMethodID(rs.getInt("MethodID"));
                 method.setMethodName(rs.getString("MethodName"));
                 method.setIsActive(rs.getInt("IsActive"));
-                // --- Bổ sung các cột mới ---
                 method.setMethodCode(rs.getString("MethodCode"));
                 method.setIconClass(rs.getString("IconClass"));
                 method.setDescription(rs.getString("Description"));
