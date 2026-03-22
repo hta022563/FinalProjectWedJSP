@@ -55,7 +55,9 @@
                         allowOutsideClick: false,
                         didOpen: () => {
                             Swal.showLoading();
-                            setTimeout(() => { window.location.href = url; }, 500);
+                            // Gửi action=updateStatus&status=Rejected để hủy đơn chuẩn tiếng Anh
+                            const finalUrl = url.includes('updateStatus') ? url : url.replace('action=delete', 'action=updateStatus&status=Rejected');
+                            setTimeout(() => { window.location.href = finalUrl; }, 500);
                         }
                     });
                 }
@@ -122,23 +124,25 @@
                                         <td>
                                             <span class="badge badge-luxury">
                                                 <c:choose>
-                                                    <c:when test="${order.status == 'Đang xử lý'}">
-                                                        <i class="fa-solid fa-circle-notch fa-spin me-1 text-warning" style="font-size: 0.8rem;"></i>
+                                                    <c:when test="${order.status == 'Pending'}">
+                                                        <i class="fa-solid fa-circle-notch fa-spin me-1 text-warning"></i> CHỜ XỬ LÝ
                                                     </c:when>
-                                                    <c:when test="${order.status == 'Đã duyệt'}">
-                                                        <i class="fa-solid fa-clipboard-check me-1 text-info" style="font-size: 0.8rem;"></i>
+                                                    <c:when test="${order.status == 'Approved'}">
+                                                        <i class="fa-solid fa-clipboard-check me-1 text-info"></i> ĐÃ DUYỆT
                                                     </c:when>
-                                                    <c:when test="${order.status == 'Đang giao'}">
-                                                        <i class="fa-solid fa-truck-fast me-1 text-primary" style="font-size: 0.8rem;"></i>
+                                                    <c:when test="${order.status == 'Shipping'}">
+                                                        <i class="fa-solid fa-truck-fast me-1 text-primary"></i> ĐANG GIAO
                                                     </c:when>
-                                                    <c:when test="${order.status == 'Đã từ chối'}">
-                                                        <i class="fa-solid fa-ban me-1 text-danger" style="font-size: 0.8rem;"></i>
+                                                    <c:when test="${order.status == 'Rejected'}">
+                                                        <i class="fa-solid fa-ban me-1 text-danger"></i> ĐÃ HỦY
+                                                    </c:when>
+                                                    <c:when test="${order.status == 'Completed'}">
+                                                        <i class="fa-solid fa-circle-check me-1 text-success"></i> HOÀN TẤT
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <i class="fa-solid fa-circle-check me-1 text-success" style="font-size: 0.8rem;"></i>
+                                                        <i class="fa-solid fa-question me-1 text-secondary"></i> ${order.status}
                                                     </c:otherwise>
                                                 </c:choose>
-                                                ${order.status}
                                             </span>
                                         </td>
 
@@ -149,35 +153,30 @@
                                                 </a>
 
                                                 <c:choose>
-                                                    <c:when test="${order.status == 'Đang xử lý'}">
-                                                        <a href="MainController?target=Order&action=delete&id=${order.orderID}" class="btn btn-sm btn-outline-danger-lux px-3" onclick="xoaDonHang(event, this.href, '${order.orderID}')">
+                                                    <%-- Nếu đơn mới đặt, khách có quyền Hủy --%>
+                                                    <c:when test="${order.status == 'Pending'}">
+                                                        <a href="MainController?target=Order&action=updateStatus&orderId=${order.orderID}&status=Rejected" class="btn btn-sm btn-outline-danger-lux px-3" onclick="xoaDonHang(event, this.href, '${order.orderID}')">
                                                             Hủy
                                                         </a>
                                                     </c:when>
                                                     
-                                                    <%-- ĐÃ FIX NÚT THANH TOÁN KHI ADMIN ĐÃ DUYỆT --%>
-                                                    <c:when test="${order.status == 'Đã duyệt'}">
+                                                    <%-- Nếu Admin đã duyệt, hiện nút Thanh Toán --%>
+                                                    <c:when test="${order.status == 'Approved'}">
                                                         <a href="payment_method.jsp?orderId=${order.orderID}" class="btn btn-sm btn-warning text-dark fw-bold px-3 rounded-pill">
                                                             <i class="fa-solid fa-credit-card me-1"></i> Thanh Toán
                                                         </a>
                                                     </c:when>
                                                     
-                                                    <%-- ĐÃ NỐI CHỮ "Đã từ chối" THÀNH 1 DÒNG ĐỂ HẾT LỖI --%>
-                                                    <c:when test="${order.status == 'Đã từ chối'}">
-                                                        <button class="btn btn-sm px-3" disabled style="border: 1px solid #555; background: transparent; color: #888; border-radius: 50px; opacity: 0.5;">
-                                                            <i class="fa-solid fa-xmark"></i> Đã Hủy
-                                                        </button>
-                                                    </c:when>
-                                                    
-                                                    <c:when test="${order.status == 'Hoàn thành'}">
+                                                    <%-- Nếu đã hoàn tất, cho tải hợp đồng --%>
+                                                    <c:when test="${order.status == 'Completed'}">
                                                         <a href="MainController?target=Order&action=exportContract&id=${order.orderID}" target="_blank" class="btn btn-sm btn-outline-success px-3 rounded-pill fw-bold" style="border-width: 2px;">
-                                                            <i class="fa-solid fa-file-pdf me-1"></i> Tải Hợp Đồng
+                                                            <i class="fa-solid fa-file-pdf me-1"></i> Hợp Đồng
                                                         </a>
                                                     </c:when>
                                                     
                                                     <c:otherwise>
-                                                        <button class="btn btn-sm btn-outline-secondary px-3" disabled style="opacity: 0.5;" title="Admin đang xử lý, không thể thao tác">
-                                                            <i class="fa-solid fa-lock"></i> Khóa
+                                                        <button class="btn btn-sm btn-outline-secondary px-3" disabled style="opacity: 0.5;">
+                                                            <i class="fa-solid fa-lock"></i> Đóng
                                                         </button>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -192,7 +191,7 @@
             </div>
         </div>
         <div class="mt-4 text-start">
-            <a href="home.jsp" class="btn btn-outline-luxury px-4 py-2"><i class="fa-solid fa-arrow-left me-2"></i> Trở về Showroom</a>
+            <a href="ProductController" class="btn btn-outline-luxury px-4 py-2"><i class="fa-solid fa-arrow-left me-2"></i> Trở về Showroom</a>
         </div>
     </div>
 
