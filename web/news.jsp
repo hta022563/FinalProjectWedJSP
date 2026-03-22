@@ -7,7 +7,7 @@
     <div class="container my-5">
         <h2 class="fw-bold mb-4 border-bottom pb-2 text-uppercase luxury-logo">Tin tức & Sự kiện</h2>
 
-    <%-- DANH SÁCH BÀI VIẾT --%>
+    
     <div class="row">
         <c:forEach items="${listN}" var="n">
             <div class="col-md-6 mb-4">
@@ -48,7 +48,7 @@
         </c:forEach>
     </div>
 
-    <%-- FORM THÊM/SỬA TIN TỨC CHỈ HIỂN THỊ KHI LÀ ADMIN --%>
+    
     <c:if test="${sessionScope.user != null && sessionScope.user.role == 1}">
         <hr class="my-5 border-2 border-dark">
         <div class="card shadow border-0" id="admin-form">

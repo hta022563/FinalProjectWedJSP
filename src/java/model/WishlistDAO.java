@@ -19,7 +19,7 @@ import utils.DbUtils;
 public class WishlistDAO {
 
     public boolean add(int userId, int productId) {
-        if (check(userId, productId)) return true; // Có rồi khỏi thêm
+        if (check(userId, productId)) return true;
         String sql = "INSERT INTO Wishlist(UserID, ProductID) VALUES(?, ?)";
         try (Connection conn = DbUtils.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
@@ -29,7 +29,6 @@ public class WishlistDAO {
         return false;
     }
 
-    // Gỡ tim khỏi Database
     public boolean remove(int userId, int productId) {
         String sql = "DELETE FROM Wishlist WHERE UserID = ? AND ProductID = ?";
         try (Connection conn = DbUtils.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {

@@ -97,10 +97,9 @@ public class PromotionDAO {
         return false;
     }
     
-    // Hàm này sẽ làm cái vạch đỏ trong CartController của sếp biến mất
     public PromotionDTO getPromotionByCode(String code) {
         String sql = "SELECT * FROM Promotion WHERE PromoCode = ? AND IsActive = 1";
-        try (Connection conn = DbUtils.getConnection(); // <--- Đổi chỗ này nếu file kết nối DB của sếp tên khác
+        try (Connection conn = DbUtils.getConnection();  
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, code);

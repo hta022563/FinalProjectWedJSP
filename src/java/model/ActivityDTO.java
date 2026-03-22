@@ -5,18 +5,16 @@ import java.sql.Timestamp;
 public class ActivityDTO {
 
     private int logId;
-    private String type; // 'IMPORT', 'SECURITY', 'ORDER'
+    private String type;
     private String title;
     private String createdBy;
     private Timestamp createdAt;
     private String referenceCode;
     private Double amount;
 
-    // Default Constructor
     public ActivityDTO() {
     }
 
-    // Constructor đầy đủ
     public ActivityDTO(int logId, String type, String title, String createdBy, Timestamp createdAt, String referenceCode, Double amount) {
         this.logId = logId;
         this.type = type;
@@ -27,7 +25,6 @@ public class ActivityDTO {
         this.amount = amount;
     }
 
-    // --- CÁC HÀM GETTER & SETTER THÔNG THƯỜNG ---
     public int getLogId() {
         return logId;
     }
@@ -84,8 +81,6 @@ public class ActivityDTO {
         this.amount = amount;
     }
 
-    // --- THUẬT TOÁN ĐẶC BIỆT: Tính thời gian tương đối (timeAgo) ---
-    // Giao diện JSP sẽ gọi hàm này thông qua ${act.timeAgo}
     public String getTimeAgo() {
         if (this.createdAt == null) {
             return "";

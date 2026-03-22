@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        /* Thiết lập font chữ và nền chuẩn văn bản in A4 */
+        
         body { 
             background: #e9ecef; 
             color: #000; 
@@ -40,7 +40,7 @@
 
         .logo-text { font-size: 20px; font-weight: bold; letter-spacing: 1px; color: #000; }
         
-        /* Bảng giá trị hợp đồng */
+        
         .table-contract th, .table-contract td { 
             border: 1px solid #000 !important; 
             padding: 10px;
@@ -48,7 +48,7 @@
         }
         .table-contract thead th { background-color: #f8f9fa !important; }
 
-        /* Con dấu và chữ ký */
+        
         .stamp-container {
             position: relative;
             display: inline-block;
@@ -78,7 +78,7 @@
             z-index: 2;
         }
 
-        /* Khi bấm In (Print), Ẩn nút và ép in hình nền/màu sắc */
+        
         @media print {
             @page { margin: 0; size: A4; }
             body { background: #fff; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }

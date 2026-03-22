@@ -1,4 +1,4 @@
-      package controller;
+package controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,10 +16,10 @@ import utils.JPAUtil;
 @WebServlet(name = "DetailController", urlPatterns = {"/DetailController"})
 public class DetailController extends HttpServlet {
 
-   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-         request.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         String carIdStr = request.getParameter("id");
         if (carIdStr == null || carIdStr.trim().isEmpty() || carIdStr.equalsIgnoreCase("null")) {
@@ -32,7 +32,7 @@ public class DetailController extends HttpServlet {
 
         try {
             int carId = Integer.parseInt(carIdStr.trim());
-            
+
             EntityManager em = JPAUtil.getEntityManager();
             ProductDTO product = em.find(ProductDTO.class, carId);
             em.close();
@@ -59,6 +59,14 @@ public class DetailController extends HttpServlet {
             response.sendRedirect("MainController?target=Product");
         }
     }
-    @Override protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { processRequest(request, response); }
-    @Override protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { processRequest(request, response); }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        processRequest(request, response);
+    }
 }

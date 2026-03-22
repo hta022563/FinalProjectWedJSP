@@ -27,39 +27,30 @@ public class AuthFilter implements Filter {
         
         String requestURI = req.getRequestURI();
         String target = req.getParameter("target");
-        String action = req.getParameter("action"); // Lấy thêm action để xử lý sâu hơn
+        String action = req.getParameter("action"); 
 
-        // Bỏ qua các file tĩnh (CSS, JS, IMG) để không làm chậm web
         if (requestURI.matches(".*(css|jpg|png|gif|js|woff|ttf)$")) {
             chain.doFilter(request, response);
             return;
         }
 
-       // =========================================================
-        // 1. NHẬN DIỆN VÙNG ADMIN (Mức cảnh giới cao nhất)
-        // =========================================================
         boolean isAdminArea = requestURI.contains("admin-") 
                            || requestURI.contains("supplier.jsp")
                            || requestURI.contains("promotion.jsp")
                            || requestURI.contains("payment_method.jsp")
                            || requestURI.contains("recentActivitiesTable.jsp")
-                           || requestURI.contains("category.jsp") // <--- THÊM VÀO ĐÂY NÈ SẾP
+                           || requestURI.contains("category.jsp") 
                            || requestURI.contains("DashboardController")
                            || requestURI.contains("SupplierController")
                            || requestURI.contains("PromotionController")
                            || requestURI.contains("PaymentMethodController")
-                           || requestURI.contains("CategoryController") // <--- CHẶN LUÔN CONTROLLER
+                           || requestURI.contains("CategoryController") 
                            || "Dashboard".equals(target) || "Supplier".equals(target) 
                            || "Promotion".equals(target) || "Payment".equals(target)
-                           || "Category".equals(target); // <--- CHẶN TỪ MAIN CONTROLLER
+                           || "Category".equals(target); 
 
-        // Xử lý action đặc quyền của Admin
         if ("updateStatus".equals(action)) { isAdminArea = true; }
-        // (Nếu sếp có action 'add', 'edit', 'delete' cho Product thì nhét thêm vào đây)
 
-        // =========================================================
-        // 2. NHẬN DIỆN VÙNG USER (Cần đăng nhập)
-        // =========================================================
         boolean isUserArea = requestURI.contains("cart.jsp")
                           || requestURI.contains("checkout.jsp")
                           || requestURI.contains("profile.jsp")
@@ -69,19 +60,15 @@ public class AuthFilter implements Filter {
                           || requestURI.contains("ReviewController")
                           || "Cart".equals(target) || "Review".equals(target);
                           
-        // Các action yêu cầu tài khoản
         if ("checkout".equals(action) || "detail".equals(action) || "delete".equals(action) || "exportContract".equals(action) 
             || "profile".equals(action) || "updateProfile".equals(action) || "changePassword".equals(action)) {
             isUserArea = true;
         }
 
-        // =========================================================
-        // 3. XÉT DUYỆT CẤP QUYỀN VÀO CỔNG
-        // =========================================================
         UserDTO currentUser = (session != null) ? (UserDTO) session.getAttribute("user") : null;
 
         if (isAdminArea) {
-            if (currentUser == null || currentUser.getRole() != 1) { // role 1 = Admin
+            if (currentUser == null || currentUser.getRole() != 1) { 
                 req.getSession().setAttribute("msgError", "CẢNH BÁO: Khu vực này chỉ dành cho Ban Quản Trị!");
                 res.sendRedirect(req.getContextPath() + "/login.jsp");
                 return;
@@ -95,7 +82,6 @@ public class AuthFilter implements Filter {
             }
         }
 
-        // Nếu hợp lệ hoặc là khách vãng lai (Guest) đang xem xe -> Cho phép đi qua
         chain.doFilter(request, response);
     }
 

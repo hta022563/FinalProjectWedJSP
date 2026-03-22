@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "UserDTO")
-@Table(name = "[User]") // Bắt buộc có ngoặc vuông vì User là từ khóa hệ thống SQL Server
+@Table(name = "[User]") 
 public class UserDTO {
 
     @Id
@@ -51,7 +51,7 @@ public class UserDTO {
         this.role = role;
     }
 
-    // --- Getters and Setters ---
+
     public int getUserID() {
         return userID;
     }

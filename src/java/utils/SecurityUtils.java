@@ -8,9 +8,7 @@ import java.security.Key;
 
 public class SecurityUtils {
     
-    // =====================================================================
-    // 1. DÀNH CHO DATABASE: BĂM MẬT KHẨU (1 CHIỀU) - CODE CŨ CỦA BẠN
-    // =====================================================================
+
     public static String hashPassword(String plainPassword) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -22,14 +20,10 @@ public class SecurityUtils {
         }
     }
 
-    // =====================================================================
-    // 2. DÀNH CHO COOKIE: MÃ HÓA & GIẢI MÃ (2 CHIỀU BẰNG AES) - CODE MỚI
-    // =====================================================================
-    
-    // Khóa bí mật AES (Bắt buộc đúng 16 ký tự). Tuyệt đối không để lộ!
+
     private static final String SECRET_KEY = "FAUTO_SECRET_KEY";
 
-    // Hàm Mã Hóa (Dùng khi Lưu Cookie)
+
     public static String encrypt(String data) {
         if (data == null) return null;
         try {
@@ -44,7 +38,7 @@ public class SecurityUtils {
         }
     }
 
-    // Hàm Giải Mã (Dùng khi Đọc Cookie để tự động điền)
+
     public static String decrypt(String encryptedData) {
         if (encryptedData == null) return null;
         try {
@@ -55,11 +49,11 @@ public class SecurityUtils {
             byte[] decValue = cipher.doFinal(decordedValue);
             return new String(decValue, "UTF-8");
         } catch (Exception e) {
-            return null; // Lỗi nếu ai đó cố tình sửa bậy cookie
+            return null;
         }
     }
 
-    // --- Các hàm hỗ trợ chuyển đổi Hex cho Cookie (Không cần quan tâm) ---
+
     private static String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) { sb.append(String.format("%02x", b)); }

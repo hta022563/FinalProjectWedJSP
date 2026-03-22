@@ -8,8 +8,6 @@ package model;
  *
  * @author AngDeng
  */
-
-
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
@@ -37,7 +35,7 @@ public class OrderDTO {
     private int methodID;
 
     @Column(name = "PromotionID")
-    private Integer promotionID; // Dùng Integer vì có thể khách không nhập mã (Null)
+    private Integer promotionID;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "OrderDate")

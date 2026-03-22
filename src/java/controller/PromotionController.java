@@ -33,7 +33,7 @@ public class PromotionController extends HttpServlet {
                     int percent = Integer.parseInt(percentStr);
                     Date startDate = Date.valueOf(startStr);
                     Date endDate = Date.valueOf(endStr);
-                    
+
                     if (!dao.insert(code, percent, startDate, endDate)) {
                         request.setAttribute("errorMessage", "Thêm thất bại (Có thể mã code đã tồn tại)!");
                     }
@@ -42,7 +42,9 @@ public class PromotionController extends HttpServlet {
                 String idStr = request.getParameter("id");
                 if (idStr != null) {
                     int id = Integer.parseInt(idStr);
-                    if (!dao.softDelete(id)) request.setAttribute("errorMessage", "Xóa thất bại!");
+                    if (!dao.softDelete(id)) {
+                        request.setAttribute("errorMessage", "Xóa thất bại!");
+                    }
                 }
             } else if ("update".equals(action)) {
                 String idStr = request.getParameter("id");
@@ -56,7 +58,7 @@ public class PromotionController extends HttpServlet {
                     int percent = Integer.parseInt(percentStr);
                     Date startDate = Date.valueOf(startStr);
                     Date endDate = Date.valueOf(endStr);
-                    
+
                     if (!dao.update(id, code, percent, startDate, endDate)) {
                         request.setAttribute("errorMessage", "Cập nhật thất bại!");
                     }
@@ -65,7 +67,9 @@ public class PromotionController extends HttpServlet {
                 String idStr = request.getParameter("id");
                 if (idStr != null) {
                     int id = Integer.parseInt(idStr);
-                    if (!dao.restore(id)) request.setAttribute("errorMessage", "Khôi phục thất bại!");
+                    if (!dao.restore(id)) {
+                        request.setAttribute("errorMessage", "Khôi phục thất bại!");
+                    }
                 }
             }
         } catch (IllegalArgumentException e) {
@@ -88,9 +92,13 @@ public class PromotionController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException { processRequest(request, response); }
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException { processRequest(request, response); }
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
 }

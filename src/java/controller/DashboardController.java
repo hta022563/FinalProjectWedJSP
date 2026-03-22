@@ -28,7 +28,6 @@ public class DashboardController extends HttpServlet {
         ActivityDAO actDAO = new ActivityDAO();
 
         try {
-            // 1. XỬ LÝ TÁC VỤ (XÓA / CẬP NHẬT LOG)
             if ("deleteLog".equals(action)) {
                 String logIdStr = request.getParameter("id");
                 if (logIdStr != null && !logIdStr.isEmpty()) {
@@ -54,7 +53,6 @@ public class DashboardController extends HttpServlet {
                 }
             }
 
-            // 2. KÉO DỮ LIỆU THỐNG KÊ TỔNG QUAN
             UserDAO userDAO = new UserDAO();
             request.setAttribute("totalCustomers", userDAO.countVIPCustomers());
 
@@ -71,18 +69,15 @@ public class DashboardController extends HttpServlet {
             request.setAttribute("totalStock", productDAO.getTotalStockQuantity());
             request.setAttribute("totalAccessories", productDAO.getTotalAccessoryStock());
 
-            // 3. KÉO DỮ LIỆU ĐỔ VÀO BẢNG
             List<ProductDTO> listProduct = productDAO.getAllProducts(); 
             request.setAttribute("productList", listProduct);
 
             List<OrderDTO> listAllOrders = orderDAO.getAllOrders();
             request.setAttribute("listAllOrders", listAllOrders);
 
-            // [ĐÃ FIX] KÉO DỮ LIỆU LUỒNG GIAO DỊCH (LOGS) CHO RADAR
-            List<ActivityDTO> listActivities = actDAO.getAllActivities(); // Đảm bảo DAO của Hảo có hàm getAllActivities() này
+            List<ActivityDTO> listActivities = actDAO.getAllActivities();
             request.setAttribute("listActivities", listActivities);
 
-            // 4. PHÂN LUỒNG TRẢ VỀ VIEW
             String type = request.getParameter("type");
             if ("ajax".equals(type)) {
                 request.getRequestDispatcher("recentActivitiesTable.jsp").forward(request, response);
@@ -94,7 +89,6 @@ public class DashboardController extends HttpServlet {
             e.printStackTrace();
             response.sendRedirect("home.jsp");
         }
-        // Đã xóa 2 dòng code mồ côi nằm ngoài try-catch gây lỗi sập Server
     }
 
     @Override

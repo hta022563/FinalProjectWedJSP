@@ -17,7 +17,6 @@ public class ForgotPasswordController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Chống lỗi font chữ tiếng Việt
         response.setContentType("text/html;charset=UTF-8");
          request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
@@ -26,40 +25,27 @@ public class ForgotPasswordController extends HttpServlet {
         HttpSession session = request.getSession();
 
         try {
-            // ==========================================
-            // LUỒNG 1: KHÁCH BẤM GỬI EMAIL ĐỂ NHẬN OTP
-            // ==========================================
         if ("sendOTP".equals(action)) {
                 String email = request.getParameter("email");
                 
-                // Gọi DAO ra kiểm tra Email trước!
                 model.UserDAO dao = new model.UserDAO();
                 if (!dao.checkEmailExist(email)) {
-                    // Nếu không có trong DB -> Đuổi về ngay và luôn
                     request.setAttribute("error", "Email này chưa được đăng ký trong hệ thống F-AUTO!");
                     request.getRequestDispatcher("forgot-password.jsp").forward(request, response);
                     return; 
                 }
 
-                // Nếu Email chuẩn rồi thì mới cho máy tạo OTP và gửi đi
                 java.util.Random rnd = new java.util.Random();
                 int number = rnd.nextInt(999999);
                 String otp = String.format("%06d", number);
 
-                // Cất OTP và Email vào Session để chút nữa còn lôi ra so sánh
-                // Chú ý: Cần khai báo HttpSession session = request.getSession(); nếu chưa có ở đầu hàm
-     
-                
                 session.setAttribute("otp_cua_khach", otp);
                 session.setAttribute("email_dang_khoi_phuc", email);
 
-                // --- GỌI EMAIL UTILS RA ĐỂ LẤY GIAO DIỆN HTML ---
                 String subject = "[F-AUTO] MÃ XÁC THỰC KHÔI PHỤC MẬT KHẨU";
                 
-                // Vì khách chưa đăng nhập nên mình tạm gọi là "Quý khách"
                 String bodyHtml = utils.EmailUtils.getOtpEmailTemplate("Quý khách", otp);
                 
-                // Gọi EmailUtils để gửi thư
                 boolean isSent = utils.EmailUtils.sendEmail(email, subject, bodyHtml);
 
                 if (isSent) {
