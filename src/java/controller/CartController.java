@@ -27,7 +27,7 @@ public class CartController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-         request.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
         CartDAO cartDAO = new CartDAO();
@@ -66,7 +66,7 @@ public class CartController extends HttpServlet {
                 }
 
                 response.sendRedirect(returnUrl);
-                return; 
+                return;
 
             } else if ("viewCart".equals(action)) {
                 CartDTO cart = cartDAO.getCartByUserId(userId);
@@ -84,8 +84,8 @@ public class CartController extends HttpServlet {
                         cartTotal = cartTotal.add(price.multiply(new BigDecimal(item.getQuantity())));
                     }
                 } catch (Exception ex) {
-                } finally {
-                    em.close();
+                    System.out.println("Lỗi khi tính tổng tiền giỏ hàng: " + ex.getMessage());
+                    ex.printStackTrace();
                 }
 
                 request.setAttribute("productPrices", productPrices);
@@ -117,7 +117,7 @@ public class CartController extends HttpServlet {
                 if (promo != null && promo.getIsActive() == 1) {
                     session.setAttribute("appliedPromoCode", promo.getPromoCode());
                     session.setAttribute("discountPercent", promo.getDiscountPercent());
-                    session.setAttribute("promotionId", promo.getPromotionID()); 
+                    session.setAttribute("promotionId", promo.getPromotionID());
                     session.setAttribute("promoMsg", "Áp dụng mã giảm " + promo.getDiscountPercent() + "% thành công!");
                 } else {
                     session.removeAttribute("appliedPromoCode");

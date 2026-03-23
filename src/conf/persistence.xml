@@ -7,13 +7,13 @@
     <class>model.CartItemDTO</class>
     <class>model.OrderDTO</class>
     <class>model.OrderDetailDTO</class>
-    
-    <properties>
+    <class>model.UserDTO</class>
+    <class>model.ProductDTO</class>
+    <class>model.CategoryDTO</class> <class>model.ActivityDTO</class> <class>model.NewsDTO</class> <class>model.ReviewDTO</class> <properties>
       <property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
       <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=CarStore_FinalWeb;encrypt=false"/>
       <property name="javax.persistence.jdbc.user" value="sa"/>
       <property name="javax.persistence.jdbc.password" value="12345"/>
-      
       <property name="eclipselink.logging.level" value="FINE"/>
     </properties>
   </persistence-unit>

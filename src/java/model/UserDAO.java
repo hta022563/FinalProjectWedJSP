@@ -18,27 +18,29 @@ public class UserDAO {
     public UserDTO login(String username, String rawPassword) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            String jpql = "SELECT u FROM UserDTO u WHERE u.username = :user";
-            TypedQuery<UserDTO> query = em.createQuery(jpql, UserDTO.class);
-            query.setParameter("user", username);
+           String jpql = "SELECT u FROM UserDTO u WHERE u.username = :user";
+        TypedQuery<UserDTO> query = em.createQuery(jpql, UserDTO.class);
+        query.setParameter("user", username);
 
-            UserDTO u = query.getSingleResult();
-
-            String hashedPassword = SecurityUtils.hashPassword(rawPassword);
-
-            if (u.getPassword().equals(hashedPassword)) {
-                return u;
-            } else {
-                return null;
-            }
-
-        } catch (Exception e) {
-            System.out.println("Tài khoản không tồn tại hoặc lỗi: " + e.getMessage());
-            return null;
-        } finally {
-            em.close();
+        java.util.List<UserDTO> results = query.getResultList();
+        if (results.isEmpty()) {
+            return null; 
         }
+        UserDTO u = results.get(0);
+
+        String hashedPassword = SecurityUtils.hashPassword(rawPassword);
+        if (u.getPassword().equals(hashedPassword)) {
+            return u;
+        } else {
+            return null; 
+        }
+    } catch (Exception e) {
+        System.out.println("Lỗi hệ thống: " + e.getMessage());
+        return null;
+    } finally {
+        em.close();
     }
+}
 
     public boolean checkUserExist(String username) {
         EntityManager em = JPAUtil.getEntityManager();

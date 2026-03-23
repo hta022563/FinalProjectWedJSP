@@ -64,7 +64,8 @@ public class AuthFilter implements Filter {
                 || "Cart".equals(target) || "Review".equals(target);
 
         if ("checkout".equals(action) || "detail".equals(action) || "delete".equals(action) || "exportContract".equals(action)
-                || "profile".equals(action) || "updateProfile".equals(action) || "changePassword".equals(action)) {
+                || "profile".equals(action) || "updateProfile".equals(action) || "changePassword".equals(action)
+                || "cancelOrder".equals(action)) { 
             isUserArea = true;
         }
 

@@ -87,7 +87,23 @@ public class OrderController extends HttpServlet {
                     request.getRequestDispatcher("order-detail.jsp").forward(request, response);
                     return;
                 }
-
+} else if ("cancelOrder".equals(action)) {
+                String orderIdStr = request.getParameter("orderId");
+                if (orderIdStr != null && !orderIdStr.isEmpty()) {
+                    try {
+                        int oId = Integer.parseInt(orderIdStr.trim());
+                        boolean check = orderDAO.updateOrderStatus(oId, "Rejected");
+                        if (check) {
+                            session.setAttribute("msg", "Đã hủy đơn hàng thành công!");
+                        } else {
+                            session.setAttribute("msgError", "Hủy thất bại, vui lòng thử lại!");
+                        }
+                    } catch (Exception e) {
+                        session.setAttribute("msgError", "Mã đơn hàng không hợp lệ!");
+                    }
+                }
+                response.sendRedirect("MainController?target=Order");
+                return;
             } else if ("delete".equals(action)) {
                 String orderIdStr = request.getParameter("id");
                 if (orderIdStr != null && !orderIdStr.isEmpty()) {
